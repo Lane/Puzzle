@@ -34,43 +34,70 @@
 	    isMatched: function() {
 	        return true;
 	    }
-	}
+	};
 	
-	// PIECE OBJECT
-	// --------------------------
+	// PUZZLE PIECE OBJECT
 	
-	// Piece constructor
-	var Piece = function() {
-	    // Piece Data
-	    this.id = null;
-	    this.el = null;
-	    this.width = 0;
-	    this.height = 0;
-	    this.angle = 0;
-	    this.xPos = 0;
-	    this.yPos = 0;
-	    this.Points = null;
-	}
-	// Piece functions
-	Piece.prototype = {
-	    setData: function(item) {
-	        this.id = item.id;
-	        this.el = $("#"+item.id);
-	        this.width = item.width;
-	        this.height = item.height;
-	        this.angle = item.angle;
-	        this.xPos = item.xPos;
-	        this.yPos = item.yPos;
-	        this.Points = item.Points;
-	    },
-	    isSnapped: function() {
-	        return false;  
-	    },
-	    makePiece: function() {
-	        return false;
-	    }
-	}
-	
+	(function() {
+	 
+		var Piece = function(image, pContainer, scale) {
+		  this.initialize(image, pContainer, scale);
+		}
+		var p = Piece.prototype = new createjs.Bitmap();
+		
+		p.containerName;
+		p.imgSrc;
+		p.points;
+		 
+		p.Bitmap_initialize = p.initialize;
+		p.initialize = function(image, pContainer, scale) {
+			// run bitmap constructor
+		  this.Bitmap_initialize(image);
+		  
+		  // set parameters
+		  this.regX = this.image.width/2|0;
+		  this.regY = this.image.height/2|0;
+		  this.scaleX = this.scaleY = this.scale = scale;
+		  this.name = this.image.src.split('/')[this.image.src.split('/').length-1];
+		  this.containerName = pContainer.name;
+		  this.cursor = "pointer";
+		  
+		  // set event handlers
+		  // this.addEventListener("mousedown", this.handleMouseDown);
+		  // this.addEventListener("mousedown", this.handleMouseOver);
+		  // this.addEventListener("mousedown", this.handleMouseOut);
+		  
+		  pContainer.addChild(this);
+  		// addRotateHandle(this);
+  		
+  		if(debug) {
+  			console.log('loaded piece:');
+  			console.log(this);
+  			console.log(pContainer);
+  		}
+		  
+		}
+		
+		p.handleMouseDown = function() {
+		
+		}
+		
+		p.removeFromContainer = function() {
+			// remove piece from container
+		}
+		
+		p.addToContainer = function(container) {
+			// logic that adds a piece to a container
+		}
+		
+		p.switchContainer = function(container) {
+			// logic that switches the current piece to a new container
+		}
+		 
+		window.Piece = Piece;
+		
+	}());
+		
 	// PUZZLE OBJECT
 	// --------------------------
 	
@@ -132,9 +159,7 @@
 	var dragStarted;	// indicates whether we are currently in a drag operation
 	var offset;
 	var selectedPiece = null;
-	var rotateHandle = null;
 	var update = true;
-	var pieceCount = 0;
 	var debug = true;
 
 	function init() {
@@ -180,6 +205,10 @@
 		leg1.src = "assets/front-legs.png";
 		leg1.onload = loadPuzzlePiece;
 		
+		var leg2 = new Image();
+		leg2.src = "assets/back-legs.png";
+		leg2.onload = loadPuzzlePiece;
+		
 		var rotator = new Image();
 		rotator.src = "assets/rotate.png";
 		//rotator.onload = loadRotateHandle;
@@ -196,13 +225,11 @@
 		pc.cache(0, 0, pc.image.width, pc.image.height);
 		pc.updateCache();
 				
-		// Place the rotate handle, make it visible
+		// make rotate handle visible
 		pc.parent.getChildAt(1).visible = true;
-
 		
 		selectedPiece = pc; // update selectedPiece with new piece
-		placeRotateHandle();
-		//rotateHandle.visible = true;
+
 
 		if(debug) {
 			console.log('Selected Piece');
@@ -260,71 +287,27 @@
 				update = true;
 			});
 		});
-		
-		//rotateHandle = bitmap;
 	}
 	
-	/*
-	function loadRotateHandle(event) {
-		var image = event.target;
-		var bitmap;
-		var container = new createjs.Container();
-		stage.addChild(container);
-		bitmap = new createjs.Bitmap(image);
-		container.addChild(bitmap);
-		bitmap.x = 100;
-		bitmap.y = 100;
-		//bitmap.rotation = 360 * Math.random()|0;
-		bitmap.regX = bitmap.image.width/2|0;
-		bitmap.regY = bitmap.image.height/2|0;
-		bitmap.scaleX = bitmap.scaleY = bitmap.scale = 0.25;
-		bitmap.name = 'bmp_rotator';
-		bitmap.cursor = "pointer";
-		bitmap.visible = false;
-		
-		bitmap.addEventListener("mousedown", function(evt) {
-			var o = evt.target;
-			var offset = {x:evt.stageX, y:evt.stageY};
-			var start = selectedPiece.rotation;
-			
-			// add a listener to the event object's mouseMove event
-			// this will be active until the user releases the mouse button:
-			evt.addEventListener("mousemove", function(ev) {
-				selectedPiece.rotation = start + ((ev.stageX-offset.x)+(ev.stageY-offset.y));
-				//o.y = ev.stageY+offset.y;
-				// indicate that the stage should be updated on the next tick:
-				update = true;
-			});
-		});
-		
-		rotateHandle = bitmap;
-	}
-	*/
-	
-	function placeRotateHandle() {
-		//rotateHandle.x = selectedPiece.x+(selectedPiece.image.width*selectedPiece.scale/2)+64;
-		//rotateHandle.y = selectedPiece.y-(selectedPiece.image.height*selectedPiece.scale/2)+64;
-	}
-
+	// loadPuzzlePiece
+	// ---------------------
+	// - Creates a container
+	// - Creates a bitmap, set parameters
+	// - Add the bitmap to the container
+	// - Set up event listeners
+	// - Add the rotate handle
 	function loadPuzzlePiece(event) {
 		var image = event.target;
 		var bitmap;
 		var container = new createjs.Container();
+		container.name = "container"+container.id;
 		stage.addChild(container);
 		
-		bitmap = new createjs.Bitmap(image);
-		container.addChild(bitmap);
-		
+		bitmap = new Piece(image, container, 0.5);
+
 		container.x = canvas.width * Math.random()|0;
 		container.y = canvas.height * Math.random()|0;
-		//bitmap.rotation = 360 * Math.random()|0;
-		bitmap.regX = bitmap.image.width/2|0;
-		bitmap.regY = bitmap.image.height/2|0;
-		bitmap.scaleX = bitmap.scaleY = bitmap.scale = 0.5;
-		bitmap.name = bitmap.image.src.split('/')[bitmap.image.src.split('/').length-1];
-		container.name = bitmap.containerName = "container-"+bitmap.name;
-		bitmap.selected = false;
-		bitmap.cursor = "pointer";
+		
 		
 		bitmap.addEventListener("mousedown", function(evt) {
 			// bump the target in front of it's siblings:
@@ -349,12 +332,8 @@
 			evt.addEventListener("mousemove", function(ev) {
 				c1.x = ev.stageX+offset.x;
 				c1.y = ev.stageY+offset.y;
-				//placeRotateHandle();
 				// indicate that the stage should be updated on the next tick:
 				update = true;
-			});
-			evt.addEventListener("mouseup", function(ev) {
-				//stage.addChild(rotateHandle);
 			});
 		});
 
@@ -379,70 +358,13 @@
 			update = true;
 		});
 
-		addRotateHandle(bitmap);
-		pieceCount++;
+		//addRotateHandle(bitmap);
 		
 		if(debug) {
 			console.log('loaded piece:');
 			console.log(bitmap);
 			console.log(container);
 		}
-		
-		/*
-		// wrapper function to provide scope for the event handlers:
-		(function(target) {
-			bitmap.onPress = function(evt) {
-				//console.log('onpress on:');
-				//console.log(target);
-				// bump the target in front of it's siblings:
-				var offset = {x:target.x-evt.stageX, y:target.y-evt.stageY};
-				
-				target.filters = [new createjs.ColorFilter(1, 1, 0, 1)];
-				target.cache(0, 0, target.image.width, target.image.height);
-				target.updateCache();
-				target.selected = true;
-				update = true;
-				// add a handler to the event object's onMouseMove callback
-				// this will be active until the user releases the mouse button:
-				evt.onMouseMove = function(ev) {
-					target.x = ev.stageX+offset.x;
-					target.y = ev.stageY+offset.y;
-					// indicate that the stage should be updated on the next tick:
-					update = true;
-				}
-				evt.onMouseUp = function(ev) {
-				
-					// Check if piece is in place, or if its points are within radius
-					// of its match.
-					// target.checkPiece();
-					// console.log(ev);
-				}
-			}
-			bitmap.onMouseOver = function() {
-				//console.log('mouseover on:');
-				//console.log(target);
-
-				// highlight the piece
-				target.filters = [new createjs.ColorFilter(0, 1, 0, 1)];
-				target.cache(0, 0, target.image.width, target.image.height);
-				target.updateCache();
-				update = true;
-			}
-			bitmap.onMouseOut = function() {
-
-				
-				if(target.selected !== true) {
-					target.filters = [new createjs.ColorFilter(1, 1, 1, 1)];
-				}
-				target.cache(0, 0, target.image.width, target.image.height);
-				target.updateCache();
-				
-				update = true;
-			}
-			
-		})(bitmap);
-		*/
-		
 		
 		createjs.Ticker.setFPS(30);
 		createjs.Ticker.addEventListener("tick", tick);
