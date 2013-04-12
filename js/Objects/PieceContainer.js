@@ -154,8 +154,6 @@ pc.getBoundingBox = function() {
 }
 
 pc.matchPieces = function() {
-	console.log("MATCHING PIECES");
-	console.log(this);
 	for(var i = 0; i < this._pieces.length; i++) {
 		var matches = this._pieces[i].getMatches();
 		for(var j = 0; j < matches.length; j++) {
@@ -167,37 +165,9 @@ pc.matchPieces = function() {
 				otherPoint = matches[j]._point2;
 				thisPoint = matches[j]._point1;
 			}
+			
+			this._puzzle.connectAtPoints(matches[j]);
 
-			// set the new x and y offset of the piece
-			//otherPoint.piece.x = otherPiece.parent.x+otherPiece.x-this.x;
-			//otherPoint.piece.y = otherPiece.parent.y+otherPiece.y-this.y;
-			otherPoint.piece.x = thisPoint.x+thisPoint.piece.x-otherPoint.x;
-			otherPoint.piece.y = thisPoint.y+thisPoint.piece.y-otherPoint.y;
-			
-
-			
-			// remove the piece from its piece container
-			this._puzzle.removePieceContainer(otherPoint.piece.parent);
-			
-			// add the piece to this piece container
-			
-			
-			// remove the match points
-			matches[j].removeFromPieces();
-			
-			this.addPiece(otherPoint.piece);
-			console.log(this);
-			this.cache(-600, -400, 1200, 800);
-			this.updateCache();
-			this.parent._needsUpdate = true;
-			
-			//this.resetPiece();
-			
-			// set the position of the added piece
-			
-			// remove the match points from the pieces
-			
-			
 			if(debug) {
 				console.log("matched point");
 				console.log(matches[j]);

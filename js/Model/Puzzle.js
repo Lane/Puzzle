@@ -23,6 +23,7 @@ function Puzzle(canvas, pieceContainers) {
 	this.pieceContainerAdded = new Event(this);
 	this.pieceContainerRemoved = new Event(this);
 	this.selectedPieceChanged = new Event(this);
+	this.pointsConnected = new Event(this);
 	
 	// PieceContainer events
 	this.pieceAdded = new Event(this);
@@ -58,6 +59,32 @@ Puzzle.prototype = {
 			}
 		}
 		return false;
+	},
+	
+	// connectAtPoints(PointMatch)
+	// ----------------------------
+	// adds _point1 to _point2's piece container
+	
+	connectAtPoints : function(pm) {
+	
+		var staticPoint = pm._point1;
+		var movedPoint = pm._point2;
+	
+		// set the new x and y offset of the piece
+		staticPoint.piece.x = movedPoint.x+movedPoint.piece.x-staticPoint.x;
+		staticPoint.piece.y = movedPoint.y+movedPoint.piece.y-staticPoint.y;
+		
+		// remove the piece from its piece container
+		this.removePieceContainer(staticPoint.piece.parent);
+		
+		// remove the match points
+		pm.removeFromPieces();
+		
+		// add the piece to this piece container
+		movedPoint.piece.parent.addPiece(staticPoint.piece);
+		
+		this.pointsConnected.notify({ pieceContainer: movedPoint.piece.parent });
+		
 	},
 	
 	getSelectedPiece : function () {

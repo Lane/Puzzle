@@ -51,6 +51,10 @@ function PuzzleController(model, view) {
     });
     
 		this._model.pieceAdded.attach(function (sender,args) {
+			for(var i = 0; i < args.piece._pointMatches.length; i++) {
+				args.piece._pointMatches[i]._point1.updatePoint();
+				args.piece._pointMatches[i]._point2.updatePoint();
+			}
 		    _this._view.buildPuzzle();
 		    //_this._view._stage.addChild(args.pieceContainer);
 		    _this._view._stage._needsUpdate = true;
@@ -74,6 +78,15 @@ function PuzzleController(model, view) {
     	_this._view._stage._needsUpdate = true;
     	if(debug) {
     		console.log("selected piece changed");
+    	}
+    });
+    
+    this._model.pointsConnected.attach(function (sender, args) {
+    	args.pieceContainer.cache(-600, -400, 1200, 800);
+    	args.pieceContainer.updateCache();
+    	_this._view._stage._needsUpdate = true;
+    	if(debug) {
+    		console.log("points connected");
     	}
     });
     

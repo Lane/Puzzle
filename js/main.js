@@ -23,7 +23,6 @@
 		
 		var pieceContainer2 = new PieceContainer({ 
 			pieces: [
-				new Piece("assets/back.png", {scale: 0.5, x: 167, y: -156}), 
 				new Piece("assets/back-legs.png", {scale: 0.5})
 			]
 		});
@@ -34,6 +33,13 @@
 			] 
 		});
 		
+		var pieceContainer4 = new PieceContainer({ 
+			pieces: [
+				new Piece("assets/back.png", {scale: 0.5 })
+			] 
+		});
+		
+		 
 
 		
 		// create the puzzle
@@ -44,10 +50,28 @@
 		puzzle.addPieceContainer(pieceContainer1);
 		puzzle.addPieceContainer(pieceContainer2);
 		puzzle.addPieceContainer(pieceContainer3);
+		puzzle.addPieceContainer(pieceContainer4);
 		
-		var point1 = new Point(pieceContainer1._pieces[0],-130,55);
-		var point2 = new Point(pieceContainer3._pieces[0],-20,-130);
-		var pointMatch = new PointMatch(point1, point2);
+		// Head Point
+		var point1 = new Point(pieceContainer1._pieces[0],-135,60);
+		
+		// Front Leg Point
+		var point2 = new Point(pieceContainer3._pieces[0],-25,-164);
+		
+		// Back Leg Point
+		var point3 = new Point(pieceContainer2._pieces[0], 80,-225);
+		
+		// Body Points
+		var point4 = new Point(pieceContainer4._pieces[0], -88,-70); // back legs connect
+		var point5 = new Point(pieceContainer4._pieces[0], 240,-80); // head connect
+		var point6 = new Point(pieceContainer4._pieces[0], 200,85); // front leg connect
+		
+		// Match Points
+		var pointMatches = [ 
+			new PointMatch(point1, point5),
+			new PointMatch(point2, point6),
+			new PointMatch(point3, point4)
+		];
 		
 		puzzleView.buildPuzzle();
 		

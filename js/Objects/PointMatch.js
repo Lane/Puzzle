@@ -15,8 +15,8 @@ function PointMatch(pointOne, pointTwo) {
 			((Math.random()*255))|0
 		);
 		
-		this._point1.circle.graphics.setStrokeStyle(2).beginStroke("red").beginFill(circleColor).drawCircle(0, 0, 5);
-		this._point2.circle.graphics.setStrokeStyle(2).beginStroke("red").beginFill(circleColor).drawCircle(0, 0, 5);
+		this._point1.circle.graphics.setStrokeStyle(1).beginStroke("red").beginFill(circleColor).drawCircle(0, 0, 5);
+		this._point2.circle.graphics.setStrokeStyle(1).beginStroke("red").beginFill(circleColor).drawCircle(0, 0, 5);
 	}
 }
 

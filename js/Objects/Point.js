@@ -11,8 +11,8 @@ function Point(piece, x, y) {
 	if(debug) {
 		this.circle = new createjs.Shape();
 		this.circle.graphics.beginFill("red").drawCircle(0, 0, 5);
-		this.circle.x = this.x+piece.regX;
-		this.circle.y = this.y+piece.regY;
+		this.circle.x = this.x+piece.regX+piece.x;
+		this.circle.y = this.y+piece.regY+piece.y;
 		this.piece.parent.addChild(this.circle);
 		this.piece.parent.parent._needsUpdate=true;
 	}
@@ -28,6 +28,17 @@ function Point(piece, x, y) {
 		return offset;
 	}
 	
-	
+	this.updatePoint = function() {
+		if(typeof(this.circle) !== "undefined") {
+		
+			this.circle.x =this.x+piece.x;
+			this.circle.y = this.y+piece.y;
+		
+			if(debug) {
+				console.log("Updating point:");
+				console.log(this);
+			}	
+		} 
+	}
 
 }
