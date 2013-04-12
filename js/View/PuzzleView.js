@@ -8,7 +8,7 @@ function PuzzleView(model) {
 
   var _this = this;
   
-  createjs.Touch.enable(this._stage);
+  if (createjs.Touch.isSupported()) { createjs.Touch.enable(this._stage); }
   this._stage.mouseEventsEnabled = true;
   this._stage.enableMouseOver(10000);
   this._stage.mouseMoveOutside = true; // keep tracking the mouse even when it leaves the canvas

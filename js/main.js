@@ -3,7 +3,7 @@
 	var mouseTarget;	// the display object currently under the mouse, or being dragged
 	var dragStarted;	// indicates whether we are currently in a drag operation
 	var offset;
-	var debug = false;
+	var debug = true;
 
 	function init() {
 		if (window.top != window) {
@@ -40,8 +40,6 @@
 		});
 		
 		 
-
-		
 		// create the puzzle
 		puzzle = new Puzzle(canvas);
 		var puzzleView = new PuzzleView(puzzle);
