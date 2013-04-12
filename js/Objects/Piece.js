@@ -1,5 +1,7 @@
 function Piece(imageSrc, overrides) {
 	
+	this._points = new Array();
+	
 	var tmpImg = new Image();
 	tmpImg.src = imageSrc;
 	
@@ -16,6 +18,8 @@ p.Bitmap_initialize = p.initialize;
 p.initialize = function(image, overrides) {
 
 	var options = overrides || {};
+	
+	this._pointMatches = options.pointMatches || new Array();
 
 	// create image bitmap constructor
   this.Bitmap_initialize(image);
@@ -38,4 +42,53 @@ p.initialize = function(image, overrides) {
 		console.log('Created Piece:');
 		console.log(this);
 	}
+}
+
+p.removePointMatch = function(pm) {
+	if(typeof(pm) == "object") {
+		this.removePoint(pm._point1);
+		this.removePoint(pm._point2);
+		for(var i = 0; i < this._pointMatches.length; i++)
+		{
+			if((this._pointMatches[i]._point1 == pm._point1) 
+						&& (this._pointMatches[i]._point2 == pm._point2)) {
+				this._pointMatches.remove(i);
+				if(debug) {
+					console.log("point match removed");
+				}
+			}
+		}
+	}
+}
+
+p.addPointMatch = function(pm) {
+	if(typeof(pm) == "object") {
+		this._pointMatches.push(pm);
+	}
+}
+
+p.addPoint = function(pt) {
+	this._points.push(pt);
+}
+
+p.removePoint = function(pt) {
+	for(var i = 0; i < this._points.length; i++)
+	{
+		if(this._points[i] == pt)
+		{
+			this._points.remove(i);
+			return this._points;
+		}
+	}
+	return false;
+}
+
+p.getMatches = function() {
+	var matches = new Array();
+	for(var i = 0; i < this._pointMatches.length; i++) {
+		if(this._pointMatches[i].isMatched()) {
+			matches.push(this._pointMatches[i]);
+		}
+	}
+	return matches;
 }

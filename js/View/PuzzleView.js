@@ -13,17 +13,6 @@ function PuzzleView(model) {
   this._stage.enableMouseOver(10000);
   this._stage.mouseMoveOutside = true; // keep tracking the mouse even when it leaves the canvas
 
-  // handle model events listeners
-  this._model.pieceContainerAdded.attach(function () {
-      _this.buildPuzzle();
-  });
-  this._model.pieceContainerRemoved.attach(function () {
-      _this.buildPuzzle();
-  });
-  this._model.selectedPieceChanged.attach(function () {
-  	console.log("selected piece changed");
-  });
-
   // attach listeners to stage events
   this._stage.addEventListener("stagemousedown", function(e) {
   	var stage = _this._stage;
@@ -32,11 +21,9 @@ function PuzzleView(model) {
   	if(ob == null) {
   		_this.clickedOnNothing.notify();
   	} else {
-  		_this.clickedOnPiece.notify(ob);
-  		
+  		_this.clickedOnPiece.notify(ob);	
   	}
   });
-  
 }
 
 PuzzleView.prototype = {
@@ -49,9 +36,17 @@ PuzzleView.prototype = {
   },
 
   buildPuzzle : function () {
+  	this._stage.removeAllChildren();
 		for(var i = 0; i < this._model._pieceContainers.length; i++) {
 			for(var j = 0; j < this._model._pieceContainers[i]._pieces.length; j++) {
 				this._model._pieceContainers[i].addChild(this._model._pieceContainers[i]._pieces[j]);
+				if(debug) {
+					for(var k = 0; k < this._model._pieceContainers[i]._pieces[j]._points.length; k++) {
+						this._model._pieceContainers[i].addChild(
+							this._model._pieceContainers[i]._pieces[j]._points[k].circle
+						);
+					}
+				}
 			}
 			this._stage.addChild(this._model._pieceContainers[i]);
 		}

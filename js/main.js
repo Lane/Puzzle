@@ -34,14 +34,20 @@
 			] 
 		});
 		
+
+		
 		// create the puzzle
-		var puzzle = new Puzzle(canvas);
+		puzzle = new Puzzle(canvas);
 		var puzzleView = new PuzzleView(puzzle);
 		var puzzleController = new PuzzleController(puzzle, puzzleView);
 		
 		puzzle.addPieceContainer(pieceContainer1);
 		puzzle.addPieceContainer(pieceContainer2);
 		puzzle.addPieceContainer(pieceContainer3);
+		
+		var point1 = new Point(pieceContainer1._pieces[0],-130,55);
+		var point2 = new Point(pieceContainer3._pieces[0],-20,-130);
+		var pointMatch = new PointMatch(point1, point2);
 		
 		puzzleView.buildPuzzle();
 		

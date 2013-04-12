@@ -23,6 +23,15 @@ function Puzzle(canvas, pieceContainers) {
 	this.pieceContainerAdded = new Event(this);
 	this.pieceContainerRemoved = new Event(this);
 	this.selectedPieceChanged = new Event(this);
+	
+	// PieceContainer events
+	this.pieceAdded = new Event(this);
+	this.pieceRemoved = new Event(this);
+	this.mouseOverPiece = new Event(this);
+	this.mouseOutPiece = new Event(this);
+	this.dragPiece = new Event(this);
+	this.dragRotateHandle = new Event(this);
+	this.releasePiece = new Event(this);
 }
 
 Puzzle.prototype = {
@@ -32,6 +41,7 @@ Puzzle.prototype = {
 	
 	addPieceContainer : function (pc) {
 	    this._pieceContainers.push(pc);
+	    pc._puzzle = this;
 	    this.pieceContainerAdded.notify({ pieceContainer : pc });
 	},
 	

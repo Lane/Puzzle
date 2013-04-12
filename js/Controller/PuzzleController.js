@@ -27,19 +27,83 @@ function PuzzleController(model, view) {
 	    	console.log("clicked on nothing");
 	    }
 		});
-	
-    this._model.pieceContainerAdded.attach(function () {
     
-    	if(debug) {
-      	console.log("piece container added");
-      }
+    // handle model events listeners
+    this._model.pieceContainerAdded.attach(function (sender,args) {
+        _this._view.buildPuzzle();
+        //_this._view._stage.addChild(args.pieceContainer);
+        _this._view._stage._needsUpdate = true;
+        if(debug) {
+          console.log("Added piece container to stage:");
+          console.log(args.pieceContainer);
+        }
     });
-
-    this._model.pieceContainerRemoved.attach(function () {
     
+    this._model.pieceContainerRemoved.attach(function (sender, args) {
+        //_this._view._stage.removeChild(args.pieceContainer);
+        _this._view.buildPuzzle();
+        _this._view._stage._needsUpdate = true;
+        
+        if(debug) {
+          console.log("Removed piece container from stage:");
+          console.log(args.pieceContainer);
+        }
+    });
+    
+		this._model.pieceAdded.attach(function (sender,args) {
+		    _this._view.buildPuzzle();
+		    //_this._view._stage.addChild(args.pieceContainer);
+		    _this._view._stage._needsUpdate = true;
+		    if(debug) {
+		      console.log("Added piece to container:");
+		      console.log(args);
+		    }
+		});
+		
+		this._model.pieceRemoved.attach(function (sender,args) {
+		    _this._view.buildPuzzle();
+		    //_this._view._stage.addChild(args.pieceContainer);
+		    _this._view._stage._needsUpdate = true;
+		    if(debug) {
+		      console.log("Removed piece from container:");
+		      console.log(args);
+		    }
+		});
+    
+    this._model.selectedPieceChanged.attach(function () {
+    	_this._view._stage._needsUpdate = true;
     	if(debug) {
-      	console.log("piece container removed");
-      }
+    		console.log("selected piece changed");
+    	}
+    });
+    
+    // handle PieceContainer events
+    this._model.mouseOverPiece.attach(function(sender,args) {
+    	args.pieceContainer.hoverPiece();
+    });
+    
+    this._model.mouseOutPiece.attach(function(sender,args) {
+    	args.pieceContainer.resetPiece();
+    });
+    
+    this._model.releasePiece.attach(function(sender,args) {
+    	args.pieceContainer.matchPieces();
+    	
+    	if(debug) {
+    		console.log("piece released:");
+    		console.log(args);
+    	}
+    });
+    
+    this._model.dragPiece.attach(function(sender, args) {
+    	args.pieceContainer.movePiece(
+    		args.event.stageX+args.event.offset.x, 
+    		args.event.stageY+args.event.offset.y
+    	);
+    });
+    
+    this._model.dragRotateHandle.attach(function(sender, args) {
+    	args.pieceContainer.rotatePiece(args.event);
     });
 }
 
