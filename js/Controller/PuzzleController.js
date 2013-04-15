@@ -5,13 +5,16 @@ function PuzzleController(model, view) {
     var _this = this;
 
     this._view.clickedOnPiece.attach(function (sender, args) {
-    	var pc = args;
-    	if(args.type == "piece")
+    	console.log("What is happening here?");
+    	console.log(args.piece);
+    	var clickedOn = args.piece;
+    	console.log(clickedOn);
+    	if(args.piece.type == "piece")
     	{
-    		pc = args.parent;
+    		clickedOn = args.piece.parent;
     	}
-    	if(pc.type == "piece-container") {
-    		_this._model.setSelectedPiece(pc);
+    	if(clickedOn.type == "piece-container") {
+    		_this._model.setSelectedPiece(clickedOn);
     	}
     
     	if(debug) {

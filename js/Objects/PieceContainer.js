@@ -76,8 +76,8 @@ pc.setCentre = function() {
 	var bottomRight = 0;
 	var pc;
 	pc = this._pieces[0];
-	this.regX = pc.image.width / 4 | 0;
-	this.regY = pc.image.height / 4 | 0;
+	this.regX = pc.image.width / 2 | 0;
+	this.regY = pc.image.height / 2 | 0;
 }
 
 pc.getPieces = function () {
@@ -150,7 +150,7 @@ pc.resetPiece = function(force) {
 }
 
 pc.getBoundingBox = function() {
-
+	// DO THIS MONDAY
 }
 
 pc.matchPieces = function() {
@@ -173,11 +173,26 @@ pc.matchPieces = function() {
 				console.log(matches[j]);
 			}
 		}
-		
-
 	}
 }
 	
 pc.isSelected = function() {
 	return this._selected;
+}
+
+pc.toString = function() {
+	var pcString = "<h3>" + this.name + "</h3>"
+		+ "<ul class='properties'>" 
+		+ "<li><span>Position: </span>" + this.x + "," + this.y + "</li>"
+		+ "<li><span>Rotation:</span>" + this.rotation + "</li>"
+		+ "<li><span>Centre: </span>" + this.regX + "," + this.regY + "</li>"
+		+ "<li>";
+	for(var i = 0; i < this._pieces.length; i++) {
+		pcString += this._pieces[i].toString();
+	}
+	pcString += "</li></ul>";
+	
+	// pcString += this._rotateHandle.toString();
+	
+	return pcString;
 }

@@ -27,13 +27,18 @@ pm.isMatched = function() {
 	xDiff = Math.abs(this._point1.getStageOffset().x - this._point2.getStageOffset().x);
 	yDiff = Math.abs(this._point1.getStageOffset().y - this._point2.getStageOffset().y);
 	
+	rotationDiff = Math.abs((this._point1.getTotalRotation()%360) - (this._point2.getTotalRotation()%360));
+	
 	if(debug) {
-		console.log("Point 1 Stage Offset: " + this._point1.getStageOffset().x +
-			", Point 2 Stage Offset: " + this._point2.getStageOffset().x);
-		console.log("X offset: " + xDiff + ", Y offset: " + yDiff + ", Total: " + (xDiff+yDiff));
+		console.log(
+			", Point 1 Total Rotation: " + this._point1.getTotalRotation()%360 + 
+			", Point 2 Total Rotation: " + this._point2.getTotalRotation()%360 + 
+			", Rotation Difference: " + rotationDiff
+		);
+		console.log("X offset: " + xDiff + ", Y offset: " + yDiff + ", Total: " + (xDiff+yDiff));	
 	}
 	
-	if((xDiff+yDiff) < 100) {
+	if(((xDiff+yDiff) < 100) && rotationDiff < 25) {
 		return true;
 	}
 	return false;

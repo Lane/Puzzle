@@ -39,6 +39,8 @@ p.initialize = function(image, overrides) {
   this.type = "piece";
   
 	if(debug) {
+
+		
 		console.log('Created Piece:');
 		console.log(this);
 	}
@@ -91,4 +93,25 @@ p.getMatches = function() {
 		}
 	}
 	return matches;
+}
+
+p.toString = function() {
+	var pieceString = "<h4>" + this.name + "</h4>"
+		+ "<ul class='properties'>" 
+		+ "<li><span>Position: </span>" + this.x + "," + this.y + "</li>"
+		+ "<li><span>Rotation: </span>" + this.rotation + "</li>"
+		+ "<li><span>Centre: </span>" + this.regX + "," + this.regY + "</li>"
+		+ "<li><span>Scale: </span>" + this.scaleX + "," + this.scaleY + "</li>";
+		
+	if(typeof(this.image) !== "undefined") {
+		pieceString += "<li>Image Dimensions: " + this.image.width + "x" + this.image.height + "</li>";
+	}
+		
+	for(var i = 0; i < this._points.length; i++) {
+		pieceString += "<li>" + this._points[i].toString() + "</li>";
+	}
+	
+	pieceString += "</ul>";
+	
+	return pieceString;
 }

@@ -19,6 +19,13 @@ r.initialize = function(options) {
   this.name = "rotate-handle"+this.id;
   this.x = 0;
   this.y = 0;
+  
+  var rotateImage = this.image;
+  var _this = this;
+  handleImg.onload = function() {
+	  _this.regX = rotateImage.width/2|0;
+	  _this.regY = rotateImage.height/2|0;
+  }
   this.scaleX = this.scaleY = this.scale = 0.25;
   this.type = "rotate-handle";
   this.visible = false;
@@ -44,6 +51,15 @@ r.initialize = function(options) {
 	if(debug) {
 		console.log('Created rotate handle:');
 		console.log(this);
-	}
-  
+	}  
+}
+
+r.toString = function() {
+	var pieceString = "<h4>Rotate Handle</h4>"
+		+ "<ul class='properties'>" 
+		+ "<li><span>Position: </span>" + this.x + "," + this.y + "</li>"
+		+ "<li><span>Centre: </span>" + this.regX + "," + this.regY + "</li>"
+		+ "</ul>";
+		
+	return pieceString;
 }

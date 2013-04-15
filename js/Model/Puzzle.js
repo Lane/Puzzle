@@ -43,7 +43,12 @@ Puzzle.prototype = {
 	addPieceContainer : function (pc) {
 	    this._pieceContainers.push(pc);
 	    pc._puzzle = this;
-	    this.pieceContainerAdded.notify({ pieceContainer : pc });
+	    this.pieceContainerAdded.notify({ 
+	    	pieceContainer : pc, 
+	    	event :  {
+	    		type : "addpiececontainer"
+	    	}
+	    });
 	},
 	
 	removePieceContainer : function (pc) {
@@ -54,7 +59,13 @@ Puzzle.prototype = {
 				if(pc.isSelected()) {
 					this._selectedPiece = null;
 				}
-				this.pieceContainerRemoved.notify({ pieceContainer : pc });
+				this.pieceContainerRemoved.notify({ 
+					pieceContainer : pc, 
+					event :  {
+						type : "removepiececontainer"
+					}
+				});
+				
 				return true;
 			}
 		}
@@ -83,7 +94,12 @@ Puzzle.prototype = {
 		// add the piece to this piece container
 		movedPoint.piece.parent.addPiece(staticPoint.piece);
 		
-		this.pointsConnected.notify({ pieceContainer: movedPoint.piece.parent });
+		this.pointsConnected.notify({ 
+			pieceContainer: movedPoint.piece.parent, 
+			event :  {
+				type : "pointsconnected"
+			}
+		});
 		
 	},
 	
@@ -102,7 +118,12 @@ Puzzle.prototype = {
 		
     this._selectedPiece = pc;
     this._selectedPiece.selectPiece();
-    this.selectedPieceChanged.notify({ oldPiece : oldPiece });
+    this.selectedPieceChanged.notify({ 
+    	oldPiece : oldPiece,
+    	event :  {
+    		type : "selectchange"
+    	}
+    });
 	},
 	
 	deselectPieces : function() {
@@ -110,7 +131,30 @@ Puzzle.prototype = {
 			this._selectedPiece.resetPiece(true);
 			var oldPiece = this._selectedPiece;
 			this._selectedPiece = null;
-			this.selectedPieceChanged.notify({ oldPiece : oldPiece });
+			this.selectedPieceChanged.notify({ 
+				oldPiece : oldPiece,
+				event :  {
+					type : "selectchange"
+				}
+			});
 		}
+	},
+	
+	toString : function() {
+		var puzzleString = "<ul>";
+			
+		if(this._selectedPiece !== null) {
+			puzzleString += "<li class='selected-piece'>" + 
+					this._selectedPiece.toString() + 
+				"</li></ul>";
+		}
+		/*
+		puzzleString += "<li class='piece-containers'><h2>All Piece Containers</h2> "
+		for(var i = 0; i < this._pieceContainers.length; i++) {
+			puzzleString += this._pieceContainers[i].toString();
+		}
+		puzzleString += "</li></ul>";
+		*/
+		return puzzleString;
 	}
 };

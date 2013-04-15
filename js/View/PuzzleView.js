@@ -19,9 +19,9 @@ function PuzzleView(model) {
   	var ob = stage.getObjectUnderPoint(stage.mouseX, stage.mouseY);
   	// if no objects were clicked
   	if(ob == null) {
-  		_this.clickedOnNothing.notify();
+  		_this.clickedOnNothing.notify({ event: e });
   	} else {
-  		_this.clickedOnPiece.notify(ob);	
+  		_this.clickedOnPiece.notify({event : e, piece : ob });	
   	}
   });
 }
