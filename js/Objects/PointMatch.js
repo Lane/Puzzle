@@ -24,8 +24,10 @@ var pm = PointMatch.prototype;
 
 pm.isMatched = function() {
 	// get the net difference between the points
-	xDiff = Math.abs(this._point1.getStageOffset().x - this._point2.getStageOffset().x);
-	yDiff = Math.abs(this._point1.getStageOffset().y - this._point2.getStageOffset().y);
+	var p1Offset = this._point1.getStageOffset();
+	var p2Offset = this._point2.getStageOffset();
+	xDiff = Math.abs(p1Offset.x - p2Offset.x);
+	yDiff = Math.abs(p1Offset.y - p2Offset.y);
 	
 	rotationDiff = Math.abs((this._point1.getTotalRotation()%360) - (this._point2.getTotalRotation()%360));
 	
@@ -41,6 +43,27 @@ pm.isMatched = function() {
 	if(((xDiff+yDiff) < 100) && rotationDiff < 25) {
 		return true;
 	}
+	
+	return false;
+}
+
+pm.getPointForPiece = function(piece) {
+	if(this._point1.piece == piece) 
+		return this._point1;
+		
+	if(this._point2.piece == piece) 
+		return this._point2;
+	
+	return false;
+}
+
+pm.getPointForOtherPiece = function(piece) {
+	if(this._point1.piece == piece) 
+		return this._point2;
+	
+	if(this._point2.piece == piece) 
+		return this._point1;
+	
 	return false;
 }
 

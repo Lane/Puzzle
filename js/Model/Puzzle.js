@@ -146,8 +146,12 @@ Puzzle.prototype = {
 		if(this._selectedPiece !== null) {
 			puzzleString += "<li class='selected-piece'>" + 
 					this._selectedPiece.toString() + 
-				"</li></ul>";
+				"</li>";
+		} else {
+			puzzleString += "<li class='no-pieces'>No pieces have been selected.</li>";
 		}
+		
+		puzzleString += "</ul>";
 		/*
 		puzzleString += "<li class='piece-containers'><h2>All Piece Containers</h2> "
 		for(var i = 0; i < this._pieceContainers.length; i++) {

@@ -54,17 +54,19 @@ function PuzzleController(model, view) {
     });
     
 		this._model.pieceAdded.attach(function (sender,args) {
-			for(var i = 0; i < args.piece._pointMatches.length; i++) {
-				args.piece._pointMatches[i]._point1.updatePoint();
-				args.piece._pointMatches[i]._point2.updatePoint();
+			if(debug) {
+				for(var i = 0; i < args.piece._pointMatches.length; i++) {
+					args.piece._pointMatches[i]._point1.updatePoint();
+					args.piece._pointMatches[i]._point2.updatePoint();
+				}
 			}
-		    _this._view.buildPuzzle();
-		    //_this._view._stage.addChild(args.pieceContainer);
-		    _this._view._stage._needsUpdate = true;
-		    if(debug) {
-		      console.log("Added piece to container:");
-		      console.log(args);
-		    }
+	    _this._view.buildPuzzle();
+	    //_this._view._stage.addChild(args.pieceContainer);
+	    _this._view._stage._needsUpdate = true;
+	    if(debug) {
+	      console.log("Added piece to container:");
+	      console.log(args);
+	    }
 		});
 		
 		this._model.pieceRemoved.attach(function (sender,args) {

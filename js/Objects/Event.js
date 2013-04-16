@@ -31,5 +31,6 @@ Event.prototype = {
         	eventListEl = document.getElementById("eventList");
         	eventListEl.insertBefore(eventItem, eventListEl.childNodes[0]);
         }
+        
     }
 };

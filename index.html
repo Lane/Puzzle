@@ -31,6 +31,7 @@
         		color: #fff;
         		font-family: Monaco, monospace;
         		width: 300px;
+        		border-left: 2px solid #000;
         	}
         	
         	#debugger h2 {
@@ -99,7 +100,7 @@
         	}
         	
         	#debugger #puzzleDebug {
-        		height: 65%;
+        		max-height: 60%;
         		overflow: auto;
         		padding: 0;
         		margin: 0;
@@ -114,6 +115,7 @@
         		max-height: 30%;
         		overflow: auto;
         		font-size: 14px;
+        		border-bottom: 1px solid #000;
         	}
         	
         	#debugger #eventList li,
@@ -127,6 +129,10 @@
         	#debugger #eventList li:nth-child(odd),
         	#debugger ul.properties li:nth-child(odd) {
         		background-color: rgba(0,0,0,0.1);
+        	}
+        	
+        	#debugger .no-pieces {
+        		padding: 10px;
         	}
         	
         </style>
