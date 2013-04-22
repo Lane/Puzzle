@@ -89,4 +89,6 @@ bd.extendBoundary = function(b) {
 	if(b.left < this.left)
 		this.left = b.left;
 		
+	return this;
+		
 }
