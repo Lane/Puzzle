@@ -70,6 +70,23 @@ bd.getDimensions = function() {
 // --------------
 
 /*
+ * Checks to see if this boundary is equal to another boundary
+ *
+ * @this {Boundary}
+ * @param {Boundary} bd The boundary to compare to
+ */
+bd.isEqual = function(bd) {
+	if((this.top == bd.top) 
+		&& (this.left == bd.left)
+		&& (this.width == bd.width)
+		&& (this.height == bd.height)
+		) {
+		return true;
+	}
+	return false;
+}
+
+/*
  * Extends this boundary to encompass the `box` passed to it
  *
  * @this {Boundary}
@@ -88,6 +105,10 @@ bd.extendBoundary = function(b) {
 		
 	if(b.left < this.left)
 		this.left = b.left;
+		
+	this.width = this.right-this.left;
+	this.height = this.bottom-this.top;
+	this.center = { x: this.left+this.width/2, y: this.top+this.height/2 };
 		
 	return this;
 		

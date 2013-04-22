@@ -53,6 +53,11 @@ function Point(piece, x, y, origin) {
 	 */
 	this.radius = 0;
 	
+	/**
+	 * The matching point that this point connects to
+	 *
+	 * @type Point
+	 */
 	this.match = null;
 	
 	this.initialize();
@@ -80,6 +85,54 @@ pt.initialize = function() {
 	this.piece.addPoint(this);
 }
 
+// SETTERS
+// --------------
+
+/**
+ * Sets the point that this point connects to 
+ *
+ * @this {Point}
+ */
+pt.setMatch = function(pt) {
+	this.match = pt;
+	pt.match = this;
+	return this;
+}
+
+/**
+ * Sets the angle made by the point, origin, and x axis 
+ *
+ * @this {Point}
+ */
+pt.setAngle = function() {
+	this.angle = this._calculateAngle();
+	return this;
+}
+
+/**
+ * Sets the radius (length the line segment made by origin and point)
+ *
+ * @this {Point}
+ */
+pt.setRadius = function() {
+	this.radius = this._calculateRadius();
+	return this;
+}
+
+/**
+ * Sets the origin coordinates of this point (for rotation)
+ *
+ * @this {Point}
+ * @param {Coordinate} o The coordinates of the origin
+ */
+pt.setOrigin = function(o) {
+	this.origin = o;
+	return this;
+}
+
+// GETTERS
+// --------------
+
 /**
  * Gets the rotation of the PieceContainer the piece belongs to.
  *
@@ -98,27 +151,78 @@ pt.getTotalRotation = function() {
  */
 pt.getStageOffset = function() {
 	var translated = this._calculateRotatedCoordinates(this.getTotalRotation());
-	var offset = { 
+	return { 
 		x: (translated.x+this.piece.x+this.piece.parent.x),
 		y: (translated.y+this.piece.y+this.piece.parent.y)
-	}
-	return offset;
+	};
 }
 
-pt.setMatch = function(pt) {
-	this.match = pt;
-	pt.match = this;
+/**
+ * Gets the point coordinates relative to the parent.
+ *
+ * @this {Point}
+ * @return {Object} An object containing the x and y coordinates
+ */
+pt.getParentOffset = function() {
+
 }
 
+/**
+ * Gets the point that this point connects to
+ *
+ * @this {Point}
+ * @return {Point} The matching point
+ */
 pt.getMatch = function() {
 	return this.match;
 }
 
+/**
+ * Gets the offset from the origin
+ *
+ * @this {Point}
+ * @return {Coordinate} Contains the x and y offset from the origin
+ */
 pt.getOffsetFromOrigin = function() {
 	return {
 		x: this.x+this.origin.x, 
 		y: this.y+this.origin.y
 	};
+}
+
+/**
+ * Gets the radius
+ *
+ * @this {Point}
+ * @return {int} The distance of the segment between the origin and point
+ */
+pt.getRadius = function() {
+	return this.radius;
+}
+
+// FUNCTIONS
+// --------------
+
+/** 
+ * Update the circle that represents the point
+ *
+ * @this {Point}
+ */
+pt.updatePoint = function() {
+	this.updateProperties();
+	if(typeof(this.circle) !== "undefined") {
+		this.circle.x = this.x+this.piece.x;
+		this.circle.y = this.y+this.piece.y;
+	} 
+}
+
+/** 
+ * Update the angle and radius of the point 
+ *
+ * @this {Point}
+ */
+pt.updateProperties = function() {
+	this.setAngle().setRadius();
 }
 
 pt.isMatched = function() {
@@ -135,31 +239,6 @@ pt.isMatched = function() {
 		return false;
 		
 	return true;
-}
-
-/**
- * Gets the length of the line segment from the origin to the point
- *
- * @this {Point}
- * @return {int} The length of the line segment from the origin to the point
- */
-pt._calculateRadius = function() {
-	var xy = this.getOffsetFromOrigin();
-	return Math.round(Math.sqrt((xy.x*xy.x)+(xy.y*xy.y)));
-}
-
-pt.getRadius = function() {
-	return this.radius;
-}
-
-/** Update the X and Y coordinates of the circle that represents the point. */
-pt.updatePoint = function() {
-	this.angle = this._calculateAngle();
-	this.radius = this._calculateRadius();
-	if(typeof(this.circle) !== "undefined") {
-		this.circle.x =this.x+this.piece.x;
-		this.circle.y = this.y+this.piece.y;
-	} 
 }
 
 /**
@@ -209,14 +288,17 @@ pt._calculateAngle = function() {
 	return (90+calculatedAngle)+startAngle;
 }
 
-pt.setOrigin = function(o) {
-	this.origin = o;
+/**
+ * Gets the length of the line segment from the origin to the point
+ *
+ * @this {Point}
+ * @return {int} The length of the line segment from the origin to the point
+ */
+pt._calculateRadius = function() {
+	var xy = this.getOffsetFromOrigin();
+	return Math.round(Math.sqrt((xy.x*xy.x)+(xy.y*xy.y)));
 }
 
-pt.updateProperties = function() {
-	this.angle = this._calculateAngle();
-	this.radius = this._calculateRadius();
-}
 
 /**
  * Get a string representation of the point
