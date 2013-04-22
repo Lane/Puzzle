@@ -12,7 +12,7 @@ var DEG2RAD = 1/RAD2DEG;
  * @param {int} x The horizontal offset from the centre of the piece
  * @param {int} y The vertical offset from the centre of the piece
  */
-function Point(piece, x, y) {
+function Point(piece, x, y, origin) {
 	
 	/**
 	 * Horizontal offset from the centre of the piece
@@ -31,6 +31,13 @@ function Point(piece, x, y) {
 	 * @type Piece
 	 */
 	this.piece = piece;
+	
+	/**
+	 * The origin of the point
+	 * @type object
+	 */
+	 this.origin = origin || { x:0, y:0 };
+	 
 	
 	/**
 	 * The angle, in degrees, that is formed by the x axis and a line segment from the origin to the point.
@@ -69,7 +76,7 @@ var pt = Point.prototype;
  */
 pt.initialize = function() {
 	this.angle = this._calculateAngle();
-	this.radius = this.getRadius();
+	this.radius = this._calculateRadius();
 	this.piece.addPoint(this);
 }
 
@@ -100,15 +107,23 @@ pt.getStageOffset = function() {
 
 pt.setMatch = function(pt) {
 	this.match = pt;
+	pt.match = this;
 }
 
 pt.getMatch = function() {
 	return this.match;
 }
 
+pt.getOffsetFromOrigin = function() {
+	return {
+		x: this.x+this.origin.x, 
+		y: this.y+this.origin.y
+	};
+}
+
 pt.isMatched = function() {
 	// check the rotation
-	var rotDiff = Math.abs(this.getTotalRotation()-this.match.getTotalRotation());
+	var rotDiff = Math.abs((this.getTotalRotation()%360)-(this.match.getTotalRotation()%360));
 	if(rotDiff > 20)
 		return false;
 	
@@ -128,15 +143,22 @@ pt.isMatched = function() {
  * @this {Point}
  * @return {int} The length of the line segment from the origin to the point
  */
+pt._calculateRadius = function() {
+	var xy = this.getOffsetFromOrigin();
+	return Math.round(Math.sqrt((xy.x*xy.x)+(xy.y*xy.y)));
+}
+
 pt.getRadius = function() {
-	return Math.round(Math.sqrt((this.x*this.x)+(this.y*this.y)));
+	return this.radius;
 }
 
 /** Update the X and Y coordinates of the circle that represents the point. */
 pt.updatePoint = function() {
+	this.angle = this._calculateAngle();
+	this.radius = this._calculateRadius();
 	if(typeof(this.circle) !== "undefined") {
-		this.circle.x =this.x+piece.x;
-		this.circle.y = this.y+piece.y;
+		this.circle.x =this.x+this.piece.x;
+		this.circle.y = this.y+this.piece.y;
 	} 
 }
 
@@ -165,7 +187,7 @@ pt._calculateRotatedCoordinates = function(rotateAmount) {
  */
 pt._calculateAngle = function() {
 	var startAngle = 0;
-	var realY = this.y*-1;
+	var realY = -this.y;
 	var calculatedAngle = Math.round(Math.atan(realY/this.x)*RAD2DEG);
 	
 	// top right quadrant
@@ -178,13 +200,22 @@ pt._calculateAngle = function() {
 
 	// bottom left quadrant
 	if(this.x < 0 && this.y > 0)
-		startAngle = 180;
+		return (180+calculatedAngle);
 		
 	// bottom right quadrant
 	if(this.x > 0 && this.y > 0)
 		startAngle = 270;
 	
 	return (90+calculatedAngle)+startAngle;
+}
+
+pt.setOrigin = function(o) {
+	this.origin = o;
+}
+
+pt.updateProperties = function() {
+	this.angle = this._calculateAngle();
+	this.radius = this._calculateRadius();
 }
 
 /**
@@ -195,9 +226,8 @@ pt._calculateAngle = function() {
  * @return {string} Human-readable representation of this Point.
  */
 pt.toString = function() {
-	var stageOffset = this.getStageOffset();
-	var pointAngle = this._calculateAngle();
-	var pointString = "Point: " + this.x + "," + this.y + "," + pointAngle + "&deg; (" + stageOffset.x + "," + stageOffset.y + ")";
+	var stageOffset = [this.getStageOffset(), this.match.getStageOffset()];
+	var pointString = "Point: " + stageOffset[0].x + "," + stageOffset[0].y + " (" + Math.abs(stageOffset[0].x-stageOffset[1].x) + "," + Math.abs(stageOffset[0].y-stageOffset[1].y) + ")";
 		
 	return pointString;
 }

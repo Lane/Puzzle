@@ -20,9 +20,28 @@ function Puzzle(canvas, pieceContainers) {
 	this._selectedPiece = null;
 	
 	
+	/*
+	 * Fired right after a new PieceContainer is pushed on _pieceContainers
+	 * @type Event
+	 */
 	this.pieceContainerAdded = new Event(this);
+	
+	/*
+	 * Fired right after a PieceContainer is removed from _pieceContainers
+	 * @type Event
+	 */
 	this.pieceContainerRemoved = new Event(this);
+	
+	/*
+	 * Fired when this._selectedPiece changes
+	 * @type Event
+	 */
 	this.selectedPieceChanged = new Event(this);
+	
+	/*
+	 * Fired when two PieceContainers have been merged at a Point
+	 * @type Event
+	 */
 	this.pointsConnected = new Event(this);
 	
 	// PieceContainer events
@@ -103,27 +122,74 @@ Puzzle.prototype = {
 		
 	},
 	
+	connectPointWithMatch : function(pt) {
+	
+		var staticPoint = pt.getMatch();
+		var movedPoint = pt;
+		
+		// merge the piece containers
+		this.mergePieceContainers(staticPoint.piece.parent, movedPoint.piece.parent, pt);
+		
+		// remove the matched points from the pieces
+		movedPoint.piece.removePoint(movedPoint);
+		staticPoint.piece.removePoint(staticPoint);
+		pt = null;
+			
+		this.pointsConnected.notify({ 
+			pieceContainer: movedPoint.piece.parent, 
+			event :  {
+				type : "pointsconnected"
+			}
+		});
+		
+	},
+	
+	mergePieceContainers : function(from, to, connectPoint) {
+		var fromPieces = from.getPieces();
+		var pc = null;
+		var offsets = [connectPoint.getStageOffset(), connectPoint.getMatch().getStageOffset()];
+		var difference = { 
+			x: (connectPoint.x+connectPoint.piece.x)-(connectPoint.getMatch().x+connectPoint.getMatch().piece.x),
+			y: (connectPoint.y+connectPoint.piece.y)-(connectPoint.getMatch().y+connectPoint.getMatch().piece.y)
+		};
+		
+		// need to check if this piece is belongs to the connectPoint
+		while((pc=fromPieces.pop()) != null) {	
+			pc.set({
+				x: difference.x+pc.x, 
+				y: difference.y+pc.y
+			});
+			
+			to.addPiece(pc);
+			
+		}
+		this.removePieceContainer(from);
+	},
+	
 	getSelectedPiece : function () {
-	    return this._selectedPiece;
+		return this._selectedPiece;
 	},
 	
 	setSelectedPiece : function (pc) {
 		var oldPiece = this._selectedPiece;
+		
 		if(oldPiece !== null)
 			oldPiece.resetPiece(true);
-		if(debug) {
-			console.log("selecting piece:");
-			console.log(pc);
-		}
 		
     this._selectedPiece = pc;
     this._selectedPiece.selectPiece();
     this.selectedPieceChanged.notify({ 
     	oldPiece : oldPiece,
+    	newPiece : this._selectedPiece,
     	event :  {
     		type : "selectchange"
     	}
     });
+    
+    if(debug) {
+    	console.log("selecting piece:");
+    	console.log(pc);
+    }
 	},
 	
 	deselectPieces : function() {

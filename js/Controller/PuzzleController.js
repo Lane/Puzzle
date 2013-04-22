@@ -5,10 +5,8 @@ function PuzzleController(model, view) {
     var _this = this;
 
     this._view.clickedOnPiece.attach(function (sender, args) {
-    	console.log("What is happening here?");
-    	console.log(args.piece);
+
     	var clickedOn = args.piece;
-    	console.log(clickedOn);
     	if(args.piece.type == "piece")
     	{
     		clickedOn = args.piece.parent;
@@ -34,7 +32,6 @@ function PuzzleController(model, view) {
     // handle model events listeners
     this._model.pieceContainerAdded.attach(function (sender,args) {
         _this._view.buildPuzzle();
-        //_this._view._stage.addChild(args.pieceContainer);
         _this._view._stage._needsUpdate = true;
         if(debug) {
           console.log("Added piece container to stage:");
@@ -55,9 +52,9 @@ function PuzzleController(model, view) {
     
 		this._model.pieceAdded.attach(function (sender,args) {
 			if(debug) {
-				for(var i = 0; i < args.piece._pointMatches.length; i++) {
-					args.piece._pointMatches[i]._point1.updatePoint();
-					args.piece._pointMatches[i]._point2.updatePoint();
+				for(var i = 0; i < args.piece._points.length; i++) {
+					args.piece._points[i].updatePoint();
+					args.piece._points[i].match.updatePoint();
 				}
 			}
 	    _this._view.buildPuzzle();
@@ -79,17 +76,21 @@ function PuzzleController(model, view) {
 		    }
 		});
     
-    this._model.selectedPieceChanged.attach(function () {
-    	_this._view._stage._needsUpdate = true;
+    this._model.selectedPieceChanged.attach(function (sender,args) {
+    	if(args.oldPiece !== null)
+    		_this._view.updatePieceContainer(args.oldPiece);
+    	if(typeof(args.newPiece) !== "undefined") {
+    		_this._view.updatePieceContainer(args.newPiece);
+    	}
     	if(debug) {
     		console.log("selected piece changed");
     	}
     });
     
     this._model.pointsConnected.attach(function (sender, args) {
-    	args.pieceContainer.cache(-600, -400, 1200, 800);
-    	args.pieceContainer.updateCache();
-    	_this._view._stage._needsUpdate = true;
+
+    	_this._view.updatePieceContainer(args.pieceContainer);
+
     	if(debug) {
     		console.log("points connected");
     	}
@@ -98,15 +99,16 @@ function PuzzleController(model, view) {
     // handle PieceContainer events
     this._model.mouseOverPiece.attach(function(sender,args) {
     	args.pieceContainer.hoverPiece();
+    	_this._view.updatePieceContainer(args.pieceContainer);
     });
     
     this._model.mouseOutPiece.attach(function(sender,args) {
     	args.pieceContainer.resetPiece();
+    	_this._view.updatePieceContainer(args.pieceContainer);
     });
     
     this._model.releasePiece.attach(function(sender,args) {
     	args.pieceContainer.matchPieces();
-    	
     	if(debug) {
     		console.log("piece released:");
     		console.log(args);

@@ -31,8 +31,14 @@ PuzzleView.prototype = {
     if(this._stage._needsUpdate) {
     	this._stage._needsUpdate = false;
     	this._stage.update(event);
-    	//console.log("update triggered");
     }
+  },
+  
+  updatePieceContainer : function(pc) {
+  	var b = pc.getBoundingBox();
+  	pc.cache(b.left, b.top, b.width, b.height);
+  	pc.updateCache();
+  	this._stage._needsUpdate = true;
   },
 
   buildPuzzle : function () {

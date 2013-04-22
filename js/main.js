@@ -1,9 +1,9 @@
-	var canvas, stage, puzzle;
+	var canvas, stage, puzzle, puzzleView;
 
 	var mouseTarget;	// the display object currently under the mouse, or being dragged
 	var dragStarted;	// indicates whether we are currently in a drag operation
 	var offset;
-	var debug = true;
+	var debug = false;
 
 	function init() {
 		if (window.top != window) {
@@ -42,7 +42,7 @@
 		 
 		// create the puzzle
 		puzzle = new Puzzle(canvas);
-		var puzzleView = new PuzzleView(puzzle);
+		puzzleView = new PuzzleView(puzzle);
 		var puzzleController = new PuzzleController(puzzle, puzzleView);
 		
 		puzzle.addPieceContainer(pieceContainer1);
@@ -65,12 +65,10 @@
 		var point6 = new Point(pieceContainer4._pieces[0], 200,85); // front leg connect
 		
 		// Match Points
-		var pointMatches = [ 
-			new PointMatch(point1, point5),
-			new PointMatch(point2, point6),
-			new PointMatch(point3, point4)
-		];
-		
+		point1.setMatch(point5);
+		point2.setMatch(point6);
+		point3.setMatch(point4);
+
 		puzzleView.buildPuzzle();
 		
 		createjs.Ticker.setFPS(30);

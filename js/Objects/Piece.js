@@ -18,12 +18,6 @@ function Piece(imageSrc, overrides) {
 	this._points = options.points || new Array();
 	
 	/**
-	 * PointMatches belonging to this piece
-	 * @type PointMatch[]
-	 */
-	this._pointMatches = options.pointMatches || new Array();
-	
-	/**
 	 * Amount to scale the piece
 	 * @type {number}
 	 */
@@ -46,6 +40,12 @@ function Piece(imageSrc, overrides) {
 	 * @type {string}
 	 */
 	this.type = "piece";
+	
+	/**
+	 * The boundary for this piece
+	 * @type {Boundary}
+	 */
+	this.boundary = options.boundary || null;
 	
 	var tmpImg = new Image();
 	tmpImg.src = imageSrc;
@@ -70,6 +70,8 @@ p.initialize = function(image) {
 	  _this.regX = _this.image.width/2|0;
 	  _this.regY = _this.image.height/2|0;
 	  _this.name = _this.image.src.split('/')[_this.image.src.split('/').length-1];
+	  _this.setBoundary();
+	  _this.parent.setBoundingBox();
 	  _this.parent.parent._needsUpdate = true;
   }
   
@@ -79,50 +81,22 @@ p.initialize = function(image) {
 	}
 }
 
-/**
- * Removes a PointMatch from the Piece.
- *
- * @this {Piece}
- * @return {boolean} true on success, false on fail
- */
-p.removePointMatch = function(pm) {
-	if(typeof(pm) == "object") {
-		this.removePoint(pm._point1);
-		this.removePoint(pm._point2);
-		for(var i = 0; i < this._pointMatches.length; i++)
-		{
-			if((this._pointMatches[i]._point1 == pm._point1) 
-						&& (this._pointMatches[i]._point2 == pm._point2)) {
-				this._pointMatches.remove(i);
-				
-				if(debug) {
-					console.log("point match removed");
-				}
-				
-				return true;
-			}
-		}
-	}
-	return false;
+// SETTERS
+// --------------
+
+p.setBoundary = function() {
+	var left = -(this.image.width*this.scaleX/2);
+	var top = -(this.image.height*this.scaleY/2);
+	var width = this.image.width*this.scaleX;
+	var height = this.image.height*this.scaleY;
+	this.boundary = new Boundary(left, top, width, height);
 }
 
-/**
- * Adds a PointMatch from the Piece.
- *
- * @this {Piece}
- */
-p.addPointMatch = function(pm) {
-	if(typeof(pm) == "object") {
-		if(!this.hasPointMatch(pm))
-		{
-			var thisPoint = pm.getPointForPiece(this);
-			var thatPoint = pm.getPointForOtherPiece(this);
-			
-			this._pointMatches.push(pm);
-			
-			thatPoint.piece.addPointMatch(pm);
-		}
-	}
+// GETTERS
+// --------------
+
+p.getBoundary = function() {
+	return this.boundary;
 }
 
 /**
@@ -133,14 +107,6 @@ p.addPointMatch = function(pm) {
 p.addPoint = function(pt) {
 	if(!this.hasPoint(pt))
 		this._points.push(pt);
-}
-
-p.hasPointMatch = function(pm) {
-	for(var i = 0; i < this._pointMatches.length; i++) {
-		if(this._pointMatches[i] == pm)
-			return true;
-	}
-	return false;
 }
 
 p.hasPoint = function(pt) {
@@ -163,12 +129,11 @@ p.removePoint = function(pt) {
 	return false;
 }
 
-
 p.getMatches = function() {
 	var matches = new Array();
-	for(var i = 0; i < this._pointMatches.length; i++) {
-		if(this._pointMatches[i].isMatched()) {
-			matches.push(this._pointMatches[i]);
+	for(var i = 0; i < this._points.length; i++) {
+		if(this._points[i].isMatched()) {
+			matches.push(this._points[i]);
 		}
 	}
 	return matches;

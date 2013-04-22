@@ -6,6 +6,15 @@ function PieceContainer(overrides) {
 	this._selected = false;
 	this._rotateHandle = new RotateHandle();
 	this._puzzle = null;
+	this.boundary = {
+		top: 9999,
+		right: -9999,
+		bottom: -9999,
+		left: 9999,
+		width: 0,
+		height: 0,
+		center: 0
+	}
 	
 	this.initialize(options);
 	
@@ -27,22 +36,24 @@ function PieceContainer(overrides) {
 		var ob = pc.parent.getObjectUnderPoint(event.stageX, event.stageY);
 		
 		// if the user pressed down on a piece
-		if(ob.type == "piece") {
-			event.addEventListener("mousemove", function(evt) {
-				evt.offset = offset;
-				_this._puzzle.dragPiece.notify({ event: evt, pieceContainer: _this});
-			});
-		}
-		
-		// if the user pressed down on the rotate handle
-		if(ob.type == "rotate-handle") {
-			var start = ob.parent.rotation;
-			offset = {x:event.stageX, y:event.stageY};
-			event.addEventListener("mousemove", function(evt) {
-				evt.offset = offset;
-				evt.start = start;
-				_this._puzzle.dragRotateHandle.notify({ event: evt, pieceContainer: _this});
-			});
+		if(ob.type !== null) {
+			if(ob.type == "piece") {
+				event.addEventListener("mousemove", function(evt) {
+					evt.offset = offset;
+					_this._puzzle.dragPiece.notify({ event: evt, pieceContainer: _this});
+				});
+			}
+			
+			// if the user pressed down on the rotate handle
+			if(ob.type == "rotate-handle") {
+				var start = ob.parent.rotation;
+				offset = {x:event.stageX, y:event.stageY};
+				event.addEventListener("mousemove", function(evt) {
+					evt.offset = offset;
+					evt.start = start;
+					_this._puzzle.dragRotateHandle.notify({ event: evt, pieceContainer: _this});
+				});
+			}
 		}
 		
 		// check if any pieces match once the user lets go
@@ -54,8 +65,12 @@ function PieceContainer(overrides) {
 }
 
 var pc = PieceContainer.prototype = new createjs.Container();
+
 pc.Container_initialize = pc.initialize;
-	
+
+// INITIALIZER
+// --------------------
+
 pc.initialize = function(options) {
 	this.Container_initialize();
 	
@@ -64,29 +79,98 @@ pc.initialize = function(options) {
 	this.cursor = options.cursor || "pointer";
 	this.x = options.x || 250;
 	this.y = options.x || 250;
-	this.selected = false;
+	this._selected = false;
 	this.type = "piece-container";
-	this.addChild(this._rotateHandle);
-	//this.setCentre();
-	
+	this.addChild(this._rotateHandle);	
 }
 
-pc.setCentre = function() {
-	var topLeft = 0;
-	var bottomRight = 0;
-	var pc;
-	pc = this._pieces[0];
-	this.regX = pc.image.width / 2 | 0;
-	this.regY = pc.image.height / 2 | 0;
+// SETTERS
+// --------------------
+
+pc.setBoundary = function() {
+	for(var i = 0; i < this._pieces.length; i++) {
+		var p = this._pieces[i];
+		
+		/* Move to Piece.getBoundingBox */
+		var pWidth = Math.round(p.image.width*p.scaleX);
+		var pHeight = Math.round(p.image.height*p.scaleY);
+	}
 }
+
+pc.setBoundingBox = function() {
+	// our box: left, right, top, bottom
+	var box = {
+		top: 9999,
+		right: -9999,
+		bottom: -9999,
+		left: 9999,
+		width: 9999,
+		height: 9999
+	};
+	
+	for(var i = 0; i < this._pieces.length; i++) {
+		var p = this._pieces[i];
+		
+		/* Move to Piece.getBoundingBox */
+		var pWidth = Math.round(p.image.width*p.scaleX);
+		var pHeight = Math.round(p.image.height*p.scaleY);
+		
+		var pieceBox = {
+			top: p.y-pHeight,
+			right: p.x+(pWidth/2),
+			bottom: p.y+pHeight,
+			left: p.x-(pWidth/2),
+			width: pWidth,
+			height: pHeight
+		}
+		/* End Move */
+		
+		if(pieceBox.top < box.top)
+			box.top = pieceBox.top;
+		
+		if(pieceBox.right > box.right)
+			box.right = pieceBox.right;
+			
+		if(pieceBox.bottom > box.bottom)
+			box.bottom = pieceBox.bottom;
+			
+		if(pieceBox.left < box.left)
+			box.left = pieceBox.left;
+		
+	}
+	box.width = box.right-box.left;
+	box.height = box.bottom-box.top;
+	box.center = {
+		x: Math.round(box.left+box.width/2),
+		y: Math.round(box.top+box.height/2)
+	};
+	
+	this.boundary = box;
+}
+
+
+// GETTERS
+// --------------------
 
 pc.getPieces = function () {
   return this._pieces;
 }
+
+pc.getBoundingBox = function() {
+	return this.boundary;
+}
+
+pc.getCenter = function() {
+
+}
+
+// FUNCTIONS
+// --------------------
 	
 pc.addPiece = function (p) {
   this._pieces.push(p);
   //this.addChild(p);
+  this.setBoundingBox();
   this._puzzle.pieceAdded.notify({ piece : p });
   return this._pieces;
 }
@@ -120,19 +204,12 @@ pc.selectPiece = function() {
 	this._selected = true;
 	this._rotateHandle.visible = true;
 	this.parent.addChild(this);
-	this.filters = [new createjs.ColorFilter(1, 1, 0, 1)];
-	this.cache(-600, -400, 1200, 800);
-	this.updateCache();
-	this.parent._needsUpdate = true;
+	this.filters = [new createjs.ColorFilter(1, 1, 0.6, 1)];
 }
 	
 pc.hoverPiece = function() {
 	if(!this._selected) {
-		this.filters = [new createjs.ColorFilter(0, 1, 0, 1)];
-		this.cache(-600, -400, 1200, 800);
-		this.updateCache();
-		this.parent._needsUpdate = true;
-		//this.pieceContainerSelected.notify({ piece : this });
+		this.filters = [new createjs.ColorFilter(0.8, 1, 0.8, 1)];
 	}
 }
 	
@@ -142,15 +219,7 @@ pc.resetPiece = function(force) {
 		this._selected = false;
 		this._rotateHandle.visible = false;
 		this.filters = [];
-		this.cache(-600, -400, 1200, 800);
-		this.updateCache();
-		this.parent._needsUpdate = true;
-		//this.pieceContainerDeselected.notify({ piece : this });
 	}
-}
-
-pc.getBoundingBox = function() {
-	// DO THIS MONDAY
 }
 
 pc.matchPieces = function() {
@@ -159,14 +228,10 @@ pc.matchPieces = function() {
 		for(var j = 0; j < matches.length; j++) {
 		
 			// get the piece we just connected	
-			var otherPoint = matches[j]._point1;
-			var thisPoint = matches[j]._point2;
-			if(otherPoint.piece.parent.id == this.id) {
-				otherPoint = matches[j]._point2;
-				thisPoint = matches[j]._point1;
-			}
+			var otherPoint = matches[j].getMatch();
+			var thisPoint = matches[j];
 			
-			this._puzzle.connectAtPoints(matches[j]);
+			this._puzzle.connectPointWithMatch(matches[j]);
 
 			if(debug) {
 				console.log("matched point");
@@ -186,6 +251,8 @@ pc.toString = function() {
 		+ "<li><span>Position: </span>" + this.x + "," + this.y + "</li>"
 		+ "<li><span>Rotation:</span>" + this.rotation + "</li>"
 		+ "<li><span>Centre: </span>" + this.regX + "," + this.regY + "</li>"
+		+ "<li><span>Dimensions: </span>" + this.boundary.width + "," + this.boundary.height + "</li>"
+		+ "<li><span>Boundaries: </span>" + (this.boundary.left+this.x) + "," + (this.boundary.top+this.y) + " : " + (this.boundary.right+this.x) + "," + (this.boundary.bottom+this.y)
 		+ "<li>";
 	for(var i = 0; i < this._pieces.length; i++) {
 		pcString += this._pieces[i].toString();

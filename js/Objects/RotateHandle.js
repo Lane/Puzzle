@@ -54,6 +54,10 @@ r.initialize = function(options) {
 	}  
 }
 
+r.updatePosition = function() {
+
+}
+
 r.toString = function() {
 	var pieceString = "<h4>Rotate Handle</h4>"
 		+ "<ul class='properties'>" 
