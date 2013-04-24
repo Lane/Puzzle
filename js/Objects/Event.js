@@ -14,7 +14,7 @@ Event.prototype = {
             this._listeners[index](this._sender, args);
         }
         
-        if(debug) {
+        if(debug && (typeof(debug.events) !== "undefined")) {
         	// puzzle to string
         	debugEl = document.getElementById("puzzleDebug");
         	debugEl.innerHTML = puzzle.toString();

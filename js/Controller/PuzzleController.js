@@ -9,71 +9,48 @@ function PuzzleController(model, view) {
     	var clickedOn = args.piece;
     	if(args.piece.type == "piece")
     	{
-    		clickedOn = args.piece.parent;
+    		clickedOn = args.piece.getParentPieceContainer();
     	}
     	if(clickedOn.type == "piece-container") {
     		_this._model.setSelectedPiece(clickedOn);
     	}
     
-    	if(debug) {
-    		console.log("Clicked on an object:");
-    		console.log(args);
-    	}
+    	debug.log(args, "Clicked on an object");
     });
 
 		this._view.clickedOnNothing.attach(function () {
 			_this._model.deselectPieces();
-		
-			if(debug) {
-	    	console.log("clicked on nothing");
-	    }
+	    debug.log("Clicked on nothing");
 		});
     
     // handle model events listeners
     this._model.pieceContainerAdded.attach(function (sender,args) {
-        _this._view.buildPuzzle();
-        _this._view._stage._needsUpdate = true;
-        if(debug) {
-          console.log("Added piece container to stage:");
-          console.log(args.pieceContainer);
-        }
+      _this._view.buildPuzzle();
+
+      debug.log(args.pieceContainer, "Added piece container to stage");
     });
     
     this._model.pieceContainerRemoved.attach(function (sender, args) {
-        //_this._view._stage.removeChild(args.pieceContainer);
-        _this._view.buildPuzzle();
-        _this._view._stage._needsUpdate = true;
-        
-        if(debug) {
-          console.log("Removed piece container from stage:");
-          console.log(args.pieceContainer);
-        }
+      _this._view.buildPuzzle();
+      
+      debug.log(args.pieceContainer, "Removed piece container from stage");
     });
     
 		this._model.pieceAdded.attach(function (sender,args) {
-			if(debug) {
-				for(var i = 0; i < args.piece._points.length; i++) {
-					args.piece._points[i].updatePoint();
-					args.piece._points[i].match.updatePoint();
-				}
+		
+			for(var i = 0; i < args.piece._points.length; i++) {
+				args.piece._points[i].updatePoint().match.updatePoint();
 			}
+				
 	    _this._view.buildPuzzle();
-	    //_this._view._stage.addChild(args.pieceContainer);
-	    _this._view._stage._needsUpdate = true;
-	    if(debug) {
-	      console.log("Added piece to container:");
-	      console.log(args);
-	    }
+
+      debug.log(args, "Added piece to container");
 		});
 		
 		this._model.pieceRemoved.attach(function (sender,args) {
 		    _this._view.buildPuzzle();
-		    //_this._view._stage.addChild(args.pieceContainer);
-		    _this._view._stage._needsUpdate = true;
-		    if(debug) {
-		      console.log("Removed piece from container:");
-		      console.log(args);
-		    }
+		    
+		    debug.log(args, "Removed piece from container");
 		});
     
     this._model.selectedPieceChanged.attach(function (sender,args) {
@@ -82,18 +59,17 @@ function PuzzleController(model, view) {
     	if(typeof(args.newPiece) !== "undefined") {
     		_this._view.updatePieceContainer(args.newPiece);
     	}
-    	if(debug) {
-    		console.log("selected piece changed");
-    	}
+    	
+    	debug.log("Selected piece changed");
+
     });
     
     this._model.pointsConnected.attach(function (sender, args) {
 
     	_this._view.updatePieceContainer(args.pieceContainer);
 
-    	if(debug) {
-    		console.log("points connected");
-    	}
+    	debug.log(args, "Points connected");
+    	
     });
     
     // handle PieceContainer events
@@ -109,10 +85,7 @@ function PuzzleController(model, view) {
     
     this._model.releasePiece.attach(function(sender,args) {
     	args.pieceContainer.matchPieces();
-    	if(debug) {
-    		console.log("piece released:");
-    		console.log(args);
-    	}
+    		debug.log(args, "Piece released");
     });
     
     this._model.dragPiece.attach(function(sender, args) {
@@ -126,25 +99,3 @@ function PuzzleController(model, view) {
     	args.pieceContainer.rotatePiece(args.event);
     });
 }
-
-PuzzleController.prototype = {
-    addItem : function () {
-        var item = window.prompt('Add item:', '');
-        if (item) {
-            this._model.addItem(item);
-        }
-    },
-
-    delItem : function () {
-        var index;
-
-        index = this._model.getSelectedIndex();
-        if (index !== -1) {
-            this._model.removeItemAt(this._model.getSelectedIndex());
-        }
-    },
-
-    updateSelected : function (index) {
-        this._model.setSelectedIndex(index);
-    }
-};

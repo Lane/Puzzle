@@ -48,10 +48,7 @@ r.initialize = function(options) {
   	});
   });
 	
-	if(debug) {
-		console.log('Created rotate handle:');
-		console.log(this);
-	}  
+	debug.log(this, 'Created rotate handle');
 }
 
 r.updatePosition = function() {

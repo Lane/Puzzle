@@ -46,11 +46,14 @@ PuzzleView.prototype = {
 		for(var i = 0; i < this._model._pieceContainers.length; i++) {
 			for(var j = 0; j < this._model._pieceContainers[i]._pieces.length; j++) {
 				this._model._pieceContainers[i].addChild(this._model._pieceContainers[i]._pieces[j]);
-				if(debug) {
+				if(debug && (typeof(debug.points) !== "undefined")) {
 					for(var k = 0; k < this._model._pieceContainers[i]._pieces[j]._points.length; k++) {
-						this._model._pieceContainers[i].addChild(
-							this._model._pieceContainers[i]._pieces[j]._points[k].circle
-						);
+						var pCircle = new createjs.Shape();
+						var p = this._model._pieceContainers[i]._pieces[j]._points[k];
+						pCircle.graphics.beginFill("red").drawCircle(0, 0, 5);
+						pCircle.x = p.x+p.piece.x;
+						pCircle.y = p.y+p.piece.y;
+						p.piece.getParentPieceContainer().addChild(pCircle);
 					}
 				}
 			}

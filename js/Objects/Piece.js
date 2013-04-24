@@ -71,14 +71,17 @@ p.initialize = function(image) {
 	  _this.regY = _this.image.height/2|0;
 	  _this.name = _this.image.src.split('/')[_this.image.src.split('/').length-1];
 	  _this.setBoundary();
-	  _this.parent.setBoundingBox();
-	  _this.parent.parent._needsUpdate = true;
+	  if(_this.parent !== null) {
+		  _this.parent.setBoundingBox();
+		  _this.parent.parent._needsUpdate = true;
+	  }
+	  else {
+	  	debug.warn(_this, "This Piece has no parent, every piece should have a parent PieceContainer");
+	  }
   }
   
-	if(debug) {	
-		console.log('Created Piece:');
-		console.log(this);
-	}
+	debug.log(this, 'Created Piece');
+
 }
 
 // SETTERS
@@ -99,6 +102,15 @@ p.getBoundary = function() {
 	return this.boundary;
 }
 
+p.getParentPieceContainer = function() {
+	if(this.parent !== null && typeof(this.parent) !== "undefined") {
+		return this.parent;
+	} else {
+		debug.warn("Trying to access parent of a Piece, but it has not been set", this);
+		return false;
+	}
+}
+
 /**
  * Adds a Point to the Piece.
  *
@@ -111,7 +123,7 @@ p.addPoint = function(pt) {
 
 p.hasPoint = function(pt) {
 	for(var i = 0; i < this._points.length; i++) {
-		if(this._points[i] == pt)
+		if(this._points[i].isEqual(pt))
 			return true;
 	}
 	return false;
@@ -137,6 +149,13 @@ p.getMatches = function() {
 		}
 	}
 	return matches;
+}
+
+p.isEqual = function(pc2) {
+	if(this.id == pc2.id) {
+		return true;
+	}
+	return false;
 }
 
 p.toString = function() {

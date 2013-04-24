@@ -12,21 +12,21 @@ function Boundary(left, top, width, height) {
 
 	this.top = top;
 	
-	this.right = left+width;
-	
-	this.bottom = top+height;
-	
 	this.left = left;
 	
 	this.width = width;
 	
 	this.height = height;
-
-	this.center = { x: left+width/2, y: top+height/2 };
 	
+	this.initialize();
+
 }
 
 var bd = Boundary.prototype;
+
+bd.initialize = function() {
+	this.set(this.left, this.top, this.width, this.height);
+}
 
 
 // SETTERS

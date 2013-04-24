@@ -3,7 +3,6 @@
 	var mouseTarget;	// the display object currently under the mouse, or being dragged
 	var dragStarted;	// indicates whether we are currently in a drag operation
 	var offset;
-	var debug = false;
 
 	function init() {
 		if (window.top != window) {

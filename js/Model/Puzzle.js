@@ -13,10 +13,16 @@ Array.prototype.remove = function(from, to) {
  ***********************************/
  
 function Puzzle(canvas, pieceContainers) {
+	if(typeof(canvas) == 'undefined') {
+		var canvas = document.getElementById('puzzleCanvas');
+		if(canvas == null) {
+			canvas = document.createElement("canvas");
+			canvas.id = "puzzleCanvas";
+			document.getElementsByTagName('body')[0].appendChild(canvas);
+		}
+	}
 	this._canvas = canvas;
-	this._pieceContainers = pieceContainers;
-	if(this._pieceContainers == null)
-		this._pieceContainers = new Array();
+	this._pieceContainers = pieceContainers || new Array();
 	this._selectedPiece = null;
 	
 	
@@ -101,20 +107,22 @@ Puzzle.prototype = {
 		var movedPoint = pm._point2;
 	
 		// set the new x and y offset of the piece
-		staticPoint.piece.x = movedPoint.x+movedPoint.piece.x-staticPoint.x;
-		staticPoint.piece.y = movedPoint.y+movedPoint.piece.y-staticPoint.y;
+		staticPoint.setPosition({
+			x: movedPoint.x+movedPoint.piece.x-staticPoint.x,
+			y: movedPoint.y+movedPoint.piece.y-staticPoint.y
+		});
 		
 		// remove the piece from its piece container
-		this.removePieceContainer(staticPoint.piece.parent);
+		this.removePieceContainer(staticPoint.piece.getParentPieceContainer());
 		
 		// remove the match points
 		pm.removeFromPieces();
 		
 		// add the piece to this piece container
-		movedPoint.piece.parent.addPiece(staticPoint.piece);
+		movedPoint.piece.getParentPieceContainer().addPiece(staticPoint.getPiece());
 		
 		this.pointsConnected.notify({ 
-			pieceContainer: movedPoint.piece.parent, 
+			pieceContainer: movedPoint.piece.getParentPieceContainer(), 
 			event :  {
 				type : "pointsconnected"
 			}
@@ -128,7 +136,11 @@ Puzzle.prototype = {
 		var movedPoint = pt;
 		
 		// merge the piece containers
-		this.mergePieceContainers(staticPoint.piece.parent, movedPoint.piece.parent, pt);
+		this.mergePieceContainers(
+			staticPoint.piece.getParentPieceContainer(), 
+			movedPoint.piece.getParentPieceContainer(), 
+			pt
+		);
 		
 		// remove the matched points from the pieces
 		movedPoint.piece.removePoint(movedPoint);
@@ -136,7 +148,7 @@ Puzzle.prototype = {
 		pt = null;
 			
 		this.pointsConnected.notify({ 
-			pieceContainer: movedPoint.piece.parent, 
+			pieceContainer: movedPoint.piece.getParentPieceContainer(), 
 			event :  {
 				type : "pointsconnected"
 			}
@@ -185,11 +197,6 @@ Puzzle.prototype = {
     		type : "selectchange"
     	}
     });
-    
-    if(debug) {
-    	console.log("selecting piece:");
-    	console.log(pc);
-    }
 	},
 	
 	deselectPieces : function() {

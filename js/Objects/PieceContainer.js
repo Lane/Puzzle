@@ -233,10 +233,7 @@ pc.matchPieces = function() {
 			
 			this._puzzle.connectPointWithMatch(matches[j]);
 
-			if(debug) {
-				console.log("matched point");
-				console.log(matches[j]);
-			}
+			debug.log(matches[j], "Match has been made");
 		}
 	}
 }
