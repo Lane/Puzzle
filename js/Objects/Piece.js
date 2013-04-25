@@ -7,9 +7,8 @@
  * @param {string} imageSrc The location of the image representing the piece
  * @param {Object} overrides Option overrides
  */
-function Piece(imageSrc, overrides) {
-
-	var options = overrides || {};
+function Piece(options) {
+	
 	
 	/**
 	 * Points belonging to this piece
@@ -47,11 +46,25 @@ function Piece(imageSrc, overrides) {
 	 */
 	this.boundary = options.boundary || null;
 	
-	var tmpImg = new Image();
-	tmpImg.src = imageSrc;
+	var tmpImg;
+	var _this = this;
+
+	if((typeof(options.img) == "undefined") && (typeof(options.imgSrc) !== "undefined")) {
+		//imgsrc is set            
+		tmpImg = new Image();
+		tmpImg.src = options.imgSrc;
+		tmpImg.onload = function (e) { _this.initialize(this); }
+	} else if((typeof(options.img) !== "undefined") && (typeof(options.imgSrc) == "undefined")) {
+		//img object is set
+		tmpImg = options.img;
+		this.initialize(tmpImg);
+	}
+
+	if(typeof(tmpImg) == "undefined") {
+		debug.warn("Made a piece without an image.");
+	}
 	
-	this.initialize(tmpImg);
-	
+	debug.log('Created Piece:', this);
 }
 	
 var p = Piece.prototype = new createjs.Bitmap();
@@ -62,37 +75,35 @@ p.initialize = function(image) {
 
 	// create image bitmap constructor
   this.Bitmap_initialize(image);
+  this.setAttributes();
   
-  var _this = this;
-  
-  // set image related parameters once the image has loaded
-  image.onload = function() {
-	  _this.regX = _this.image.width/2|0;
-	  _this.regY = _this.image.height/2|0;
-	  _this.name = _this.image.src.split('/')[_this.image.src.split('/').length-1];
-	  _this.setBoundary();
-	  if(_this.parent !== null) {
-		  _this.parent.setBoundingBox();
-		  _this.parent.parent._needsUpdate = true;
-	  }
-	  else {
-	  	debug.warn(_this, "This Piece has no parent, every piece should have a parent PieceContainer");
-	  }
-  }
-  
-	debug.log(this, 'Created Piece');
-
 }
 
 // SETTERS
 // --------------
 
+p.setAttributes = function() {
+	console.log(this);
+	this.regX = this.image.width/2|0;
+	this.regY = this.image.height/2|0;
+	this.name = this.image.src.split('/')[this.image.src.split('/').length-1];
+	this.setBoundary();
+	if(this.parent !== null) {
+	  this.parent.setBoundingBox();
+	  this.parent.parent._needsUpdate = true;
+	}
+	else {
+		debug.warn("This Piece has no parent, every piece should have a parent PieceContainer", this);
+	}
+}
+
 p.setBoundary = function() {
-	var left = -(this.image.width*this.scaleX/2);
-	var top = -(this.image.height*this.scaleY/2);
-	var width = this.image.width*this.scaleX;
-	var height = this.image.height*this.scaleY;
+	var left = -Math.round((this.image.width*this.scaleX/2));
+	var top = -Math.round((this.image.height*this.scaleY/2));
+	var width = Math.round(this.image.width*this.scaleX);
+	var height = Math.round(this.image.height*this.scaleY);
 	this.boundary = new Boundary(left, top, width, height);
+	return this;
 }
 
 // GETTERS

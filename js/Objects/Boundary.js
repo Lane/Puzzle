@@ -76,12 +76,17 @@ bd.getDimensions = function() {
  * @param {Boundary} bd The boundary to compare to
  */
 bd.isEqual = function(bd) {
-	if((this.top == bd.top) 
-		&& (this.left == bd.left)
-		&& (this.width == bd.width)
-		&& (this.height == bd.height)
-		) {
-		return true;
+	if((typeof(bd.top) !== "undefined")
+		&& (typeof(bd.left) !== "undefined")
+		&& (typeof(bd.width) !== "undefined")
+		&& (typeof(bd.height) !== "undefined")) {
+
+		if((this.top == bd.top) 
+			&& (this.left == bd.left)
+			&& (this.width == bd.width)
+			&& (this.height == bd.height)) {
+			return true;
+		}
 	}
 	return false;
 }

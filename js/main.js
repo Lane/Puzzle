@@ -16,25 +16,25 @@
 	
 		var pieceContainer1 = new PieceContainer({ 
 			pieces: [
-				new Piece("assets/head.png", {scale: 0.5})
+				new Piece({ imgSrc: "assets/head.png", scale: 0.5})
 			] 
 		});
 		
 		var pieceContainer2 = new PieceContainer({ 
 			pieces: [
-				new Piece("assets/back-legs.png", {scale: 0.5})
+				new Piece({ imgSrc: "assets/back-legs.png", scale: 0.5})
 			]
 		});
 		
 		var pieceContainer3 = new PieceContainer({ 
 			pieces: [
-				new Piece("assets/front-legs.png", {scale: 0.5})
+				new Piece({ imgSrc: "assets/front-legs.png", scale: 0.5})
 			] 
 		});
 		
 		var pieceContainer4 = new PieceContainer({ 
 			pieces: [
-				new Piece("assets/back.png", {scale: 0.5 })
+				new Piece({ imgSrc: "assets/back.png", scale: 0.5 })
 			] 
 		});
 		
