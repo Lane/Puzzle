@@ -65,6 +65,17 @@ Puzzle.prototype = {
 	    return this._pieceContainers;
 	},
 	
+	getPieceByName : function(name) {
+		for(var i = 0; i < this._pieceContainers.length; i++) {
+			for(var j = 0; j < this._pieceContainers[i]._pieces.length; j++) {
+				if(this._pieceContainers[i]._pieces[j].name == name) {
+					return this._pieceContainers[i]._pieces[j];
+				}
+			}
+		}
+		return false;
+	},
+	
 	addPieceContainer : function (pc) {
 	    this._pieceContainers.push(pc);
 	    pc._puzzle = this;
@@ -128,6 +139,7 @@ Puzzle.prototype = {
 			}
 		});
 		
+		return movedPoint.piece.getParentPieceContainer()
 	},
 	
 	connectPointWithMatch : function(pt) {
@@ -154,6 +166,8 @@ Puzzle.prototype = {
 			}
 		});
 		
+		return movedPoint.piece.getParentPieceContainer();
+		
 	},
 	
 	mergePieceContainers : function(from, to, connectPoint) {
@@ -165,15 +179,13 @@ Puzzle.prototype = {
 			y: (connectPoint.y+connectPoint.piece.y)-(connectPoint.getMatch().y+connectPoint.getMatch().piece.y)
 		};
 		
-		// need to check if this piece is belongs to the connectPoint
 		while((pc=fromPieces.pop()) != null) {	
 			pc.set({
 				x: difference.x+pc.x, 
 				y: difference.y+pc.y
 			});
-			
+			pc.setBoundary();
 			to.addPiece(pc);
-			
 		}
 		this.removePieceContainer(from);
 	},

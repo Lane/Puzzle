@@ -40,6 +40,8 @@ function boundary_tests() {
 			}),
 			"Extending a boundary by another boundary has expected output"
 		);
+		console.log(boundaries[4].extendBoundary(boundaries[0]));
+		console.log(boundaries[0].extendBoundary(boundaries[4]));
 		ok(
 			boundaries[4].extendBoundary(boundaries[0]).isEqual(
 				boundaries[0].extendBoundary(boundaries[4])

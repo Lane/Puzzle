@@ -84,6 +84,7 @@ function PuzzleController(model, view) {
     });
     
     this._model.releasePiece.attach(function(sender,args) {
+    	args.pieceContainer.updatePoints();
     	args.pieceContainer.matchPieces();
     		debug.log(args, "Piece released");
     });
@@ -93,9 +94,11 @@ function PuzzleController(model, view) {
     		args.event.stageX+args.event.offset.x, 
     		args.event.stageY+args.event.offset.y
     	);
+    	_this._view.triggerRefresh();
     });
     
     this._model.dragRotateHandle.attach(function(sender, args) {
     	args.pieceContainer.rotatePiece(args.event);
+    	_this._view.triggerRefresh();
     });
 }

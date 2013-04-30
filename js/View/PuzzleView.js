@@ -34,19 +34,33 @@ PuzzleView.prototype = {
     }
   },
   
+  triggerRefresh : function() {
+  	this._stage._needsUpdate = true;
+  },
+  
   updatePieceContainer : function(pc) {
-  	var b = pc.getBoundingBox();
+  	var b = pc.getPieceContainerBoundary();
   	pc.cache(b.left, b.top, b.width, b.height);
   	pc.updateCache();
   	this._stage._needsUpdate = true;
   },
+  
+  removePieceContainers : function() {
+  	for(var i = 0; i < this._stage.children.length; i++) {
+  		var pc = this._stage.children[i];
+  		if(pc.type !== null) {
+  			if(pc.type == "piece-container")
+  				this._stage.removeChildAt(i);
+  		}
+  	}
+  },
 
   buildPuzzle : function () {
-  	this._stage.removeAllChildren();
+  	this.removePieceContainers();
 		for(var i = 0; i < this._model._pieceContainers.length; i++) {
 			for(var j = 0; j < this._model._pieceContainers[i]._pieces.length; j++) {
 				this._model._pieceContainers[i].addChild(this._model._pieceContainers[i]._pieces[j]);
-				if(debug && (typeof(debug.points) !== "undefined")) {
+				if(debug) {
 					for(var k = 0; k < this._model._pieceContainers[i]._pieces[j]._points.length; k++) {
 						var pCircle = new createjs.Shape();
 						var p = this._model._pieceContainers[i]._pieces[j]._points[k];

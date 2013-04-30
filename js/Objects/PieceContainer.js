@@ -1,20 +1,18 @@
-function PieceContainer(overrides) {
-
-	var options = overrides || {};
+/** 
+ * Represents a container that holds Pieces
+ *
+ * @constructor
+ * @augments createjs.Container
+ * @this {PieceContainer}
+ * @param {Object} options Option overrides
+ */
+function PieceContainer(options) {
 	
 	this._pieces = options.pieces || new Array();
 	this._selected = false;
 	this._rotateHandle = new RotateHandle();
 	this._puzzle = null;
-	this.boundary = {
-		top: 9999,
-		right: -9999,
-		bottom: -9999,
-		left: 9999,
-		width: 0,
-		height: 0,
-		center: 0
-	}
+	this.boundary = new Boundary(9999, 9999, (2*-9999), (2*-9999));
 	
 	this.initialize(options);
 	
@@ -81,6 +79,14 @@ pc.initialize = function(options) {
 	this.y = options.x || 250;
 	this._selected = false;
 	this.type = "piece-container";
+	
+	for(var i=0; i < this._pieces.length; i++) {
+		if(typeof(this._pieces[i].parent) == "undefined" || this._pieces[i].parent == null) {
+			this._pieces[i].parent = this;
+		}
+	}
+	
+	this.setBoundary();
 	this.addChild(this._rotateHandle);	
 }
 
@@ -88,64 +94,19 @@ pc.initialize = function(options) {
 // --------------------
 
 pc.setBoundary = function() {
-	for(var i = 0; i < this._pieces.length; i++) {
-		var p = this._pieces[i];
-		
-		/* Move to Piece.getBoundingBox */
-		var pWidth = Math.round(p.image.width*p.scaleX);
-		var pHeight = Math.round(p.image.height*p.scaleY);
-	}
-}
-
-pc.setBoundingBox = function() {
 	// our box: left, right, top, bottom
-	var box = {
-		top: 9999,
-		right: -9999,
-		bottom: -9999,
-		left: 9999,
-		width: 9999,
-		height: 9999
-	};
+	var box = new Boundary(9999, 9999, (2*-9999), (2*-9999));
 	
 	for(var i = 0; i < this._pieces.length; i++) {
-		var p = this._pieces[i];
-		
-		/* Move to Piece.getBoundingBox */
-		var pWidth = Math.round(p.image.width*p.scaleX);
-		var pHeight = Math.round(p.image.height*p.scaleY);
-		
-		var pieceBox = {
-			top: p.y-pHeight,
-			right: p.x+(pWidth/2),
-			bottom: p.y+pHeight,
-			left: p.x-(pWidth/2),
-			width: pWidth,
-			height: pHeight
-		}
-		/* End Move */
-		
-		if(pieceBox.top < box.top)
-			box.top = pieceBox.top;
-		
-		if(pieceBox.right > box.right)
-			box.right = pieceBox.right;
-			
-		if(pieceBox.bottom > box.bottom)
-			box.bottom = pieceBox.bottom;
-			
-		if(pieceBox.left < box.left)
-			box.left = pieceBox.left;
-		
+		box.extendBoundary(this._pieces[i].getPieceBoundary());
 	}
-	box.width = box.right-box.left;
-	box.height = box.bottom-box.top;
-	box.center = {
-		x: Math.round(box.left+box.width/2),
-		y: Math.round(box.top+box.height/2)
-	};
 	
 	this.boundary = box;
+	this.boundary.top += this.y;
+	this.boundary.left += this.x;
+	this.boundary.bottom += this.y;
+	this.boundary.right += this.x;
+	return this;
 }
 
 
@@ -160,6 +121,15 @@ pc.getBoundingBox = function() {
 	return this.boundary;
 }
 
+pc.getPieceContainerBoundary = function() {
+	return new Boundary(
+		this.boundary.left-this.x, 
+		this.boundary.top-this.y,
+		this.boundary.width,
+		this.boundary.height
+	);
+}
+
 pc.getCenter = function() {
 
 }
@@ -169,8 +139,17 @@ pc.getCenter = function() {
 	
 pc.addPiece = function (p) {
   this._pieces.push(p);
-  //this.addChild(p);
-  this.setBoundingBox();
+  p.parent = this;
+  this.setBoundary();
+  var oldReg = { x: this.x, y: this.y };
+  this.regX = this._rotateHandle.x = this.boundary.getCenter().x;
+  this.regY = this._rotateHandle.y = this.boundary.getCenter().y;
+  for(i=0; i<p._points.length; i++)
+  {
+  	p._points[i].setOrigin({x: this.regX, y: this.regY });
+  }
+  this.x += this.regX;
+  this.y += this.regY;
   this._puzzle.pieceAdded.notify({ piece : p });
   return this._pieces;
 }
@@ -178,12 +157,13 @@ pc.addPiece = function (p) {
 pc.movePiece = function(x,y) {
 	this.x = x;
 	this.y = y;
-	this.parent._needsUpdate = true;
+	this.setBoundary();
 }
 
 pc.rotatePiece = function(e) {
 	this.rotation = e.start + ((e.stageX-e.offset.x)+(e.stageY-e.offset.y));
 	this.parent._needsUpdate = true;
+	this.setBoundary();
 }
 	
 pc.removePiece = function (p) {
@@ -196,6 +176,7 @@ pc.removePiece = function (p) {
 			return this._pieces;
 		}
 	}
+	this.setBoundary();
 	return false;
 }
 
@@ -240,6 +221,14 @@ pc.matchPieces = function() {
 	
 pc.isSelected = function() {
 	return this._selected;
+}
+
+pc.updatePoints = function() {
+	for(var i = 0; i < this._pieces.length; i++) {
+		for(var j = 0; j < this._pieces[i]._points.length; j++) {
+			this._pieces[i]._points[j].updatePoint();
+		}
+	}
 }
 
 pc.toString = function() {

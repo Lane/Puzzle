@@ -14,22 +14,15 @@ Event.prototype = {
             this._listeners[index](this._sender, args);
         }
         
-        if(debug && (typeof(debug.events) !== "undefined")) {
+        if(debug && (puzzle.getSelectedPiece() != null)) {
         	// puzzle to string
+  
         	debugEl = document.getElementById("puzzleDebug");
-        	debugEl.innerHTML = puzzle.toString();
+        	debugEl.innerHTML = puzzle.getSelectedPiece().toString();
         	
-        	var eventItem = document.createElement("li");
-        	var eventType = "unknown";
-        	if(typeof(args.event) !== "undefined") {
-        		eventType = args.event.type;
-        	} else {
-        		console.log("UNKNOWN EVENT:");
-        		console.log(args);
-        	}
-        	eventItem.innerHTML = eventType + " event fired";
-        	eventListEl = document.getElementById("eventList");
-        	eventListEl.insertBefore(eventItem, eventListEl.childNodes[0]);
+        	//eventItem.innerHTML = eventType + " event fired";
+        	//eventListEl = document.getElementById("eventList");
+        	//eventListEl.insertBefore(eventItem, eventListEl.childNodes[0]);
         }
         
     }

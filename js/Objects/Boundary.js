@@ -9,13 +9,29 @@
  * @param {int} height the height of the boundary
  */
 function Boundary(left, top, width, height) {
-
+	
+	/**
+	 * The y coordinate for the top of the boundary
+	 * @type {int}
+	 */
 	this.top = top;
 	
+	/**
+	 * The x coordinate for the left of the boundary
+	 * @type {int}
+	 */
 	this.left = left;
 	
+	/**
+	 * The width of the boundary
+	 * @type {int}
+	 */
 	this.width = width;
 	
+	/**
+	 * The height of the boundary
+	 * @type {int}
+	 */
 	this.height = height;
 	
 	this.initialize();
@@ -98,7 +114,6 @@ bd.isEqual = function(bd) {
  * @param {Boundary} box The box to encompass with this boundary
  */
 bd.extendBoundary = function(b) {
-
 	if(b.top < this.top)
 		this.top = b.top;
 	

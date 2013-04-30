@@ -19,20 +19,19 @@
         <script src="js/vendor/easeljs/filters/ColorFilter.js"></script>
         <script src="js/libs/ba-debug.js"></script>
         <style>
-        	#debugger {
-        		position:absolute; 
-        		top:0; 
-        		right:0; 
-        		bottom:0; 
-        		overflow:auto;
-        		padding:0px;
-        		background-color: #000;
-        		background-color: rgba(0,0,0,0.8);
-        		color: #fff;
-        		font-family: Monaco, monospace;
-        		width: 300px;
-        		border-left: 2px solid #000;
-        	}
+#debugger {
+	position:absolute; 
+	top:50px; 
+	right:50px;  
+	overflow:auto;
+	padding:0px;
+	background-color: #000;
+	background-color: rgba(0,0,0,0.8);
+	color: #fff;
+	font-family: Monaco, monospace;
+	width: 400px;
+	border-left: 2px solid #000;
+}
         	
         	#debugger h2 {
         		margin: 0px;
@@ -100,10 +99,11 @@
         	}
         	
         	#debugger #puzzleDebug {
-        		max-height: 60%;
         		overflow: auto;
         		padding: 0;
         		margin: 0;
+        		max-height: 500px;
+        		
         	}
         	
         	#debugger #puzzleDebug ul li ul li ul{
@@ -145,7 +145,7 @@
       	<div id="loader" style="display:none"></div>
       
       	<div class="canvasHolder">
-      		<canvas id="testCanvas" width="1200" height="700"></canvas>
+      		<canvas id="puzzleCanvas" width="1200" height="700"></canvas>
       	</div>
       	
       	<div id="debugger" style="">
@@ -168,11 +168,69 @@
         <script src="js/View/PuzzleView.js"></script>
         <script src="js/Controller/PuzzleController.js"></script>
         
-        <script src="js/main.js"></script>
+        <script src="js/PuzzleLoader.js"></script>
 
         <script>
+       			var puzzle;
         		$(document).ready(function() {
-        			init();
+        			
+        			var TestPuzzle = {
+        				background: { id : "background", src : "assets/layout_grid.gif" },
+        				pieces: [
+        					{ id: "piece1", src: "assets/test/300x100.png" },
+        					{ id: "piece2", src: "assets/test/100x300.png" },
+        					{ id: "piece3", src: "assets/test/200x200.png" },
+        					{ id: "piece4", src: "assets/test/100x100.png" }
+        				],
+        				matches: [
+        					[ 
+        						{ piece: "piece1", x: -150, y: 0 		}, 	
+        						{ piece: "piece2", x: -50, 	y: -150 } 
+        					],
+        					[ 
+        						{ piece: "piece1", x: 150, 	y: 0		}, 	
+        						{ piece: "piece3", x: 0, 		y: -100	} 
+        					],
+        					[ 
+        						{ piece: "piece2", x: 50, 	y: -150	}, 	
+        						{ piece: "piece4", x: 0, 		y: 50		} 
+        					],
+        					[ 
+        						{ piece: "piece3", x: 0, 		y: 100	}, 	
+        						{ piece: "piece4", x: 0, 		y: -50	} 
+        					]
+        				]
+        			};
+        			
+        			var HorsePuzzle = {
+        				background: { id : "background", src : "assets/layout_grid.gif" },
+        				pieces: [
+        					{ id: "head", src: "assets/horse/head.png" },
+        					{ id: "back-legs", src: "assets/horse/back-legs.png" },
+        					{ id: "front-legs", src: "assets/horse/front-legs.png" },
+        					{ id: "back", src: "assets/horse/back.png" }
+        				],
+        				matches: [
+        					[ 
+        						{ piece: "head", x: -135, y: 60 	}, 	
+        						{ piece: "back", x: 240, 	y: -80 	} 
+        					],
+        					[ 
+        						{ piece: "front-legs", x: -25, 	y: -164	}, 	
+        						{ piece: "back", 			 x: 200, 	y: 85		} 
+        					],
+        					[ 
+        						{ piece: "back-legs", x: 80, 		y: -225	}, 	
+        						{ piece: "back", 			x: -88, 	y: -70	} 
+        					]
+        				]
+        			};
+        			
+        			var loader = new PuzzleBuilder();
+        			
+        			loader.loadPuzzle(TestPuzzle);
+        			puzzle = loader.puzzle;
+
         		});
         </script>
     </body>
