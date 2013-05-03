@@ -176,6 +176,12 @@ p.hasPoint = function(pt) {
 	return false;
 }
 
+p.updatePoints = function() {
+	for(var i = 0; i < this._points.length; i++) {
+		this._points[i].updatePoint();
+	}
+}
+
 /**
  * Removes a point to the piece
  *

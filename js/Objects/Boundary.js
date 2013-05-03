@@ -131,5 +131,4 @@ bd.extendBoundary = function(b) {
 	this.center = { x: this.left+this.width/2, y: this.top+this.height/2 };
 		
 	return this;
-		
 }

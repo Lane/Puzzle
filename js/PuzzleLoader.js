@@ -35,8 +35,8 @@ pb.fileLoaded = function (event) {
 	var type = item.type;
 	if(item.id == "background") {
 		var bg = new createjs.Bitmap(item.src);
-		this.puzzleView._stage.addChild(bg);
-		debug.log("adding background");
+		bg.alpha = 0.5;
+		this.puzzle._background = bg;
 	} else {
 		if (type == createjs.LoadQueue.IMAGE) {
 			this.pieces.push(new Piece({img:event.result, name: item.id}));

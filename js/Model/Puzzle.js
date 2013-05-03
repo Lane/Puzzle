@@ -186,6 +186,8 @@ Puzzle.prototype = {
 			});
 			pc.setBoundary();
 			to.addPiece(pc);
+			to.setBoundary();
+			from.removePiece(pc);
 		}
 		this.removePieceContainer(from);
 	},

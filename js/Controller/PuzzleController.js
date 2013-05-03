@@ -26,20 +26,18 @@ function PuzzleController(model, view) {
     // handle model events listeners
     this._model.pieceContainerAdded.attach(function (sender,args) {
       _this._view.buildPuzzle();
-
       debug.log(args.pieceContainer, "Added piece container to stage");
     });
     
     this._model.pieceContainerRemoved.attach(function (sender, args) {
-      _this._view.buildPuzzle();
-      
+      _this._view.updatePieceContainer(args.pieceContainer);
       debug.log(args.pieceContainer, "Removed piece container from stage");
     });
     
 		this._model.pieceAdded.attach(function (sender,args) {
 		
 			for(var i = 0; i < args.piece._points.length; i++) {
-				args.piece._points[i].updatePoint().match.updatePoint();
+				args.piece._points[i].updatePoint();
 			}
 				
 	    _this._view.buildPuzzle();
@@ -48,9 +46,10 @@ function PuzzleController(model, view) {
 		});
 		
 		this._model.pieceRemoved.attach(function (sender,args) {
-		    _this._view.buildPuzzle();
-		    
-		    debug.log(args, "Removed piece from container");
+			_this._view._stage.removeChild(args.piece);
+		  _this._view.buildPuzzle();
+		  
+		  debug.log(args, "Removed piece from container");
 		});
     
     this._model.selectedPieceChanged.attach(function (sender,args) {
@@ -84,7 +83,7 @@ function PuzzleController(model, view) {
     });
     
     this._model.releasePiece.attach(function(sender,args) {
-    	args.pieceContainer.updatePoints();
+    	args.pieceContainer.updatePointsOffset();
     	args.pieceContainer.matchPieces();
     		debug.log(args, "Piece released");
     });

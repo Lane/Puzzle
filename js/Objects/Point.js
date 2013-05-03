@@ -124,6 +124,7 @@ pt.setRadius = function() {
 	return this;
 }
 
+
 /**
  * Sets the stage offset
  *
@@ -131,26 +132,25 @@ pt.setRadius = function() {
  */
 pt.setOffset = function() {
 	var translated = this._calculateRotatedCoordinates(this.getTotalRotation());
+	//var translated = this._calculateRotatedCoordinates(0);
 	if(this.piece !== null) {
-		translated.x = (translated.x+this.piece.x+this.piece.getParentPieceContainer().x);
-		translated.y = (translated.y+this.piece.y+this.piece.getParentPieceContainer().y);
+		if(ptpc = this.piece.getParentPieceContainer()) {
+			translated.x = ptpc.x+(this.piece.x-ptpc.regX)+this.x;
+			translated.y = ptpc.y+(this.piece.y-ptpc.regY)+this.y;
+		} else {
+			debug.warn("No parent piece container when setting offset for point:", this);
+		}
 	} else {
-		debug.warn("STAGE OFFSET MAY BE INCORRECT: There is no parent piece for this point.", this);
+		debug.warn("Stage offset may be incorrect because there is no parent piece for this point.", this);
 	}
 	this._stageOffset = translated;
 	return this;
 }
 
-/**
- * Sets the origin coordinates of this point (for rotation)
- *
- * @this {Point}
- * @param {Coordinate} o The coordinates of the origin
- */
-pt.setOrigin = function(o) {
-	this.origin = o;
-	
-	// new angle and radius after origin change
+
+pt.offsetOrigin = function(x,y) {
+	this.origin.x += x;
+	this.origin.y += y;
 	return this.setAngle().setRadius();
 }
 
@@ -180,7 +180,7 @@ pt.getPiece = function() {
 pt.getTotalRotation = function() {
 	if(typeof(this.piece) !== 'undefined' && this.piece !== null) {
 		if(typeof(this.piece.parent) !== 'undefined' && this.piece.parent !== null) {
-			return (this.piece.getParentPieceContainer().rotation);
+			return (this.piece.parent.rotation);
 		} else {
 			debug.warn("Rotation of point may be incorrect because the Point this Piece is associated with has no PieceContainer", this);
 			return 0;
@@ -231,10 +231,12 @@ pt.getMatch = function() {
  * @returns {Coordinate} Contains the x and y offset from the origin
  */
 pt.getOffsetFromOrigin = function() {
-	return {
-		x: this.x-this.origin.x, 
-		y: this.y-this.origin.y
+	// Point Position + (Piece Position - PieceContainer Centre)
+	var offset = {
+		x: this.x+(this.piece.x-this.piece.parent.regX), 
+		y: this.y+(this.piece.y-this.piece.parent.regY) // this was a - i changed to a +
 	};
+	return offset;
 }
 
 /**
@@ -407,7 +409,17 @@ pt._calculateRadius = function(offset) {
  */
 pt.toString = function() {
 	var stageOffset = [this.getStageOffset(), this.match.getStageOffset()];
-	var pointString = "Point: " + stageOffset[0].x + "," + stageOffset[0].y + " (" + Math.abs(stageOffset[0].x-stageOffset[1].x) + "," + Math.abs(stageOffset[0].y-stageOffset[1].y) + ")";
+	var pointString = "Point: " + "<ul style='margin-left:10px;'><li>" +
+		"Stage Offset: " + 
+			stageOffset[0].x + "," + stageOffset[0].y + "</li><li>" +
+		"Piece Offset: " + 
+			this.x + "," + this.y + "</li><li>" +
+		"Piece Container Offset: " + 
+			this.getOffsetFromOrigin().x + "," + this.getOffsetFromOrigin().y + "</li><li>" +
+		"Distance From Match: " + 
+			Math.abs(stageOffset[0].x-stageOffset[1].x) + "," + Math.abs(stageOffset[0].y-stageOffset[1].y) + "</li><li>" + 
+		"Angle, Radius: " + 
+			this.angle + ", " + this.radius + "</li></ul>";
 		
 	return pointString;
 }

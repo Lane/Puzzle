@@ -101,11 +101,13 @@ pc.setBoundary = function() {
 		box.extendBoundary(this._pieces[i].getPieceBoundary());
 	}
 	
+	var offSet = box.center;
+	
 	this.boundary = box;
-	this.boundary.top += this.y;
-	this.boundary.left += this.x;
-	this.boundary.bottom += this.y;
-	this.boundary.right += this.x;
+	this.boundary.top += this.y-offSet.y;
+	this.boundary.left += this.x-offSet.x;
+	this.boundary.bottom += this.y-offSet.y;
+	this.boundary.right += this.x-offSet.x;
 	return this;
 }
 
@@ -123,8 +125,8 @@ pc.getBoundingBox = function() {
 
 pc.getPieceContainerBoundary = function() {
 	return new Boundary(
-		this.boundary.left-this.x, 
-		this.boundary.top-this.y,
+		this.boundary.left-this.x+this.boundary.center.x, 
+		this.boundary.top-this.y+this.boundary.center.y,
 		this.boundary.width,
 		this.boundary.height
 	);
@@ -141,15 +143,13 @@ pc.addPiece = function (p) {
   this._pieces.push(p);
   p.parent = this;
   this.setBoundary();
-  var oldReg = { x: this.x, y: this.y };
+  var oldReg = { x: this.regX, y: this.regY };
   this.regX = this._rotateHandle.x = this.boundary.getCenter().x;
   this.regY = this._rotateHandle.y = this.boundary.getCenter().y;
-  for(i=0; i<p._points.length; i++)
-  {
-  	p._points[i].setOrigin({x: this.regX, y: this.regY });
-  }
-  this.x += this.regX;
-  this.y += this.regY;
+  var regDiff = { x: this.regX-oldReg.x, y: this.regY-oldReg.y };
+  this.x += regDiff.x;
+  this.y += regDiff.y;
+  p.updatePoints();
   this._puzzle.pieceAdded.notify({ piece : p });
   return this._pieces;
 }
@@ -170,7 +170,6 @@ pc.removePiece = function (p) {
 	for(var i = 0; i < this._pieces.length; i++) {
 		if(this._pieces[i].id == p.id)
 		{
-			//this.removeChild(p);
 			this._pieces.remove(i);
 			this._puzzle.pieceRemoved.notify({ piece : p });
 			return this._pieces;
@@ -231,6 +230,14 @@ pc.updatePoints = function() {
 	}
 }
 
+pc.updatePointsOffset = function() {
+	for(var i = 0; i < this._pieces.length; i++) {
+		for(var j = 0; j < this._pieces[i]._points.length; j++) {
+			this._pieces[i]._points[j].setOffset();
+		}
+	}
+}
+
 pc.toString = function() {
 	var pcString = "<h3>" + this.name + "</h3>"
 		+ "<ul class='properties'>" 
@@ -238,7 +245,7 @@ pc.toString = function() {
 		+ "<li><span>Rotation:</span>" + this.rotation + "</li>"
 		+ "<li><span>Centre: </span>" + this.regX + "," + this.regY + "</li>"
 		+ "<li><span>Dimensions: </span>" + this.boundary.width + "," + this.boundary.height + "</li>"
-		+ "<li><span>Boundaries: </span>" + (this.boundary.left+this.x) + "," + (this.boundary.top+this.y) + " : " + (this.boundary.right+this.x) + "," + (this.boundary.bottom+this.y)
+		+ "<li><span>Boundaries: </span>" + (this.boundary.left) + "," + (this.boundary.top) + " : " + (this.boundary.right) + "," + (this.boundary.bottom)
 		+ "<li>";
 	for(var i = 0; i < this._pieces.length; i++) {
 		pcString += this._pieces[i].toString();

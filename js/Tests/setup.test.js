@@ -23,7 +23,7 @@ function handleFileLoad(event) {
 	var type = item.type;
 	if (type == createjs.LoadQueue.IMAGE) {
 		//console.log(event);
-		_pieces.push(new Piece({img:event.result}));
+		_pieces.push(new Piece({img:event.result, name: item.id }));
 	}
 }
  

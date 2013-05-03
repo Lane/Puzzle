@@ -7,7 +7,7 @@ function piece_tests() {
 	
 	// set boundary
 	test('initialize()', function() {
-		equal(piece.name, "300x100.png", "Name correctly set");
+		equal(piece.name, "piece1", "Name correctly set");
 		deepEqual({x: piece.regX, y: piece.regY}, {x:150,y:50}, "regX and regY correctly set");
 	});
 	
@@ -21,7 +21,7 @@ function piece_tests() {
 	test('hasPoint()', function() {
 		piece.addPoint(_points[0]);
 		ok(piece.hasPoint(_points[0]), "Piece has the point");
-		ok(!piece.hasPoint(_points[1]), "Piece does not have the point");
+		ok(!piece.hasPoint(_points[2]), "Piece does not have the point");
 	});
 	
 	// remove point
@@ -60,21 +60,23 @@ function piece_tests() {
 		
 		// check matches
 		_points[0].setMatch(_points[2]);
-		ok((piece.getMatches().length == 0 && piece2.getMatches().length == 0), "Both pieces have no matches");
-		
-
+		ok((piece.getMatches().length == 0 && piece2.getMatches().length == 0), "Piece1 and Piece2 are not matched");
 		
 		// move piece1
 		piece.getParentPieceContainer().movePiece(300,100);
+		piece.updatePoints();
 		ok(piece.getParentPieceContainer().getBoundingBox().isEqual({top:50, left: 150, width: 300, height: 100}), "Piece1 boundary correct after move");
 		
 		// rotate piece2
 		piece2.getParentPieceContainer().rotation = 35;
+		piece2.updatePoints();
 		deepEqual(_points[2].getStageOffset(), { x:295, y:98 }, "Point attached to piece2 has correct stage offset after rotate"); // check point coordinates
 		piece2.getParentPieceContainer().rotation = 0;
+		piece2.updatePoints();
 
 		// move piece2
 		piece2.getParentPieceContainer().movePiece(200,250);
+		piece2.updatePoints();
 		ok(piece2.getParentPieceContainer().getBoundingBox().isEqual({top:100, left: 150, width: 100, height: 300}), "Piece2 boundary correct after move");
 		
 		// make sure match is correctly made
@@ -82,15 +84,22 @@ function piece_tests() {
 		console.log(piece2.parent);
 		
 		// check matches 
+		console.log(piece.getMatches().length);
 		ok((piece.getMatches().length != 0), "Both pieces are matched after move.");
 		deepEqual(_points[0].getStageOffset(), _points[2].getStageOffset(), "Points have equal stage offsets");
 		
-		ok(puzzle.connectPointWithMatch(_points[0]).getBoundingBox().isEqual({top:50, left: 150, width: 300, height: 350}), "Boundary of merged pieces is correct");
+		// connect the matching pieces
+		ok(puzzle.connectPointWithMatch(_points[2]).getBoundingBox().isEqual({top:50, left: 150, width: 300, height: 350}), "Boundary of merged pieces is correct");
+		piece.updatePoints();
+		piece2.updatePoints();
 		equal(piece._points.length, 0, "Piece1 has no points");
 		equal(piece2._points.length, 1, "Piece2 has one point left");
+		deepEqual(_points[1].getStageOffset(), {x: 450, y: 100 }, "Point 1 has correct stage offset");
 		deepEqual(_points[3].getStageOffset(), {x: 250, y: 100 }, "Point 3 has correct stage offset");
 		
 		//piece2.parent.rotation = -140;
+		
+		deepEqual(_points[3].getStageOffset(), {x: 250, y: 100 }, "Point 3 has correct stage offset");
 		
 		console.log("FINAL CONTAINER:", piece2.parent);
 		console.log(_points[3].getStageOffset());

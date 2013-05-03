@@ -56,7 +56,11 @@ PuzzleView.prototype = {
   },
 
   buildPuzzle : function () {
-  	this.removePieceContainers();
+  	this._stage.clear();
+  	this._stage._needsUpdate = true;
+  	if(this._model._background !== null)
+  		this._stage.addChild(this._model._background);
+  		
 		for(var i = 0; i < this._model._pieceContainers.length; i++) {
 			for(var j = 0; j < this._model._pieceContainers[i]._pieces.length; j++) {
 				this._model._pieceContainers[i].addChild(this._model._pieceContainers[i]._pieces[j]);
