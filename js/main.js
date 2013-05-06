@@ -83,14 +83,14 @@ function makeHorsePuzzle() {
 
 function makeTestPuzzle() {
 	var queue = new createjs.LoadQueue();
-	 queue.addEventListener("complete", handleComplete);
-	 queue.addEventListener("fileload", handleFileLoad);
-	 queue.loadManifest([
-	     { id: "piece1", src: "assets/test/300x100.png" },
-	     { id: "piece2", src: "assets/test/100x300.png" },
-	     { id: "piece3", src: "assets/test/200x200.png" },
-	     { id: "piece4", src: "assets/test/100x100.png" }
-	 ]);
+	queue.addEventListener("complete", handleComplete);
+	queue.addEventListener("fileload", handleFileLoad);
+	queue.loadManifest([
+		{ id: "piece1", src: "assets/test/300x100.png" },
+		{ id: "piece2", src: "assets/test/100x300.png" },
+		{ id: "piece3", src: "assets/test/200x200.png" },
+		{ id: "piece4", src: "assets/test/100x100.png" }
+	]);
 }
 
 function handleFileLoad(event) {

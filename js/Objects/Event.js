@@ -13,7 +13,7 @@ Event.prototype = {
         for (index = 0; index < this._listeners.length; index += 1) {
             this._listeners[index](this._sender, args);
         }
-        
+        /*
         if(debug && (puzzle.getSelectedPiece() != null)) {
         	// puzzle to string
   
@@ -24,6 +24,6 @@ Event.prototype = {
         	//eventListEl = document.getElementById("eventList");
         	//eventListEl.insertBefore(eventItem, eventListEl.childNodes[0]);
         }
-        
+        */
     }
 };

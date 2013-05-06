@@ -17,6 +17,9 @@ pb = PuzzleBuilder.prototype;
 
 pb.initialize = function() {
 	var that = this;
+	createjs.Sound.registerPlugins([createjs.WebAudioPlugin, createjs.FlashPlugin]);
+	createjs.Sound.registerSound("assets/success.mp3|assets/success.ogg", "success");
+	
 	this.queue.addEventListener("complete", this.doneLoading.bind(this));
 	this.queue.addEventListener("fileload", this.fileLoaded.bind(this));
 }

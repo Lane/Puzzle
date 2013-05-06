@@ -18,7 +18,7 @@ function PuzzleView(model) {
   	var stage = _this._stage;
   	var ob = stage.getObjectUnderPoint(stage.mouseX, stage.mouseY);
   	// if no objects were clicked
-  	if(ob == null) {
+  	if(ob.type == null) {
   		_this.clickedOnNothing.notify({ event: e });
   	} else {
   		_this.clickedOnPiece.notify({event : e, piece : ob });	
@@ -38,10 +38,28 @@ PuzzleView.prototype = {
   	this._stage._needsUpdate = true;
   },
   
+  // using cache create a new canvas for each element,
+  // redefining the cache area is resource intensive,
+  // so only do it WHEN ABSOLUTELY NECESSARY.
   updatePieceContainer : function(pc) {
-  	var b = pc.getPieceContainerBoundary();
-  	pc.cache(b.left, b.top, b.width, b.height);
-  	pc.updateCache();
+		var b = pc.getPieceContainerBoundary();
+		if(!pc.cacheCanvas) {
+			pc.cache(b.left, b.top, b.width, b.height);
+		}
+		else 
+		{
+			if(
+					(b.left == pc._cacheOffsetX)
+					&& (b.top == pc._cacheOffsetY)
+					&& (b.width == pc.cacheCanvas.width)
+					&& (b.height == pc.cacheCanvas.height)
+				) {
+					pc.updateCache();
+				} else {
+					pc.cache(b.left, b.top, b.width, b.height);
+					debug.log("boundary doesn't match cache, updating");
+				}
+		}
   	this._stage._needsUpdate = true;
   },
   
@@ -64,7 +82,7 @@ PuzzleView.prototype = {
 		for(var i = 0; i < this._model._pieceContainers.length; i++) {
 			for(var j = 0; j < this._model._pieceContainers[i]._pieces.length; j++) {
 				this._model._pieceContainers[i].addChild(this._model._pieceContainers[i]._pieces[j]);
-				if(debug) {
+				if(typeof(debugPoints) !== "undefined") {
 					for(var k = 0; k < this._model._pieceContainers[i]._pieces[j]._points.length; k++) {
 						var pCircle = new createjs.Shape();
 						var p = this._model._pieceContainers[i]._pieces[j]._points[k];

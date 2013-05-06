@@ -147,13 +147,7 @@
       	<div class="canvasHolder">
       		<canvas id="puzzleCanvas" width="1200" height="700"></canvas>
       	</div>
-      	
-      	<div id="debugger" style="">
-      		<h2>Debugger</h2>
-      		<div id="puzzleDebug">
-      		
-      		</div>
-      	</div>
+
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/libs/jquery-1.9.0.min.js"><\/script>')</script>
@@ -172,7 +166,10 @@
 
         <script>
        			var puzzle;
+       			
+       			debug.setLevel(0);
         		$(document).ready(function() {
+      
         			
         			var TestPuzzle = {
         				background: { id : "background", src : "assets/layout_grid.gif" },
@@ -228,7 +225,7 @@
         			
         			var loader = new PuzzleBuilder();
         			
-        			loader.loadPuzzle(TestPuzzle);
+        			loader.loadPuzzle(HorsePuzzle);
         			puzzle = loader.puzzle;
 
         		});

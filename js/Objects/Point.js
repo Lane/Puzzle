@@ -132,28 +132,26 @@ pt.setRadius = function() {
  */
 pt.setOffset = function() {
 	var translated = this._calculateRotatedCoordinates(this.getTotalRotation());
-	//var translated = this._calculateRotatedCoordinates(0);
+	var coords = {};
 	if(this.piece !== null) {
 		if(ptpc = this.piece.getParentPieceContainer()) {
-			translated.x = ptpc.x+(this.piece.x-ptpc.regX)+this.x;
-			translated.y = ptpc.y+(this.piece.y-ptpc.regY)+this.y;
+			coords.x = ptpc.x+translated.x;
+			coords.y = ptpc.y+translated.y;
 		} else {
 			debug.warn("No parent piece container when setting offset for point:", this);
 		}
 	} else {
 		debug.warn("Stage offset may be incorrect because there is no parent piece for this point.", this);
 	}
-	this._stageOffset = translated;
+	this._stageOffset = coords;
 	return this;
 }
 
-
-pt.offsetOrigin = function(x,y) {
-	this.origin.x += x;
-	this.origin.y += y;
-	return this.setAngle().setRadius();
-}
-
+/**
+ * Sets the piece that this point belongs to
+ *
+ * @this {Point}
+ */
 pt.setPiece = function(pc) {
 	this.piece = pc;
 }
@@ -231,11 +229,16 @@ pt.getMatch = function() {
  * @returns {Coordinate} Contains the x and y offset from the origin
  */
 pt.getOffsetFromOrigin = function() {
-	// Point Position + (Piece Position - PieceContainer Centre)
-	var offset = {
-		x: this.x+(this.piece.x-this.piece.parent.regX), 
-		y: this.y+(this.piece.y-this.piece.parent.regY) // this was a - i changed to a +
-	};
+	try {
+		// Point Position + (Piece Position - PieceContainer Centre)
+		var offset = {
+			x: this.x+(this.piece.x-this.piece.parent.regX), 
+			y: this.y+(this.piece.y-this.piece.parent.regY) // this was a - i changed to a +
+		};
+	} catch (err) {
+		debug.warn("Attempted to get offset of piece with no parent.", err);
+		var offset = { x: this.x, y: this.y };
+	}
 	return offset;
 }
 

@@ -36,10 +36,8 @@ function PuzzleController(model, view) {
     
 		this._model.pieceAdded.attach(function (sender,args) {
 		
-			for(var i = 0; i < args.piece._points.length; i++) {
-				args.piece._points[i].updatePoint();
-			}
-				
+			args.piece.parent.updatePoints();
+			var instance = createjs.Sound.play("success"); 
 	    _this._view.buildPuzzle();
 
       debug.log(args, "Added piece to container");

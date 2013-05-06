@@ -27,27 +27,27 @@ function point_tests() {
 		equal(pt._calculateAngle({x: 100, y: 100}),315,"Correctly calculated angle: 315 degrees");
 	});
 	
-	test('setOrigin()', function() {
-		var pt = new Point(pc, 100, -100, { x: 0, y: 0 });
-		pt.setOrigin({x: 100, y: 300});
-		equal(pt.getRadius(), 400,"Radius correct after setting origin point to [100, 300]");
-		equal(pt.getAngle(), 90,"Angle correct after setting origin point to [100, 300]");
-		pt.setOrigin({x: -100, y: -300});
-		equal(Math.round(pt.getRadius()), 283,"Radius correct after setting origin point to [-100, -300]");
-		equal(pt.getAngle(), 315,"Angle correct after setting origin point to [-100, -300]");
-		pt.setOrigin({x: 300, y: -100});
-		equal(pt.getRadius(), 200,"Radius correct after setting origin point to [300, -100]");
-		equal(pt.getAngle(), 180,"Angle correct after setting origin point to [300, -100]");
-		pt.setOrigin({x: -600, y: 200});
-		equal(Math.round(pt.getRadius()), 762,"Radius correct after setting origin point to [-600, 200]");
-		equal(Math.round(pt.getAngle()), 23,"Angle correct after setting origin point to [-600, 200]");
+	test('_calculateRotatedCoordinates()', function() {
+		var pt = _points[7];
+		deepEqual(pt._calculateRotatedCoordinates(0), {x: 0, y: 50}, "Correct coordinates after no rotation");
+		deepEqual(pt._calculateRotatedCoordinates(90), {x: -50, y: 0}, "Correct coordinates after 90 deg rotation");
+		deepEqual(pt._calculateRotatedCoordinates(-90), {x: 50, y: 0}, "Correct coordinates after -90 deg rotation");
+		deepEqual(pt._calculateRotatedCoordinates(180), {x: 0, y: -50}, "Correct coordinates after 180 deg rotation");
+		deepEqual(pt._calculateRotatedCoordinates(-270), {x: -50, y: 0}, "Correct coordinates after -270 deg rotation");
+		deepEqual(pt._calculateRotatedCoordinates(35), {x: -29, y: 41}, "Correct coordinates after 35 deg rotation");
+		deepEqual(pt._calculateRotatedCoordinates(45), {x: -35, y: 35}, "Correct coordinates after 45 deg rotation");
+		// CHANGE ORIGIN AND TEST
+		pt.piece.x = 400;
+		pt.piece.y = 200;
+		pt.piece.updatePoints();
+		deepEqual(pt._calculateRotatedCoordinates(0), {x: 400, y: 250}, "Correct coordinates after piece move");
+		deepEqual(pt._calculateRotatedCoordinates(45), {x: 106, y: 460}, "Correct coordinates after 45 deg rotation and piece move");
+		deepEqual(pt._calculateRotatedCoordinates(-45), {x: 460, y: -106}, "Correct coordinates after -45 deg rotation and piece move");
 	});
 	
 	test('getOffsetFromOrigin()', function() {
 		var pt = new Point(pc, 100, -100, { x: 0, y: 0 });
 		deepEqual(pt.getOffsetFromOrigin(), { x: 100, y: -100 }, "Offset correctly calculated");
-		pt.setOrigin({x: -5000, y: 200 });
-		deepEqual(pt.getOffsetFromOrigin(), { x: 5100, y: -300 }, "Offset correctly calculated");
 	});
 	
 	

@@ -111,6 +111,11 @@ pc.setBoundary = function() {
 	return this;
 }
 
+pc.setCache = function() {
+	var b = this.getPieceContainerBoundary();
+	this.cache(b.left, b.top, b.width, b.height);
+}
+
 
 // GETTERS
 // --------------------
@@ -149,7 +154,7 @@ pc.addPiece = function (p) {
   var regDiff = { x: this.regX-oldReg.x, y: this.regY-oldReg.y };
   this.x += regDiff.x;
   this.y += regDiff.y;
-  p.updatePoints();
+  
   this._puzzle.pieceAdded.notify({ piece : p });
   return this._pieces;
 }
