@@ -1,8 +1,3 @@
-/** Constant for converting radians to degrees */
-var RAD2DEG = 180/Math.PI;
-/** Constant for converting degrees to radians */
-var DEG2RAD = 1/RAD2DEG;
-
 /** 
  * Creates a point on a piece that can be used to connect two pieces together with a PointMatch
  *
@@ -31,12 +26,6 @@ function Point(piece, x, y, origin) {
 	 * @type Piece
 	 */
 	this.piece = piece || null;
-	
-	/**
-	 * The origin of the point
-	 * @type object
-	 */
-	this.origin = origin || { x:0, y:0 };
 	 
 	
 	/**
@@ -82,7 +71,7 @@ pt.initialize = function() {
 // SETTERS
 // --------------
 
-/**
+/*
  * Sets the point that this point connects to 
  *
  * @this {Point}
@@ -93,7 +82,7 @@ pt.setPosition = function(pos) {
 	return this;
 }
 
-/**
+/*
  * Sets the point that this point connects to 
  *
  * @this {Point}
@@ -104,7 +93,7 @@ pt.setMatch = function(pt) {
 	return this;
 }
 
-/**
+/*
  * Sets the angle made by the point, origin, and x axis 
  *
  * @this {Point}
@@ -114,7 +103,7 @@ pt.setAngle = function() {
 	return this;
 }
 
-/**
+/*
  * Sets the radius (length the line segment made by origin and point)
  *
  * @this {Point}
@@ -125,29 +114,37 @@ pt.setRadius = function() {
 }
 
 
-/**
+/*
  * Sets the stage offset
  *
  * @this {Point}
  */
 pt.setOffset = function() {
-	var translated = this._calculateRotatedCoordinates(this.getTotalRotation());
+	var translated = 
+		this._calculateRotatedCoordinates(this.getTotalRotation());
 	var coords = {};
 	if(this.piece !== null) {
 		if(ptpc = this.piece.getParentPieceContainer()) {
 			coords.x = ptpc.x+translated.x;
 			coords.y = ptpc.y+translated.y;
 		} else {
-			debug.warn("No parent piece container when setting offset for point:", this);
+			debug.warn(
+				"No parent piece container when setting offset for point:", 
+				this
+			);
 		}
 	} else {
-		debug.warn("Stage offset may be incorrect because there is no parent piece for this point.", this);
+		debug.warn(
+			"Stage offset may be incorrect because there " +
+			"is no parent piece for this point.", 
+			this
+		);
 	}
 	this._stageOffset = coords;
 	return this;
 }
 
-/**
+/*
  * Sets the piece that this point belongs to
  *
  * @this {Point}
@@ -159,7 +156,7 @@ pt.setPiece = function(pc) {
 // GETTERS
 // --------------
 
-/**
+/*
  * Gets the piece belongs this point belongs to.
  *
  * @this {Point}
@@ -169,27 +166,41 @@ pt.getPiece = function() {
 	return this.piece;
 }
 
-/**
+/*
  * Gets the rotation of the PieceContainer the piece belongs to.
  *
  * @this {Point}
  * @returns {int} The rotation in degrees
  */
 pt.getTotalRotation = function() {
-	if(typeof(this.piece) !== 'undefined' && this.piece !== null) {
-		if(typeof(this.piece.parent) !== 'undefined' && this.piece.parent !== null) {
+	if(	
+		typeof(this.piece) !== 'undefined' && 
+		this.piece !== null
+	) {
+		if(
+			typeof(this.piece.parent) !== 'undefined' && 
+			this.piece.parent !== null
+		) {
 			return (this.piece.parent.rotation);
 		} else {
-			debug.warn("Rotation of point may be incorrect because the Point this Piece is associated with has no PieceContainer", this);
+			debug.warn(
+				"Rotation of point may be incorrect because the Point " +
+				"this Piece is associated with has no PieceContainer", 
+				this
+			);
 			return 0;
 		}
 	} else {
-		debug.warn("Rotation of point may be incorrect because the Point this Piece is null", this);
+		debug.warn(
+			"Rotation of point may be incorrect  " +
+			"because the Point this Piece is null", 
+			this
+		);
 		return 0;
 	}
 }
 
-/**
+/*
  * Gets the point coordinates relative to the stage.
  *
  * @this {Point}
@@ -199,7 +210,7 @@ pt.getStageOffset = function() {
 	return this._stageOffset;
 }
 
-/**
+/*
  * Gets the point coordinates relative to the parent.
  *
  * @this {Point}
@@ -212,7 +223,7 @@ pt.getParentOffset = function() {
 	};
 }
 
-/**
+/*
  * Gets the point that this point connects to
  *
  * @this {Point}
@@ -222,7 +233,7 @@ pt.getMatch = function() {
 	return this.match;
 }
 
-/**
+/*
  * Gets the offset from the origin
  *
  * @this {Point}
@@ -242,7 +253,7 @@ pt.getOffsetFromOrigin = function() {
 	return offset;
 }
 
-/**
+/*
  * Gets the radius
  *
  * @this {Point}
@@ -252,7 +263,7 @@ pt.getRadius = function() {
 	return this.radius;
 }
 
-/**
+/*
  * Gets the angle
  *
  * @this {Point}
@@ -265,7 +276,7 @@ pt.getAngle = function() {
 // FUNCTIONS
 // --------------
 
-/** 
+/*
  * Update the circle that represents the point
  *
  * @this {Point}
@@ -275,7 +286,7 @@ pt.updatePoint = function() {
 	return this;
 }
 
-/** 
+/*
  * Check if this Point equals the same as the point passed
  *
  * @this {Point}
@@ -284,13 +295,16 @@ pt.updatePoint = function() {
 pt.isEqual = function(pt2) {
 	var eq = false;
 	// check coordinates and origin
-	if((this.x == pt2.x) && (this.y == pt2.y) 
-		&& (this.origin.x == pt2.origin.x)
-		&& (this.origin.y == pt2.origin.y)) {
+	if((this.x == pt2.x) && (this.y == pt2.y)) {
 		// check if both pieces are null
 		if((this.piece == null && pt2.piece == null)) {
 			eq = true;
-			debug.warn("Points are equal, but may be flawed as they are not associated with a piece.", this, pt2);
+			debug.warn(
+				"Points are equal, but may be flawed as " + 
+				"they are not associated with a piece.", 
+				this, 
+				pt2
+			);
 		}
 		// if pieces are not null, check if they're equal
 		if((this.piece !== null && pt2.piece !== null) 
@@ -301,7 +315,7 @@ pt.isEqual = function(pt2) {
 	return eq;
 }
 
-/** 
+/*
  * Check if this Point is within range of its match
  *
  * @this {Point}
@@ -312,7 +326,9 @@ pt.isMatched = function() {
 		debug.warn("Checking if there is a match for a point with no match");
 		return false;
 	}
-	var rotDiff = Math.abs((this.getTotalRotation()%360)-(this.match.getTotalRotation()%360));
+	var rotDiff = Math.abs(
+		(this.getTotalRotation()%360)-(this.match.getTotalRotation()%360)
+	);
 	if(rotDiff > 20)
 		return false;
 	
@@ -326,7 +342,7 @@ pt.isMatched = function() {
 	return true;
 }
 
-/**
+/*
  * Calculates the updated x and y offset from the origin after a rotation
  *
  * @this {Point}
@@ -343,7 +359,7 @@ pt._calculateRotatedCoordinates = function(rotateAmount) {
 	return coordinates;
 }
 
-/**
+/*
  * Calculates the angle formed by the x axis and the line segment between the origin and point
  *
  * @this {Point}
@@ -391,7 +407,7 @@ pt._calculateAngle = function(offset) {
 }
 
 
-/**
+/*
  * Gets the length of the line segment from the origin to the point
  *
  * @this {Point}
@@ -403,7 +419,7 @@ pt._calculateRadius = function(offset) {
 }
 
 
-/**
+/*
  * Get a string representation of the point
  *
  * @override
@@ -420,7 +436,8 @@ pt.toString = function() {
 		"Piece Container Offset: " + 
 			this.getOffsetFromOrigin().x + "," + this.getOffsetFromOrigin().y + "</li><li>" +
 		"Distance From Match: " + 
-			Math.abs(stageOffset[0].x-stageOffset[1].x) + "," + Math.abs(stageOffset[0].y-stageOffset[1].y) + "</li><li>" + 
+			Math.abs(stageOffset[0].x-stageOffset[1].x) + "," 
+				+ Math.abs(stageOffset[0].y-stageOffset[1].y) + "</li><li>" + 
 		"Angle, Radius: " + 
 			this.angle + ", " + this.radius + "</li></ul>";
 		

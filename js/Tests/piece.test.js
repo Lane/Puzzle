@@ -94,15 +94,10 @@ function piece_tests() {
 		piece2.updatePoints();
 		equal(piece._points.length, 0, "Piece1 has no points");
 		equal(piece2._points.length, 1, "Piece2 has one point left");
-		deepEqual(_points[1].getStageOffset(), {x: 450, y: 100 }, "Point 1 has correct stage offset");
+		deepEqual(_points[1].getStageOffset(), {x: 400, y: 250 }, "Point 1 has correct stage offset");
 		deepEqual(_points[3].getStageOffset(), {x: 250, y: 100 }, "Point 3 has correct stage offset");
-		
-		//piece2.parent.rotation = -140;
-		
 		deepEqual(_points[3].getStageOffset(), {x: 250, y: 100 }, "Point 3 has correct stage offset");
-		
-		console.log("FINAL CONTAINER:", piece2.parent);
-		console.log(_points[3].getStageOffset());
+
 		
 		
 

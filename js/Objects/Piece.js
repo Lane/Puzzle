@@ -59,7 +59,8 @@ p.initialize = function(options) {
 	var tmpImg;
 	var _this = this;
 
-	if((typeof(options.img) == "undefined") && (typeof(options.imgSrc) !== "undefined")) {
+	if((typeof(options.img) == "undefined") 
+		&& (typeof(options.imgSrc) !== "undefined")) {
 		//imgsrc is set            
 		tmpImg = new Image();
 		tmpImg.src = options.imgSrc;
@@ -68,7 +69,8 @@ p.initialize = function(options) {
 			_this.Bitmap_initialize(this);
 			_this.setAttributes(); 
 		}
-	} else if((typeof(options.img) !== "undefined") && (typeof(options.imgSrc) == "undefined")) {
+	} else if((typeof(options.img) !== "undefined") 
+		&& (typeof(options.imgSrc) == "undefined")) {
 		//img object is set
 		tmpImg = options.img;
 		this.Bitmap_initialize(tmpImg);
@@ -84,20 +86,38 @@ p.initialize = function(options) {
 // SETTERS
 // --------------
 
+/*
+ * Sets attributes
+ * @method setAttributes
+ * @this {Piece}
+ * @returns {Piece} This piece
+ */
 p.setAttributes = function() {
 	this.regX = this.image.width/2|0;
 	this.regY = this.image.height/2|0;
 	this.setBoundary();
-	if(this.parent !== null) {
-	  this.parent.setBoundary();
-	  this.parent.parent._needsUpdate = true;
+	try {
+		var ptpc = this.getParentPieceContainer();
+		ptpc.setBoundary();
+		ptpc.parent._needsUpdate = true;
+	} catch(err) {
+		debug.warn(
+			"This Piece has no parent, every piece " +
+			"should have a parent PieceContainer", 
+			this,
+			err
+		);
 	}
-	else {
-		debug.warn("This Piece has no parent, every piece should have a parent PieceContainer", this);
-	}
+	
 	return this;
 }
 
+/*
+ * Sets the boundary for the piece
+ * @method setBoundary
+ * @this {Piece}
+ * @returns {Piece} This piece
+ */
 p.setBoundary = function() {
 	var left = this.x-Math.round((this.image.width*this.scaleX/2));
 	var top = this.y-Math.round((this.image.height*this.scaleY/2));
@@ -110,26 +130,48 @@ p.setBoundary = function() {
 // GETTERS
 // --------------
 
+/*
+ * Gets the boundary for the Piece
+ * @method getPieceBoundary
+ * @this {Piece}
+ * @returns {Boundary} The piece boundary
+ */
 p.getPieceBoundary = function() {
 	return this.boundary;
 }
 
+/*
+ * Gets the parent PieceContainer
+ * @method getParentPieceContainer
+ * @this {Piece}
+ * @returns {PieceContainer} The parent piece container
+ */
 p.getParentPieceContainer = function() {
-	if(this.parent !== null && typeof(this.parent) !== "undefined") {
+	try {
 		return this.parent;
-	} else {
-		debug.warn("Trying to access parent of a Piece, but it has not been set", this);
-		return false;
+	} catch(err) {
+		debug.warn(
+			"Trying to access parent of a Piece, but it has not been set", 
+			this,
+			err
+		);
+		return null;
 	}
 }
 
+/*
+ * Gets the points that belong to this Piece
+ * @method getPoints
+ * @this {Piece}
+ * @returns {Array} An array of points that belong to this Piece
+ */
 p.getPoints = function() {
 	return this._points;
 }
 
-/**
+/*
  * Checks all of the points for this piece to see if they are within range of their match
- *
+ * @method getMatches
  * @this {Piece}
  * @returns {Array} points that are matched
  */
@@ -143,12 +185,12 @@ p.getMatches = function() {
 	return matches;
 }
 
-// FUNCTIONS
+// METHODS
 // --------------
 
-/**
+/*
  * Adds a Point to the Piece.
- *
+ * @method addPoint
  * @this {Piece}
  * @param {Point} the point to add
  * @returns {Piece} this piece 
@@ -161,9 +203,9 @@ p.addPoint = function(pt) {
 	return this;
 }
 
-/**
+/*
  * Checks to see if this piece has a specific point
- *
+ * @method hasPoint
  * @this {Piece}
  * @param {Point} the point to compare
  * @returns {boolean} true or false based on if the piece has the point passed
@@ -180,11 +222,12 @@ p.updatePoints = function() {
 	for(var i = 0; i < this._points.length; i++) {
 		this._points[i].updatePoint();
 	}
+	return this;
 }
 
-/**
+/*
  * Removes a point to the piece
- *
+ * @method removePoint
  * @this {Piece}
  * @param {Point} the point to remove
  * @returns {Piece} this piece 
@@ -201,12 +244,13 @@ p.removePoint = function(pt) {
 }
 
 p.removeAllPoints = function() {
-	return this._points = new Array();
+	this._points = new Array();
+	return this;
 }
 
-/**
+/*
  * Checks to see if two pieces are the same
- *
+ * @method isEqual
  * @this {Piece}
  * @param {Piece} the point to compare
  * @returns {boolean} true or false based on if they are the same
@@ -218,14 +262,41 @@ p.isEqual = function(pc2) {
 	return false;
 }
 
-/**
+/*
  * Get a string representation of the Piece
- *
  * @override
+ * @method toString
  * @this {Piece}
  * @returns {string} Human-readable representation of this Piece.
  */
 p.toString = function() {
+	var pieceString = this.name + "\n"
+		+ "Position: " + this.x + "," + this.y + "\n"
+		+ "Rotation: " + this.rotation + "\n"
+		+ "Centre: " + this.regX + "," + this.regY + "\n"
+		+ "Scale: " + this.scaleX + "," + this.scaleY + "\n";
+		
+	if(typeof(this.image) !== "undefined") {
+		pieceString += "Image Dimensions: " 
+			+ this.image.width + "x" + this.image.height + "\n";
+	}
+		
+	for(var i = 0; i < this._points.length; i++) {
+		pieceString += this._points[i].toString();
+	}
+	
+	pieceString += "\n";
+	
+	return pieceString;
+}
+
+/*
+ * Get an HTML representation of the Piece
+ * @method toHTMLString
+ * @this {Piece}
+ * @returns {string} HTML representation of this Piece.
+ */
+p.toHTMLString = function() {
 	var pieceString = "<h4>" + this.name + "</h4>"
 		+ "<ul class='properties'>" 
 		+ "<li><span>Position: </span>" + this.x + "," + this.y + "</li>"

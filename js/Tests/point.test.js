@@ -43,6 +43,9 @@ function point_tests() {
 		deepEqual(pt._calculateRotatedCoordinates(0), {x: 400, y: 250}, "Correct coordinates after piece move");
 		deepEqual(pt._calculateRotatedCoordinates(45), {x: 106, y: 460}, "Correct coordinates after 45 deg rotation and piece move");
 		deepEqual(pt._calculateRotatedCoordinates(-45), {x: 460, y: -106}, "Correct coordinates after -45 deg rotation and piece move");
+		pt.piece.x = 0;
+		pt.piece.y = 0;
+		pt.piece.updatePoints();
 	});
 	
 	test('getOffsetFromOrigin()', function() {
@@ -52,25 +55,20 @@ function point_tests() {
 	
 	
 	test('isMatched()', function() {
-		var point1 = new Point(null, 100, -100, { x: 0, y: 0 });
-		var point2 = new Point(null, 0, 0, { x: 0, y: 0 });
-		var point3 = new Point(null, 100, -100, { x: 0, y: 0 });
-		var point4 = new Point(null, 100, -100, { x: 0, y: 0 });
-		
-		point1.setMatch(point2);
-		point3.setMatch(point4);
-		ok(!point1.isMatched(point2), "Points are not matched");
-		ok(point3.isMatched(point4), "Points are matched");
+		ok(!_points[0].isMatched(_points[2]), "Points are not matched");
+		var pc = puzzle.getPieceByName("piece1");
+		pc.parent.x += 100;
+		pc.parent.y -= 150;
+		pc.updatePoints();
+		ok(_points[0].isMatched(_points[2]), "Points are matched");
+		pc.parent.x -= 100;
+		pc.parent.y += 150;
+		pc.updatePoints();
 	});
 	
 	test('isEqual()', function() {
-		var pt = new Point(pc, 100, -100, { x: 0, y: 0 });
-		var pt2 = new Point(pc, 100, -100, { x: 0, y: 0 });
-		var pt3 = new Point(pc, 100, -100, { x: 10, y: 10 });
-		var pt4 = new Point(pc, 10, 10, { x: 10, y: 10 });
-		ok(pt.isEqual(pt2), "Points are equal");
-		ok(!pt.isEqual(pt3), "Points are not equal");
-		ok(!pt3.isEqual(pt4), "Points are not equal");
+		ok(_points[0].isEqual(_points[0]), "Points are equal");
+		ok(!_points[0].isEqual(_points[1]), "Points are not equal");
 	});
 	
 }

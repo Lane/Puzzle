@@ -55,4 +55,7 @@ function makePuzzle() {
 		new Point(puzzle.getPieceByName("piece4"), 0,-50),
 		new Point(puzzle.getPieceByName("piece4"), 0, 50)
 	];
+	
+	_points[0].setMatch(_points[2]);
+	_points[1].setMatch(_points[4]);
 }

@@ -8,58 +8,38 @@
  */
 function PieceContainer(options) {
 	
+	/**
+	 * The pieces inside this container
+	 * @type {Array}
+	 */
 	this._pieces = options.pieces || new Array();
+	
+	/**
+	 * The selected status of this piece container
+	 * @type {boolean}
+	 */
 	this._selected = false;
+	
+	/**
+	 * The control used to rotate the piece container
+	 * @type {boolean}
+	 */
 	this._rotateHandle = new RotateHandle();
+	
+	/**
+	 * The puzzle that this PieceContainer belongs to
+	 * @type {Puzzle}
+	 */
 	this._puzzle = null;
+	
+	/**
+	 * The boundary of this piece container
+	 * @type {Boundary}
+	 */
 	this.boundary = new Boundary(9999, 9999, (2*-9999), (2*-9999));
 	
 	this.initialize(options);
 	
-	var _this = this;
-		
-	// Notify the puzzle of interaction events
-	this.addEventListener("mouseover", function(event) { 
-		_this._puzzle.mouseOverPiece.notify({ event: event, pieceContainer: _this});
-	});
-	
-	this.addEventListener("mouseout", function(event) { 
-		_this._puzzle.mouseOutPiece.notify({ event: event, pieceContainer: _this});
-	});
-	
-	this.addEventListener("mousedown", function(event) {
-	
-		var pc = event.target;
-		var offset = {x:pc.x-event.stageX, y:pc.y-event.stageY};
-		var ob = pc.parent.getObjectUnderPoint(event.stageX, event.stageY);
-		
-		// if the user pressed down on a piece
-		if(ob.type !== null) {
-			if(ob.type == "piece") {
-				event.addEventListener("mousemove", function(evt) {
-					evt.offset = offset;
-					_this._puzzle.dragPiece.notify({ event: evt, pieceContainer: _this});
-				});
-			}
-			
-			// if the user pressed down on the rotate handle
-			if(ob.type == "rotate-handle") {
-				var start = ob.parent.rotation;
-				offset = {x:event.stageX, y:event.stageY};
-				event.addEventListener("mousemove", function(evt) {
-					evt.offset = offset;
-					evt.start = start;
-					_this._puzzle.dragRotateHandle.notify({ event: evt, pieceContainer: _this});
-				});
-			}
-		}
-		
-		// check if any pieces match once the user lets go
-		event.addEventListener("mouseup", function(evt) {
-			_this._puzzle.releasePiece.notify({ event: evt, pieceContainer: _this});
-		});
-		
-	});
 }
 
 var pc = PieceContainer.prototype = new createjs.Container();
@@ -81,28 +61,97 @@ pc.initialize = function(options) {
 	this.type = "piece-container";
 	
 	for(var i=0; i < this._pieces.length; i++) {
-		if(typeof(this._pieces[i].parent) == "undefined" || this._pieces[i].parent == null) {
+		if(typeof(this._pieces[i].parent) == "undefined" 
+			|| this._pieces[i].parent == null) {
 			this._pieces[i].parent = this;
 		}
 	}
 	
+	var _this = this;
+	
+	// Piece container interaction events
+	this.addEventListener("mouseover", function(event) { 
+		_this._puzzle.mouseOverPiece.notify({ 
+			event: event, 
+			pieceContainer: _this
+		});
+	});
+	
+	this.addEventListener("mouseout", function(event) { 
+		_this._puzzle.mouseOutPiece.notify({ 
+			event: event, 
+			pieceContainer: _this
+		});
+	});
+	
+	this.addEventListener("mousedown", function(event) {
+	
+		var pc = event.target;
+		var offset = {x:pc.x-event.stageX, y:pc.y-event.stageY};
+		var ob = pc.parent.getObjectUnderPoint(event.stageX, event.stageY);
+		
+		// if the user pressed down on a piece
+		if(ob.type !== null) {
+			if(ob.type == "piece") {
+				event.addEventListener("mousemove", function(evt) {
+					evt.offset = offset;
+					_this._puzzle.dragPiece.notify({ 
+						event: evt, 
+						pieceContainer: _this
+					});
+				});
+			}
+			
+			// if the user pressed down on the rotate handle
+			if(ob.type == "rotate-handle") {
+				var start = ob.parent.rotation;
+				offset = {x:event.stageX, y:event.stageY};
+				event.addEventListener("mousemove", function(evt) {
+					evt.offset = offset;
+					evt.start = start;
+					_this._puzzle.dragRotateHandle.notify({ 
+						event: evt, 
+						pieceContainer: _this
+					});
+				});
+			}
+		}
+		
+		// check if any pieces match once the user lets go
+		event.addEventListener("mouseup", function(evt) {
+			_this._puzzle.releasePiece.notify({ 
+				event: evt, 
+				pieceContainer: _this
+			});
+		});
+		
+	});
+	
 	this.setBoundary();
+	
 	this.addChild(this._rotateHandle);	
 }
 
 // SETTERS
 // --------------------
 
+/*
+ * Sets the boundary for the piece container.
+ * @method setBoundary
+ * @returns {PieceContainer} This piece container
+ **/
 pc.setBoundary = function() {
 	// our box: left, right, top, bottom
 	var box = new Boundary(9999, 9999, (2*-9999), (2*-9999));
 	
+	// extend the boundary by each piece
 	for(var i = 0; i < this._pieces.length; i++) {
 		box.extendBoundary(this._pieces[i].getPieceBoundary());
 	}
 	
 	var offSet = box.center;
 	
+	// update this boundary
 	this.boundary = box;
 	this.boundary.top += this.y-offSet.y;
 	this.boundary.left += this.x-offSet.x;
@@ -111,23 +160,45 @@ pc.setBoundary = function() {
 	return this;
 }
 
+/*
+ * Sets the cache for the piece container. The cache puts the area 
+ * specified in a separate canvas to conserve resources.
+ * @method setCache
+ * @returns {PieceContainer} This piece container
+ **/
 pc.setCache = function() {
 	var b = this.getPieceContainerBoundary();
 	this.cache(b.left, b.top, b.width, b.height);
+	return this;
 }
 
 
 // GETTERS
 // --------------------
 
+/*
+ * Gets the pieces inside this piece container
+ * @method getPieces
+ * @returns {Array} An array of pieces inside this container
+ **/
 pc.getPieces = function () {
   return this._pieces;
 }
 
+/*
+ * Gets the bounding box of this piece container relative to the stage
+ * @method getBoundingBox
+ * @returns {Boundary} The boundary relative to the stage
+ **/
 pc.getBoundingBox = function() {
 	return this.boundary;
 }
 
+/*
+ * Gets the boundary of this piece container relative to the center point
+ * @method getPieceContainerBoundary
+ * @returns {Boundary} The boundary relative to the center point
+ **/
 pc.getPieceContainerBoundary = function() {
 	return new Boundary(
 		this.boundary.left-this.x+this.boundary.center.x, 
@@ -137,67 +208,121 @@ pc.getPieceContainerBoundary = function() {
 	);
 }
 
-pc.getCenter = function() {
-
-}
-
-// FUNCTIONS
+// METHODS
 // --------------------
 	
+/*
+ * Adds a piece to the piece container 
+ * @method addPiece
+ * @param {Piece} p Piece to add to the container
+ * @returns {PieceContainer} This piece container
+ **/
 pc.addPiece = function (p) {
   this._pieces.push(p);
   p.parent = this;
+  
+  // update this container boundary
   this.setBoundary();
+  
+  // save the old reg point
   var oldReg = { x: this.regX, y: this.regY };
+  
+  // set the new reg point to the center of the bounding box
   this.regX = this._rotateHandle.x = this.boundary.getCenter().x;
   this.regY = this._rotateHandle.y = this.boundary.getCenter().y;
+  
+  // determine the reg point difference and set position
   var regDiff = { x: this.regX-oldReg.x, y: this.regY-oldReg.y };
   this.x += regDiff.x;
   this.y += regDiff.y;
   
+  // notify that a piece has been added
   this._puzzle.pieceAdded.notify({ piece : p });
-  return this._pieces;
+  return this;
 }
 
+/*
+ * Sets the position of the piece container
+ * @method movePiece
+ * @param {int} x The x position to move the piece container to
+ * @param {int} y The y position to move the piece container to
+ * @returns {PieceContainer} This piece container
+ **/
 pc.movePiece = function(x,y) {
+	// set the position
 	this.x = x;
 	this.y = y;
-	this.setBoundary();
+	
+	// update the boundary
+	this.boundary.top = this.y-this.boundary.height/2;
+	this.boundary.left = this.x-this.boundary.width/2;
+	this.boundary.bottom = this.y+this.boundary.height/2;
+	this.boundary.right = this.x+this.boundary.width/2;
+	return this;
 }
 
+/*
+ * Sets the rotation of the piece container
+ * @method rotatePiece
+ * @param {Event} The rotate handle drag event
+ * @returns {PieceContainer} This piece container
+ **/
 pc.rotatePiece = function(e) {
 	this.rotation = e.start + ((e.stageX-e.offset.x)+(e.stageY-e.offset.y));
-	this.parent._needsUpdate = true;
-	this.setBoundary();
+	return this;
 }
-	
+
+/*
+ * Removes a piece from the container
+ * @method removePiece
+ * @param {Piece} p The piece to remove from the container
+ * @returns {boolean} true or false depending on if the piece was removed
+ **/
 pc.removePiece = function (p) {
 	for(var i = 0; i < this._pieces.length; i++) {
 		if(this._pieces[i].id == p.id)
 		{
 			this._pieces.remove(i);
 			this._puzzle.pieceRemoved.notify({ piece : p });
-			return this._pieces;
+			return true;
 		}
 	}
 	this.setBoundary();
 	return false;
 }
 
+/*
+ * Adds selected treatments to this PieceContainer
+ * @method selectPiece
+ * @returns {PieceContainer} This piece container
+ **/
 pc.selectPiece = function() {
 	this.addChild(this._rotateHandle);
 	this._selected = true;
 	this._rotateHandle.visible = true;
 	this.parent.addChild(this);
 	this.filters = [new createjs.ColorFilter(1, 1, 0.6, 1)];
+	return this;
 }
-	
+
+/*
+ * Sets a hover filter on the piece container
+ * @method hoverPiece
+ * @returns {PieceContainer} This piece container
+ **/
 pc.hoverPiece = function() {
 	if(!this._selected) {
 		this.filters = [new createjs.ColorFilter(0.8, 1, 0.8, 1)];
 	}
+	return this;
 }
-	
+
+/*
+ * Removes the filters and selected status from a piece if forced.
+ * @method resetPiece
+ * @param {boolean} force Set to true if resetting selected piece
+ * @returns {PieceContainer} this piece container
+ **/
 pc.resetPiece = function(force) {
 	force = typeof force !== 'undefined' ? force : false;
 	if(!this._selected || force) {
@@ -205,59 +330,110 @@ pc.resetPiece = function(force) {
 		this._rotateHandle.visible = false;
 		this.filters = [];
 	}
+	return this;
 }
 
+/*
+ * Goes through all of the pieces in the container and checks if any 
+ * of them are matched with their pair. If there are any matches, the 
+ * pieces are connected.
+ * @method matchPieces
+ * @return {PieceContainer} This piece container
+ **/
 pc.matchPieces = function() {
 	for(var i = 0; i < this._pieces.length; i++) {
 		var matches = this._pieces[i].getMatches();
 		for(var j = 0; j < matches.length; j++) {
-		
-			// get the piece we just connected	
-			var otherPoint = matches[j].getMatch();
-			var thisPoint = matches[j];
-			
 			this._puzzle.connectPointWithMatch(matches[j]);
-
 			debug.log(matches[j], "Match has been made");
 		}
 	}
+	return this;
 }
-	
+
+/*
+ * Determines if this Piece Container is currently selected.
+ * @method isSelected
+ * @return {boolean} True if this piece is selected, false if not
+ **/	
 pc.isSelected = function() {
 	return this._selected;
 }
 
+/*
+ * Goes through every point of every piece within this piece container 
+ * and sets the angle, radius, and offset for the point.
+ * @method updatePoints
+ * @return {PieceContainer} This piece container
+ **/
 pc.updatePoints = function() {
 	for(var i = 0; i < this._pieces.length; i++) {
 		for(var j = 0; j < this._pieces[i]._points.length; j++) {
 			this._pieces[i]._points[j].updatePoint();
 		}
 	}
+	return this;
 }
 
+/*
+ * Goes through every point of every piece within this piece container 
+ * and sets the offset of the point. Does not adjust the angle/radius 
+ * of the point like updatePoints().
+ * @method updatePointsOffset
+ * @return {PieceContainer} This piece container
+ **/
 pc.updatePointsOffset = function() {
 	for(var i = 0; i < this._pieces.length; i++) {
 		for(var j = 0; j < this._pieces[i]._points.length; j++) {
 			this._pieces[i]._points[j].setOffset();
 		}
 	}
+	return this;
 }
 
+/*
+ * Get a string representation of the PieceContainer
+ * @override
+ * @method toString
+ * @this {PieceContainer}
+ * @returns {string} Human-readable representation of this PieceContainer.
+ */
 pc.toString = function() {
+	var b = this.boundary;
+	var pcString = this.name + "\n"
+		+ "Position: " + this.x + "," + this.y + "\n"
+		+ "Rotation:" + this.rotation + "\n"
+		+ "Centre:" + this.regX + "," + this.regY + "\n"
+		+ "Dimensions: " + b.width + "," + b.height + "\n" 
+		+ "Boundary: " + (b.left) + "," + (b.top) + " : " 
+			+ (b.right) + "," + (b.bottom) + "\n";
+	for(var i = 0; i < this._pieces.length; i++) {
+		pcString += this._pieces[i].toString();
+	}
+	
+	return pcString;
+}
+
+/*
+ * Get an html string representation of the PieceContainer
+ * @method toHTMLString
+ * @this {PieceContainer}
+ * @returns {string} HTML representation of this PieceContainer.
+ */
+pc.toHTMLString = function() {
 	var pcString = "<h3>" + this.name + "</h3>"
 		+ "<ul class='properties'>" 
 		+ "<li><span>Position: </span>" + this.x + "," + this.y + "</li>"
 		+ "<li><span>Rotation:</span>" + this.rotation + "</li>"
 		+ "<li><span>Centre: </span>" + this.regX + "," + this.regY + "</li>"
-		+ "<li><span>Dimensions: </span>" + this.boundary.width + "," + this.boundary.height + "</li>"
-		+ "<li><span>Boundaries: </span>" + (this.boundary.left) + "," + (this.boundary.top) + " : " + (this.boundary.right) + "," + (this.boundary.bottom)
-		+ "<li>";
+		+ "<li><span>Dimensions: </span>" + this.boundary.width + "," 
+		+ this.boundary.height + "</li>" + "<li><span>Boundaries: </span>" 
+		+ (this.boundary.left) + "," + (this.boundary.top) + " : " 
+		+ (this.boundary.right) + "," + (this.boundary.bottom) + "<li>";
 	for(var i = 0; i < this._pieces.length; i++) {
-		pcString += this._pieces[i].toString();
+		pcString += this._pieces[i].toHTMLString();
 	}
 	pcString += "</li></ul>";
-	
-	// pcString += this._rotateHandle.toString();
-	
+		
 	return pcString;
 }

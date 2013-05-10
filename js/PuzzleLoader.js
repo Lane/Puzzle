@@ -3,7 +3,7 @@ function PuzzleBuilder() {
 	// create the puzzle
 	this.puzzle = new Puzzle();
 	this.puzzleView = new PuzzleView(this.puzzle);
-	this.puzzleController = new PuzzleController(this.puzzle, this.puzzleView);
+	
 	this.queue = new createjs.LoadQueue();
 	this.pieces = new Array();
 	
@@ -17,6 +17,9 @@ pb = PuzzleBuilder.prototype;
 
 pb.initialize = function() {
 	var that = this;
+	
+	new PuzzleController(this.puzzle, this.puzzleView);
+	
 	createjs.Sound.registerPlugins([createjs.WebAudioPlugin, createjs.FlashPlugin]);
 	createjs.Sound.registerSound("assets/success.mp3|assets/success.ogg", "success");
 	
@@ -30,6 +33,7 @@ pb.loadPuzzle = function(pzl) {
 
 	// load background
 	this.queue.loadManifest(pzl.background);
+	this.queue.loadManifest(pzl.rotateHandle);
 	this.queue.loadManifest(pzl.pieces); // load pieces
 }
 
@@ -40,6 +44,18 @@ pb.fileLoaded = function (event) {
 		var bg = new createjs.Bitmap(item.src);
 		bg.alpha = 0.5;
 		this.puzzle._background = bg;
+	} else if(item.id == "rotate-handle") {
+		var rh = new createjs.Bitmap(item.src);
+	  rh.name = "rotate-handle";
+	  rh.x = 0;
+	  rh.y = 0;
+		rh.regX = rh.image.width/2|0;
+		rh.regY = rh.image.height/2|0;
+	  rh.scaleX = rh.scaleY = rh.scale = 0.25;
+	  rh.type = "rotate-handle";
+	  
+	  this.puzzle._rotateHandle = rh;
+	
 	} else {
 		if (type == createjs.LoadQueue.IMAGE) {
 			this.pieces.push(new Piece({img:event.result, name: item.id}));
