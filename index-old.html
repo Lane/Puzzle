@@ -19,19 +19,20 @@
         <script src="js/vendor/easeljs/filters/ColorFilter.js"></script>
         <script src="js/libs/ba-debug.js"></script>
         <style>
-#debugger {
-	position:absolute; 
-	top:50px; 
-	right:50px;  
-	overflow:auto;
-	padding:0px;
-	background-color: #000;
-	background-color: rgba(0,0,0,0.8);
-	color: #fff;
-	font-family: Monaco, monospace;
-	width: 400px;
-	border-left: 2px solid #000;
-}
+        	#debugger {
+        		position:absolute; 
+        		top:0; 
+        		right:0; 
+        		bottom:0; 
+        		overflow:auto;
+        		padding:0px;
+        		background-color: #000;
+        		background-color: rgba(0,0,0,0.8);
+        		color: #fff;
+        		font-family: Monaco, monospace;
+        		width: 300px;
+        		border-left: 2px solid #000;
+        	}
         	
         	#debugger h2 {
         		margin: 0px;
@@ -99,11 +100,10 @@
         	}
         	
         	#debugger #puzzleDebug {
+        		max-height: 60%;
         		overflow: auto;
         		padding: 0;
         		margin: 0;
-        		max-height: 500px;
-        		
         	}
         	
         	#debugger #puzzleDebug ul li ul li ul{
@@ -145,137 +145,36 @@
       	<div id="loader" style="display:none"></div>
       
       	<div class="canvasHolder">
-      		<canvas id="puzzleCanvas" width="878" height="494"></canvas>
+      		<canvas id="testCanvas" width="1200" height="700"></canvas>
+      	</div>
+      	
+      	<div id="debugger" style="">
+      		<h2>Debugger</h2>
+      		<div id="puzzleDebug">
+      		
+      		</div>
       	</div>
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/libs/jquery-1.9.0.min.js"><\/script>')</script>
-        <script src="js/utils.js"></script>
         <script src="js/Objects/Event.js"></script>
         <script src="js/Objects/Boundary.js"></script>
         <script src="js/Objects/PieceContainer.js"></script>
         <script src="js/Objects/Piece.js"></script>
         <script src="js/Objects/Point.js"></script>
         <script src="js/Objects/RotateHandle.js"></script>
+        
         <script src="js/Model/Puzzle.js"></script>
         <script src="js/View/PuzzleView.js"></script>
-        <script src="js/Controller/PuzzleController.js"></script>        
-        <script src="js/PuzzleBuilder.js"></script>
-        <script>
-       			var puzzle;
-       			
-       			debug.setLevel(0);
-       			//var debugPoints = true;
-       			
-        		$(document).ready(function() {
-      
-        			var TestPuzzle = {
-        				background: { id : "background", src : "assets/layout_grid.gif" },
-        				rotateHandle: { id: "rotate-handle", src : "assets/rotate.png" },
-        				pieces: [
-        					{ id: "300x100", src: "assets/test/300x100.png" },
-        					{ id: "100x300", src: "assets/test/100x300.png" },
-        					{ id: "200x200", src: "assets/test/200x200.png" },
-        					{ id: "100x100", src: "assets/test/100x100.png" }
-        				],
-        				matches: [
-        					[ 
-        						{ piece: "300x100", x: -150, y: 0 		}, 	
-        						{ piece: "100x300", x: -50, 	y: -150 } 
-        					],
-        					[ 
-        						{ piece: "300x100", x: 150, 	y: 0		}, 	
-        						{ piece: "200x200", x: 0, 		y: -100	} 
-        					],
-        					[ 
-        						{ piece: "100x300", x: 50, 	y: -150		}, 	
-        						{ piece: "100x100", x: 0, 		y: 50		} 
-        					],
-        					[ 
-        						{ piece: "200x200", x: 0, 		y: 100	}, 	
-        						{ piece: "100x100", x: 0, 		y: -50	} 
-        					]
-        				]
-        			};
-        			
-        			var HorsePuzzle = {
-        				background: { id : "background", src : "assets/layout_grid.gif" },
-        				rotateHandle: { id: "rotate-handle", src : "assets/rotate.png" },
-        				pieces: [
-        					{ id: "head", src: "assets/horse/head.png" },
-        					{ id: "back-legs", src: "assets/horse/back-legs.png" },
-        					{ id: "front-legs", src: "assets/horse/front-legs.png" },
-        					{ id: "back", src: "assets/horse/back.png" }
-        				],
-        				matches: [
-        					[ 
-        						{ piece: "head", x: -135, y: 60 	}, 	
-        						{ piece: "back", x: 240, 	y: -80 	} 
-        					],
-        					[ 
-        						{ piece: "front-legs", x: -25, 	y: -164	}, 	
-        						{ piece: "back", 			 x: 200, 	y: 85		} 
-        					],
-        					[ 
-        						{ piece: "back-legs", x: 80, 		y: -225	}, 	
-        						{ piece: "back", 			x: -88, 	y: -70	} 
-        					]
-        				]
-        			};
-        			
-        			var DinoPuzzle = {
-        				background: { id : "background", src : "assets/tyrannosaurus/background.jpg" },
-        				rotateHandle: { id: "rotate-handle", src : "assets/rotate.png" },
-        				pieces: [
-        					{ id: "arm", src: "assets/tyrannosaurus/arm.png" },
-        					{ id: "back-ribs", src: "assets/tyrannosaurus/back-ribs.png" },
-        					{ id: "belly-ribs", src: "assets/tyrannosaurus/belly-ribs.png" },
-        					{ id: "hips", src: "assets/tyrannosaurus/hips.png" },
-        					{ id: "leg", src: "assets/tyrannosaurus/leg.png" },
-        					{ id: "neck", src: "assets/tyrannosaurus/neck.png" },
-        					{ id: "skull", src: "assets/tyrannosaurus/skull.png" },
-        					{ id: "tail", src: "assets/tyrannosaurus/tail.png" },
-        				],
-        				matches: [
-        					[ 
-        						{ piece: "skull", x: 45, y: -45 	}, 	
-        						{ piece: "neck", x: -39, 	y: -16 	} 
-        					],
-        					[ 
-        						{ piece: "neck", x: 32, y: 18 	}, 	
-        						{ piece: "back-ribs", x: -80, 	y: -25 	} 
-        					],
-        					[ 
-        						{ piece: "back-ribs", x: -25, y: -35 	}, 	
-        						{ piece: "arm", x: 25, 	y: -60 	} 
-        					],
-        					[ 
-        						{ piece: "back-ribs", x: 75, y: -28 	}, 	
-        						{ piece: "hips", x: -51, y: -50  	} 
-        					],
-        					[ 
-        						{ piece: "hips", x: 2, y: -32 	}, 	
-        						{ piece: "leg", x: -60, y: -120  	} 
-        					],
-        					[ 
-        						{ piece: "hips", x: -70, y: 67 	}, 	
-        						{ piece: "belly-ribs", x: 60, y: 25  	} 
-        					],
-        					[ 
-        						{ piece: "hips", x: 55, y: -40 	}, 	
-        						{ piece: "tail", x: -185, y: -10  	} 
-        					]
-        				]
-        			};
-        			
-        			var loader = new PuzzleBuilder();
-        			
-        			loader.loadPuzzle(DinoPuzzle);
-        			puzzle = loader.puzzle;
+        <script src="js/Controller/PuzzleController.js"></script>
+        
+        <script src="js/main.js"></script>
 
+        <script>
+        		$(document).ready(function() {
+        			
+        			init();
         		});
-        		
-      		
         </script>
     </body>
 </html>
