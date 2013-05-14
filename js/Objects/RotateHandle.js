@@ -1,3 +1,11 @@
+/** 
+ * The control used to rotate a piece
+ *
+ * @constructor
+ * @augments createjs.Bitmap
+ * @param {Object} options The option overrides for the handle, passed to the constructor of createjs.Bitmap
+ */
+
 function RotateHandle(options) {
 	this.initialize(options);
 }
