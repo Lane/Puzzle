@@ -39,74 +39,94 @@ pc.initialize = function(options) {
 	this.x = options.x || 250;
 	this.y = options.y || 250;
 	this._selected = false;
+	this._fixed = false;
 	this.type = "piece-container";
+	
+	// should we fix the piece container?
+	try {
+		this._fixed = options.pieces[0].fixed;
+		if(this._fixed)
+			this.cursor = "arrow";
+	} catch(err) {
+		console.log(err);
+		this._fixed = false;
+	}
+	
+	if(!this._fixed) {
+		this.alpha = 0.65;
+	}
 	
 	for(var i=0; i < this._pieces.length; i++) {
 		if(typeof(this._pieces[i].parent) == "undefined" 
 			|| this._pieces[i].parent == null) {
 			this._pieces[i].parent = this;
+			if(this._pieces[i].parentX != 0 || this._pieces[i].parentY != 0) {
+				this.x = this._pieces[i].parentX;
+				this.y = this._pieces[i].parentY;
+			}
 		}
 	}
 	
 	var _this = this;
-	
-	// Piece container interaction events
-	this.addEventListener("mouseover", function(event) { 
-		_this._puzzle.mouseOverPiece.notify({ 
-			event: event, 
-			pieceContainer: _this
-		});
-	});
-	
-	this.addEventListener("mouseout", function(event) { 
-		_this._puzzle.mouseOutPiece.notify({ 
-			event: event, 
-			pieceContainer: _this
-		});
-	});
-	
-	this.addEventListener("mousedown", function(event) {
-	
-		var pc = event.target;
-		var offset = {x:pc.x-event.stageX, y:pc.y-event.stageY};
-		var ob = pc.parent.getObjectUnderPoint(event.stageX, event.stageY);
-		
-		// if the user pressed down on a piece
-		if(ob.type !== null) {
-			if(ob.type == "piece") {
-				event.addEventListener("mousemove", function(evt) {
-					evt.offset = offset;
-					_this._puzzle.dragPiece.notify({ 
-						event: evt, 
-						pieceContainer: _this
-					});
-				});
-			}
-			
-			// if the user pressed down on the rotate handle
-			if(ob.type == "rotate-handle") {
-				var start = ob.parent.rotation;
-				offset = {x:event.stageX, y:event.stageY};
-				event.addEventListener("mousemove", function(evt) {
-					evt.offset = offset;
-					evt.start = start;
-					_this._puzzle.dragRotateHandle.notify({ 
-						event: evt, 
-						pieceContainer: _this
-					});
-				});
-			}
-		}
-		
-		// check if any pieces match once the user lets go
-		event.addEventListener("mouseup", function(evt) {
-			_this._puzzle.releasePiece.notify({ 
-				event: evt, 
+	if(!this._fixed) {
+		// Piece container interaction events
+		this.addEventListener("mouseover", function(event) { 
+			_this._puzzle.mouseOverPiece.notify({ 
+				event: event, 
 				pieceContainer: _this
 			});
 		});
 		
-	});
+		this.addEventListener("mouseout", function(event) { 
+			_this._puzzle.mouseOutPiece.notify({ 
+				event: event, 
+				pieceContainer: _this
+			});
+		});
+		
+		this.addEventListener("mousedown", function(event) {
+		
+			var pc = event.target;
+			var offset = {x:pc.x-event.stageX, y:pc.y-event.stageY};
+			var ob = pc.parent.getObjectUnderPoint(event.stageX, event.stageY);
+			
+			// if the user pressed down on a piece
+			if(ob.type !== null) {
+				if(ob.type == "piece") {
+					event.addEventListener("mousemove", function(evt) {
+						evt.offset = offset;
+						_this._puzzle.dragPiece.notify({ 
+							event: evt, 
+							pieceContainer: _this
+						});
+					});
+				}
+				
+				// if the user pressed down on the rotate handle
+				if(ob.type == "rotate-handle") {
+					var start = ob.parent.rotation;
+					offset = {x:event.stageX, y:event.stageY};
+					event.addEventListener("mousemove", function(evt) {
+						evt.offset = offset;
+						evt.start = start;
+						_this._puzzle.dragRotateHandle.notify({ 
+							event: evt, 
+							pieceContainer: _this
+						});
+					});
+				}
+			}
+			
+			// check if any pieces match once the user lets go
+			event.addEventListener("mouseup", function(evt) {
+				_this._puzzle.releasePiece.notify({ 
+					event: evt, 
+					pieceContainer: _this
+				});
+			});
+			
+		});
+	}
 	
 	this.setBoundary();
 	
@@ -376,6 +396,10 @@ pc.snapToMatch = function() {
  **/	
 pc.isSelected = function() {
 	return this._selected;
+}
+
+pc.isFixed = function() {
+	return this._fixed;
 }
 
 /**

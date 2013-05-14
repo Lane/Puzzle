@@ -51,7 +51,11 @@ pb.loadPuzzle = function(pzl) {
 
 	// load background
 	this._queue.loadManifest(pzl.background);
+	if(typeof(pzl.rotateHandle) !== "undefined")
+		pzl.rotateHandle = { id: "rotate-handle", src : "assets/rotate.png" };
+	
 	this._queue.loadManifest(pzl.rotateHandle);
+
 	this._queue.loadManifest(pzl.pieces); // load pieces
 	
 }
@@ -81,7 +85,13 @@ pb.fileLoaded = function (event) {
 	
 	} else {
 		if (type == createjs.LoadQueue.IMAGE) {
-			this._pieces.push(new Piece({img:event.result, name: item.id}));
+			this._pieces.push(new Piece({
+				img:event.result, 
+				name: item.id, 
+				fixed:item.fixed, 
+				parentX:item.x, 
+				parentY:item.y
+			}));
 		}
 	}
 	debug.log("File loaded", event);

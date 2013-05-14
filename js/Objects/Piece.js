@@ -21,6 +21,12 @@ function Piece(options) {
 
 	this.y = options.y || 0;
 	
+	if(typeof(options.fixed) !== "undefined")
+		this.fixed = true;
+		
+	this.parentX = options.parentX || 0;
+	this.parentY = options.parentY || 0;
+	
 	this.type = "piece";
 	
 	if(options.name !== null)

@@ -207,9 +207,9 @@ pz.connectPointWithMatch = function(pt) {
 	
 	// merge the piece containers
 	this.mergePieceContainers(
-		staticPoint.piece.getParentPieceContainer(), 
 		movedPoint.piece.getParentPieceContainer(), 
-		pt
+		staticPoint.piece.getParentPieceContainer(),
+		pt.getMatch()
 	);
 	
 	// remove the matched points from the pieces

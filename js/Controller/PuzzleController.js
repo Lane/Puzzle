@@ -47,7 +47,8 @@ ctrl.pressedOnPieceContainer = function(sender, args) {
 		clickedOn = args.piece.getParentPieceContainer();
 	}
 	if(clickedOn.type == "piece-container") {
-		this._model.setSelectedPiece(clickedOn);
+		if(!clickedOn.isFixed())
+			this._model.setSelectedPiece(clickedOn);
 	}
 	debug.log(args, "Clicked on an object");
 };
