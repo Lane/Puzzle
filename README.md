@@ -12,6 +12,9 @@ Currently being developed for use in Udacity's Dino 101 MOOC.
 
 To create a puzzle, create a new PuzzleBuilder and call the loadPuzzle function with a JSON Puzzle object.
 
+    var loader = new PuzzleBuilder();
+    loader.loadPuzzle(PuzzleObject);
+
 ### Puzzle JSON Object
 
 At minimum, the Puzzle in JSON format will consist of the background, the pieces of the puzzle, and where the matches are made in the puzzle.  A match consists two points, and each point contains a piece and the x and y offset from the origin (center) of the piece where the points will connect with each other.
