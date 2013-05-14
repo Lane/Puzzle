@@ -3,13 +3,8 @@
 
 # TEAM
 
-    <name> -- <role> -- <twitter>
-
-# THANKS
-
-    <name>
+    Lane Olson -- Application Developer -- @laneolson
 
 # TECHNOLOGY COLOPHON
 
-    HTML5, CSS3
-    Normalize.css, jQuery, Modernizr
+    HTML5, CSS3, CreateJS
