@@ -15,6 +15,11 @@ function PuzzleBuilder() {
 	// create the puzzle
 	this.puzzle = new Puzzle();
 	this.puzzleView = new PuzzleView(this.puzzle);
+	this.puzzleController = new PuzzleController(this.puzzle, this.puzzleView);
+	
+	this.fileLoaded = new Event(this);
+	this.puzzleLoaded = new Event(this);
+	this.progressChange = new Event(this);
 	
 	this._queue = new createjs.LoadQueue();
 	this._pieces = new Array();
@@ -23,21 +28,40 @@ function PuzzleBuilder() {
 
 	this.initialize();
 
-}
+};
 
 pb = PuzzleBuilder.prototype;
 
 pb.initialize = function() {
-	var that = this;
+	var _this = this;
 	
-	new PuzzleController(this.puzzle, this.puzzleView);
+	this.fileLoaded.attach(this.handleFileLoad.bind(this));
+	this.puzzleLoaded.attach(this.handlePuzzleLoad.bind(this));
 	
+	this._queue.installPlugin(createjs.Sound);
 	createjs.Sound.registerPlugins([createjs.WebAudioPlugin, createjs.FlashPlugin]);
 	createjs.Sound.registerSound("assets/success.mp3|assets/success.ogg", "success");
 	
-	this._queue.addEventListener("complete", this.doneLoading.bind(this));
-	this._queue.addEventListener("fileload", this.fileLoaded.bind(this));
-}
+	this._queue.addEventListener("complete", function(event) { 
+		_this.puzzleLoaded.notify({ 
+			event: event
+		});
+	});
+	
+	this._queue.addEventListener("fileload", function(evt) { 
+		_this.fileLoaded.notify({ 
+			event: evt
+		});
+	});
+	
+	this._queue.addEventListener("progress", function(evt) { 
+		_this.progressChange.notify({ 
+			event: evt
+		});
+	});
+	
+	
+};
 
 /**
  * Takes a JSON representation of a puzzle and adds all the assets to the 
@@ -58,15 +82,15 @@ pb.loadPuzzle = function(pzl) {
 
 	this._queue.loadManifest(pzl.pieces); // load pieces
 	
-}
+};
 
 /**
  * Callback function that executes after every file that loads from the queue
- * @method PuzzleBuilder.fileLoaded
+ * @method PuzzleBuilder.handleFileLoad
  * @param {Object} event The file load event
  */
-pb.fileLoaded = function (event) {
-	var item = event.item; // A reference to the item that was passed in
+pb.handleFileLoad = function (sender, args) {
+	var item = args.event.item; // A reference to the item that was passed in
 	var type = item.type;
 	if(item.id == "background") {
 		var bg = new createjs.Bitmap(item.src);
@@ -86,7 +110,7 @@ pb.fileLoaded = function (event) {
 	} else {
 		if (type == createjs.LoadQueue.IMAGE) {
 			this._pieces.push(new Piece({
-				img:event.result, 
+				img:args.event.result, 
 				name: item.id, 
 				fixed:item.fixed, 
 				parentX:item.x, 
@@ -94,8 +118,21 @@ pb.fileLoaded = function (event) {
 			}));
 		}
 	}
-	debug.log("File loaded", event);
-}
+	debug.log("File loaded", args.event);
+};
+
+
+pb.getPuzzleView = function() {
+	return this.puzzleView;
+};
+
+pb.getPuzzle = function() {
+	return this.puzzle;
+};
+
+pb.getLoadingProgress = function() {
+	return this._queue.progress;
+};
 
 /**
  * Callback function that executes after all files in the manifest have loaded.
@@ -104,17 +141,16 @@ pb.fileLoaded = function (event) {
  * function also sets the matches of all the pieces, as defined in the 
  * loadObject.
  *
- * @method PuzzleBuilder.doneLoading
+ * @method PuzzleBuilder.handlePuzzleLoad
  * @param {Object} event The finished loading event
  */
-pb.doneLoading = function(event) {
+pb.handlePuzzleLoad = function(sender, args) {
 
 	var pzl = this._loadObject;
 
 	while((p=this._pieces.pop()) != null) {
 		var options = {};
 		options.pieces = [p];
-		console.log(p);
 		options.x = p.regX+Math.round(Math.random()*(this.puzzle.getCanvas().width-p.image.width));
 		options.y = p.regY+Math.round(Math.random()*(this.puzzle.getCanvas().height-p.image.height));
 		this.puzzle.addPieceContainer(new PieceContainer(options));
@@ -149,4 +185,4 @@ pb.doneLoading = function(event) {
 		createjs.Ticker.setPaused(false);
 		createjs.Ticker.addEventListener("tick", that.puzzleView.update.bind(that.puzzleView));
 	}
-}
+};

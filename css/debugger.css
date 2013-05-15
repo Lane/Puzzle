@@ -1,0 +1,115 @@
+#debugger {
+	position:absolute; 
+	top:50px; 
+	right:50px;  
+	overflow:auto;
+	padding:0px;
+	background-color: #000;
+	background-color: rgba(0,0,0,0.8);
+	color: #fff;
+	font-family: Monaco, monospace;
+	width: 400px;
+	border-left: 2px solid #000;
+}
+
+#debugger h2 {
+	margin: 0px;
+	padding: 10px;
+	font-size: 18px;
+	background: rgba(0,0,0,0.35);
+	border-top: 1px solid rgba(0,0,0,0.35);
+	border-bottom: 1px solid rgba(0,0,0,0.35);
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+
+#debugger h3 {
+	font-size: 16px;
+	margin: 0;
+	padding: 10px;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	background: rgba(255,255,255,0.2);
+}
+
+#debugger li.selected-piece h3:after {
+	content: " (selected)";
+	color: rgba(255,255,255,0.5);
+}
+
+#debugger li.selected-piece h4:after {
+	content: " (piece)";
+	color: rgba(255,255,255,0.5);
+}
+
+#debugger h4 {
+	font-size: 14px;
+	margin: 0px -10px 0px -10px;
+	padding: 10px;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	background: rgba(255,255,255,0.05);
+	border-bottom:  1px solid rgba(0,0,0,0.35);
+}
+
+#debugger h4:first-child {
+	margin-top: -5px;
+}
+
+#debugger h3 + ul {
+
+}
+
+#debugger h4 + ul {
+
+}
+
+#debugger ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+#debugger ul li ul, 
+#debugger ul li ul li ul {
+	border-bottom-width: 0px;
+}
+
+#debugger ul.properties {
+	font-size: 14px;
+}
+
+#debugger #puzzleDebug {
+	overflow: auto;
+	padding: 0;
+	margin: 0;
+	max-height: 500px;
+	
+}
+
+#debugger #puzzleDebug ul li ul li ul{
+	margin-left: -10px;
+	margin-right: -10px;
+}
+
+#debugger #eventList {
+	max-height: 30%;
+	overflow: auto;
+	font-size: 14px;
+	border-bottom: 1px solid #000;
+}
+
+#debugger #eventList li,
+#debugger ul.properties li {
+	border-bottom: 1px solid rgba(0,0,0,0.15);
+	padding: 4px 10px;
+	margin: 0px;
+	border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+#debugger #eventList li:nth-child(odd),
+#debugger ul.properties li:nth-child(odd) {
+	background-color: rgba(0,0,0,0.1);
+}
+
+#debugger .no-pieces {
+	padding: 10px;
+}

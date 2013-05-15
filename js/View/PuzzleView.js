@@ -83,6 +83,10 @@ pv.updatePieceContainer = function(pc) {
 	}
 	this._stage._needsUpdate = true;
 };
+
+pv.resizePuzzle = function(width, height) {
+	// scale the puzzle to width / height
+};
   
 pv.removePieceContainers = function() {
 	for(var i = 0; i < this._stage.children.length; i++) {
