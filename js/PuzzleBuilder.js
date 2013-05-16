@@ -36,7 +36,7 @@ pb.initialize = function() {
 	var _this = this;
 	
 	this.fileLoaded.attach(this.handleFileLoad.bind(this));
-	this.puzzleLoaded.attach(this.handlePuzzleLoad.bind(this));
+	//this.puzzleLoaded.attach(this.handlePuzzleLoad.bind(this));
 	
 	this._queue.installPlugin(createjs.Sound);
 	createjs.Sound.registerPlugins([createjs.WebAudioPlugin, createjs.FlashPlugin]);
@@ -95,6 +95,9 @@ pb.handleFileLoad = function (sender, args) {
 	if(item.id == "background") {
 		var bg = new createjs.Bitmap(item.src);
 		this.puzzle._background = bg;
+		this.puzzle.setAspectRatio(bg.image.width/bg.image.height);
+		this.puzzle._canvas.width = bg.image.width;
+		this.puzzle._canvas.height = bg.image.height;
 	} else if(item.id == "rotate-handle") {
 		var rh = new createjs.Bitmap(item.src);
 	  rh.name = "rotate-handle";

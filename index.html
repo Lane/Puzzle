@@ -26,7 +26,7 @@
         <![endif]-->
       
       	<div id="fullscreen" class="canvasHolder">
-      		<canvas id="puzzleCanvas" width="878" height="494"></canvas>
+      		<canvas id="puzzleCanvas"></canvas>
       		<div id="interface">
       			<h1>Build a Tyrannosaurus</h1>
       			<div class="welcome-body">
@@ -35,17 +35,16 @@
 	      				The following screen contains an interactive 2D puzzle.  The hips of the Tyrannosaurus are already in place, move and rotate the other pieces of the puzzle into place to rebuild the Tyrannosaurus. 
 	      			</p>
       			</div>
-      			<div id="loader"> 
       			
-      				<div id="progress-bar"></div>
-      			
-      			</div>
       			<div class="action-row">
+      				<div id="loader"> 
+      					<div id="progress-bar"></div>
+      				</div>
       				<a id="start" href="#" class="btn btn-start btn-disabled">Loading</a>
       			</div>
       		</div>
       		<div id="nav">
-      			<a id="help" href="#" class="btn btn-hint">Hint</a>
+      			<a id="help" href="#" class="btn btn-hint">Need a Hint?</a>
       		</div>
       		<p id="piece-label" class="inactive"></p>
       	</div>
@@ -217,9 +216,18 @@
         			
         			startButton.onclick = function(event) {
         				holder.className = "canvasHolder started";
+        				loader.handlePuzzleLoad();
+        				holder.style.width = window.innerWidth+'px';
+        				loader.getPuzzleView().resizePuzzle(window.innerWidth, window.innerHeight);
         			};
         			
         			puzzle = loader.puzzle;
+        			
+      				window.onresize = function(event) {
+      					holder.style.width = window.innerWidth+'px';
+      					loader.getPuzzleView().resizePuzzle(window.innerWidth, window.innerHeight);
+      				}
+        			
         			
         			/*
         			var e = document.getElementById("toggle");

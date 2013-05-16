@@ -9,11 +9,10 @@ body {
 }
 
 .canvasHolder {
-	width: 878px;
-	height: 494px;
+	width: 100%;
+	padding-bottom: 56.26423690205%;
 	overflow: hidden;
 	position: relative;
-	display: inline-block;
 }
 
 #interface {
@@ -25,9 +24,14 @@ body {
 	bottom: 0;
 	right: 0;
 	text-shadow:  0px 1px 4px #000;
-	transition: opacity ease-in-out 0.5s;
+	transition: opacity 0.5s ease-in-out;
 }
 
+canvas {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
 
 
 h1 {
@@ -76,7 +80,7 @@ h1 {
 	width: 8em;
 	text-align: center;
 	margin-right: 0;
-	transition: all ease-in-out 1s;
+	transition: all 1s ease-in-out;
 }
 
 .btn-help {
@@ -100,14 +104,13 @@ h1 {
 	 opacity: 0.65;
 	 font-size: 0.65em;
 	 position: relative;
-	 top: 6.15em;
+	 bottom: 2em;
 }
 
 #nav {
 	position: absolute;
 	right: 0.5em;
 	bottom: -4em;
-	transition: all 0.4s ease-in-out;
 }
 
 #nav .btn-hint {
@@ -122,9 +125,14 @@ h1 {
 	background: #ffefbf;
 	display: block;
 	line-height: 0;
-	height: 0.3em;
+	height: 0.5em;
 	width: 0%;
-	transition: width ease-in-out 1s;
+	transition: all 0.5s ease-in-out;
+}
+
+#piece-label {
+	display: none;
+	pointer-events: none;
 }
 
 .canvasHolder.started #interface {
@@ -135,11 +143,6 @@ h1 {
 .canvasHolder.started #nav {
 	right: 0.5em;
 	bottom: 0.5em;
-}
-
-#piece-label {
-	display: none;
-	pointer-events: none;
 }
 
 .canvasHolder.started #piece-label {

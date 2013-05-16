@@ -85,7 +85,21 @@ pv.updatePieceContainer = function(pc) {
 };
 
 pv.resizePuzzle = function(width, height) {
+
+	if(typeof(this._stage.scaleX) == "undefined")
+	{
+		this._stage.scaleX = this._stage.scaleY = 1;
+	}
+
 	// scale the puzzle to width / height
+	var bgWidth = this._model._background.image.width*this._stage.scaleX;
+	var scaleAmount = this._stage.canvas.width/bgWidth;
+	
+	this._stage.canvas.style.width = width+'px';
+	this._stage.canvas.style.height = width/this._model.getAspectRatio()+'px';
+	
+	this._stage.scaleX = this._stage.scaleY = scaleAmount;
+	this._stage._needsUpdate = true;
 };
   
 pv.removePieceContainers = function() {
@@ -103,22 +117,24 @@ pv.buildPuzzle = function () {
 	this._stage._needsUpdate = true;
 	if(this._model._background !== null)
 		this._stage.addChild(this._model._background);
-		
+	
+	// add fixed pieces first so they are on the bottom, refactor this	
 	for(var i = 0; i < this._model._pieceContainers.length; i++) {
-		for(var j = 0; j < this._model._pieceContainers[i]._pieces.length; j++) {
-			this._model._pieceContainers[i].addChild(this._model._pieceContainers[i]._pieces[j]);
-			if(typeof(debugPoints) !== "undefined") {
-				for(var k = 0; k < this._model._pieceContainers[i]._pieces[j]._points.length; k++) {
-					var pCircle = new createjs.Shape();
-					var p = this._model._pieceContainers[i]._pieces[j]._points[k];
-					pCircle.graphics.beginFill("red").drawCircle(0, 0, 5);
-					pCircle.x = p.x+p.piece.x;
-					pCircle.y = p.y+p.piece.y;
-					p.piece.getParentPieceContainer().addChild(pCircle);
-				}
+		if(this._model._pieceContainers[i].isFixed()) {
+			for(var j = 0; j < this._model._pieceContainers[i]._pieces.length; j++) {
+				this._model._pieceContainers[i].addChild(this._model._pieceContainers[i]._pieces[j]);
 			}
+			this._stage.addChild(this._model._pieceContainers[i]);
 		}
-		this._stage.addChild(this._model._pieceContainers[i]);
+	}
+	// add unfixed pieces
+	for(var i = 0; i < this._model._pieceContainers.length; i++) {
+		if(!this._model._pieceContainers[i].isFixed()) {
+			for(var j = 0; j < this._model._pieceContainers[i]._pieces.length; j++) {
+				this._model._pieceContainers[i].addChild(this._model._pieceContainers[i]._pieces[j]);
+			}
+			this._stage.addChild(this._model._pieceContainers[i]);
+		}
 	}
 	this._stage._needsUpdate = true;
 };

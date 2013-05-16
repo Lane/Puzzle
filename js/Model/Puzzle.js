@@ -24,6 +24,8 @@ function Puzzle(canvas, pieceContainers) {
 
 	this._selectedPiece = null;
 	
+	this._aspectRatio = 16/9;
+	
 	this.initialize();
 };
 
@@ -140,6 +142,10 @@ pz.getCanvas = function() {
 	return this._canvas;
 }
 
+pz.getAspectRatio = function() {
+	return this._aspectRatio;
+}
+
 // SETTERS
 // ----------------------------
 
@@ -166,6 +172,10 @@ pz.setSelectedPiece = function (pc) {
   	}
   });
 };
+
+pz.setAspectRatio = function(ratio) {
+	this._aspectRatio = ratio;
+}
 
 // FUNCTIONS
 // ----------------------------
