@@ -44,7 +44,7 @@
       			</div>
       		</div>
       		<div id="nav">
-      			<a id="help" href="#" class="btn btn-hint">Need a Hint?</a>
+      			<a id="toggle" href="#" class="btn btn-hint">Fullscreen</a>
       		</div>
       		<p id="piece-label" class="inactive"></p>
       	</div>
@@ -229,7 +229,7 @@
       				}
         			
         			
-        			/*
+        			
         			var e = document.getElementById("toggle");
         			
         			e.onclick = function() {
@@ -237,10 +237,10 @@
 	        				RunPrefixMethod(document, "CancelFullScreen");
 	        			}
 	        			else {
-	        				RunPrefixMethod(document.getElementById("puzzleCanvas"), "RequestFullScreen");
+	        				RunPrefixMethod(holder, "RequestFullScreen");
 	        			}
 							}
-							*/
+							
         		});
         		
       		
