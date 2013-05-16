@@ -44,7 +44,7 @@
       			</div>
       		</div>
       		<div id="nav">
-      			<a id="toggle" href="#" class="btn btn-hint">Fullscreen</a>
+      			<a id="fstoggle" href="#" class="btn btn-hint">Fullscreen</a>
       		</div>
       		<p id="piece-label" class="inactive"></p>
       	</div>
@@ -64,6 +64,59 @@
         <script src="js/PuzzleBuilder.js"></script>
         <script>
        			var puzzle;
+       			
+       			(function() {
+       			    var fullScreenApi = {
+       			            supportsFullScreen: false,
+       			            isFullScreen: function() { return false; },
+       			            requestFullScreen: function() {},
+       			            cancelFullScreen: function() {},
+       			            fullScreenEventName: '-',
+       			            prefix: ''
+       			        },
+       			        browserPrefixes = 'webkit moz o ms'.split(' ');
+       			 
+       			    // check for current native support
+       			    if (typeof document.exitFullscreen != 'undefined') {
+       			        fullScreenApi.supportsFullScreen = true;
+       			    // check for draft native support
+       			    } else if (typeof document.cancelFullScreen != 'undefined') {
+       			        fullScreenApi.supportsFullScreen = true;
+       			    } else {
+       			        // check for fullscreen support by vendor prefix
+       			        for (var i = 0, il = browserPrefixes.length; i < il; i++ ) {
+       			            fullScreenApi.prefix = browserPrefixes[i];
+       			            if (typeof document[fullScreenApi.prefix + 'CancelFullScreen' ] != 'undefined' ) {
+       			                fullScreenApi.supportsFullScreen = true;
+       			                break;
+       			            }
+       			        }
+       			    }
+       			
+       			    // update methods to do something useful
+       			    if (fullScreenApi.supportsFullScreen) {
+       			        fullScreenApi.fullScreenEventName = fullScreenApi.prefix + 'fullscreenchange';
+       			        fullScreenApi.isFullScreen = function() {
+       			            switch (this.prefix) {
+       			                case '':
+       			                    return document.fullScreen;
+       			                case 'webkit':
+       			                    return document.webkitIsFullScreen;
+       			                default:
+       			                    return document[this.prefix + 'FullScreen'];
+       			            }
+       			        }
+       			        fullScreenApi.requestFullScreen = function(el) {
+       			            return (this.prefix === '') ? el.requestFullScreen() : el[this.prefix + 'RequestFullScreen']();
+       			        }
+       			        fullScreenApi.cancelFullScreen = function(el) {
+       			            return (this.prefix === '') ? document.cancelFullScreen() : document[this.prefix + 'CancelFullScreen']();
+       			        }
+       			    }
+       			
+       			    // export api
+       			    window.fullScreenApi = fullScreenApi;
+       			})();
        			
        			var pfx = ["webkit", "moz", "ms", "o", ""];
        			function RunPrefixMethod(obj, method) {
@@ -191,6 +244,8 @@
         			var startButton = document.getElementById("start");
         			var holder = document.getElementById("fullscreen");
         			var pieceLabel = document.getElementById("piece-label");
+        			var fstoggle = document.getElementById("fstoggle");
+        			
         			
         			loader.loadPuzzle(DinoPuzzle);
         			
@@ -219,6 +274,9 @@
         				loader.handlePuzzleLoad();
         				holder.style.width = window.innerWidth+'px';
         				loader.getPuzzleView().resizePuzzle(window.innerWidth, window.innerHeight);
+        				if(!fullScreenApi.supportsFullScreen) {
+        					fstoggle.style.display = "none";
+        				}
         			};
         			
         			puzzle = loader.puzzle;
@@ -230,9 +288,8 @@
         			
         			
         			
-        			var e = document.getElementById("toggle");
         			
-        			e.onclick = function() {
+        			fstoggle.onclick = function() {
 	        			if (RunPrefixMethod(document, "FullScreen") || RunPrefixMethod(document, "IsFullScreen")) {
 	        				RunPrefixMethod(document, "CancelFullScreen");
 	        			}
