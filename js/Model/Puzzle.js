@@ -155,7 +155,9 @@ pz.setSelectedPiece = function (pc) {
 		oldPiece.resetPiece(true);
 	
   this._selectedPiece = pc;
-  this._selectedPiece.selectPiece();
+  if(pc !== null)
+  	this._selectedPiece.selectPiece();
+  	
   this.selectedPieceChanged.notify({ 
   	oldPiece : oldPiece,
   	newPiece : this._selectedPiece,

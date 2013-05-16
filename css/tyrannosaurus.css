@@ -4,6 +4,16 @@ body {
 	font-size: 1.2em;
 	line-height: 1.42em;
 	font-family: sans-serif;
+	margin: 0;
+	padding: 0;
+}
+
+.canvasHolder {
+	width: 878px;
+	height: 494px;
+	overflow: hidden;
+	position: relative;
+	display: inline-block;
 }
 
 #interface {
@@ -18,10 +28,7 @@ body {
 	transition: opacity ease-in-out 0.5s;
 }
 
-#interface.started {
-	opacity: 0;
-	pointer-events: none;
-}
+
 
 h1 {
 	padding: 0em 0em 0.8em 0;
@@ -33,11 +40,6 @@ h1 {
 	float:  left;
 	width:  40%;
 	margin-right:  2em;
-}
-
-.canvasHolder {
-	position: relative;
-	display: inline-block;
 }
 
 .action-row {
@@ -71,6 +73,8 @@ h1 {
 }
 
 .btn-start {
+	width: 8em;
+	text-align: center;
 	margin-right: 0;
 	transition: all ease-in-out 1s;
 }
@@ -96,7 +100,21 @@ h1 {
 	 opacity: 0.65;
 	 font-size: 0.65em;
 	 position: relative;
-	 top: 7.25em;
+	 top: 6.15em;
+}
+
+#nav {
+	position: absolute;
+	right: 0.5em;
+	bottom: -4em;
+	transition: all 0.4s ease-in-out;
+}
+
+#nav .btn-hint {
+	font-size: 0.65em;
+	padding: 1.3em 1em;
+	color: #ffefbf;
+	background: rgba(0,0,0,0.6);
 }
 
 #progress-bar {
@@ -104,7 +122,43 @@ h1 {
 	background: #ffefbf;
 	display: block;
 	line-height: 0;
-	height: 5px;
+	height: 0.3em;
 	width: 0%;
 	transition: width ease-in-out 1s;
+}
+
+.canvasHolder.started #interface {
+	opacity: 0;
+	pointer-events: none;
+}
+
+.canvasHolder.started #nav {
+	right: 0.5em;
+	bottom: 0.5em;
+}
+
+#piece-label {
+	display: none;
+	pointer-events: none;
+}
+
+.canvasHolder.started #piece-label {
+	display: inline-block;
+	position: absolute;
+	font-size: 0.75em;
+	padding: 0.8em 1em;
+	color: #ffefbf;
+	background: rgba(0,0,0,0.6);
+	left: 1em;
+	transition: bottom 0.1s ease-in-out;
+	font-weight:bold;
+	border-radius: 5px;
+}
+
+.canvasHolder.started #piece-label.active {
+	bottom: 0em;
+}
+
+.canvasHolder.started #piece-label.inactive {
+	bottom: -5em;
 }

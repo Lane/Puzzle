@@ -187,6 +187,24 @@ pc.getPieces = function () {
 }
 
 /**
+ * Gets the pieces inside this piece container
+ * @method PieceContainer.getPieces
+ * @returns {Array} An array of pieces inside this container
+ **/
+pc.getPieceString = function () {
+	var ps = "";
+	if(this._pieces.length == 1)
+		return this._pieces[0].displayName;
+	for(var i = 0; i < this._pieces.length; i++) {
+		if(i !== (this._pieces.length-1))
+  		ps += this._pieces[i].displayName + ", ";
+  	else 
+  		ps += "and " + this._pieces[i].displayName;
+  }
+  return ps;
+}
+
+/**
  * Gets the bounding box of this piece container relative to the stage
  * @method PieceContainer.getBoundingBox
  * @returns {Boundary} The boundary relative to the stage

@@ -21,6 +21,8 @@ function Piece(options) {
 
 	this.y = options.y || 0;
 	
+	this.displayName = options.displayName || "Unnamed Piece";
+	
 	if(typeof(options.fixed) !== "undefined")
 		this.fixed = true;
 		

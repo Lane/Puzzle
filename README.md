@@ -39,3 +39,12 @@ Here is a sample puzzle object:
         ]
       ]
     };
+    
+### Fixing a piece
+
+Sometimes, you may not want all of the piece to be manipulated. If that's the case you can set the fixed option to true along with a location to fix a piece.
+
+		pieces: [
+		  { id: "fixed-piece", src: "assets/fixed-piece.png", fixed: true, x:400, y:200 }
+		]
+

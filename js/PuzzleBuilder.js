@@ -112,6 +112,7 @@ pb.handleFileLoad = function (sender, args) {
 			this._pieces.push(new Piece({
 				img:args.event.result, 
 				name: item.id, 
+				displayName: item.name,
 				fixed:item.fixed, 
 				parentX:item.x, 
 				parentY:item.y

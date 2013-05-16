@@ -88,6 +88,7 @@ ctrl.selectedPieceChanged = function(sender, args) {
 
 ctrl.pointsConnected = function(sender, args) {
 	this._view.updatePieceContainer(args.pieceContainer);
+	this._model.setSelectedPiece(null);
 	debug.log(args, "Points connected");
 };
 
