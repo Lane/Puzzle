@@ -223,6 +223,10 @@
         				}
         			});
         			
+        			loader.getPuzzle().puzzleComplete.attach(function(sender,args) {
+        				hintToggle.style.opacity = 0;
+        			});
+        			
         			startButton.onclick = function(event) {
         				holder.className = "canvasHolder started";
         				loader.handlePuzzleLoad();

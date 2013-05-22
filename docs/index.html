@@ -45,7 +45,7 @@
 
 <p>Currently being developed for use in Udacity&#39;s Dino 101 MOOC.</p>
 
-<ul><li><a href="http://lane.github.io/Puzzle/docs">Documentation Index</a></li><li><a href="http://www.github.com/lane/Puzzle">Github</a></li><li><a href="https://docs.google.com/file/d/0B4VUfBUaBqbHRzRzQzJEOFg0Zjg/edit?usp=sharing">Class Diagram</a></li><li><a href="http://lane.github.io/Puzzle">Development Preview</a></li><li><a href="http://lane.github.io/Puzzle/test.html">Unit Tests</a></li></ul>
+<ul><li><a href="http://lane.github.io/Puzzle/docs">Documentation Index</a></li><li><a href="http://www.github.com/lane/Puzzle">Github</a></li><li><a href="https://github.com/Lane/Puzzle/blob/master/docs/img/ClassDiagram.png">Class Diagram</a></li><li><a href="http://lane.github.io/Puzzle">Development Preview</a></li><li><a href="http://lane.github.io/Puzzle/test.html">Unit Tests</a></li></ul>
 
 <h2>Creating a Puzzle</h2>
 
@@ -77,7 +77,47 @@ loader.loadPuzzle(PuzzleObject);</code></pre>
       { piece: &quot;piece3&quot;, x: 0,   y: -100	} 
     ]
   ]
-};</code></pre></article>
+};</code></pre>
+
+<h3>Entities</h3>
+
+<h4>Background</h4>
+
+<pre><code>background: { id : &quot;background&quot;, src : &quot;assets/background.jpg&quot; }</code></pre>
+
+<ul><li><strong>id</strong>: Value must be <code>background</code></li><li><strong>src</strong>: The path to the image to use for the background of the puzzle </li></ul>
+
+<h4>Hint</h4>
+
+<p>The hint is an overlay of the completed puzzle.  The user can request a hint, where it will temporarily show a low opacity layer of the completed puzzle.</p>
+
+<pre><code>hint: { id : &quot;hint&quot;, src : &quot;assets/hint.png&quot; }</code></pre>
+
+<ul><li><strong>id</strong>: Value must be <code>hint</code></li><li><strong>src</strong>: The path to the image to use for the puzzle hint</li></ul>
+
+<h4>Sounds</h4>
+
+<p>The puzzle currently consists of two sound clips. One clip, <code>snap</code>, for when a piece &quot;snaps&quot; into place and another clip, <code>success</code>, for when the user has successfully completed the puzzle.  For cross platform support provide an MP3 and OGG of each sound clip.</p>
+
+<pre><code>	sounds: [
+		{ id: &quot;snap&quot;, mp3 : &quot;assets/trex/sounds/thud.mp3&quot;, ogg : &quot;assets/trex/sounds/thud.ogg&quot; },
+		{ id: &quot;success&quot;, mp3 : &quot;assets/trex/sounds/Dinosaur_Growl.mp3&quot;, ogg : &quot;assets/trex/sounds/Dinosaur_Growl.ogg&quot; }
+	]</code></pre>
+
+<h4>Pieces</h4>
+
+<pre><code>{ id: &quot;lower-jaw&quot;, 	name: &quot;Lower Jaw&quot;, src: &quot;assets/trex/LowRes/N-LowerJaw.png&quot;, hover: &quot;assets/trex/LowRes/H-LowerJaw.png&quot;, selected: &quot;assets/trex/LowRes/S-LowerJaw.png&quot;, zindex: 13 }</code></pre>
+
+<ul><li><strong>id</strong>: The id for the piece</li><li><strong>name</strong>: The display name for the piece</li><li><strong>hover</strong>: The path to the image to use for the hover state of the piece</li><li><strong>selected</strong>: The path to the image to use for the selected state of the piece</li><li>fixed: Set to true if the piece should be fixed in place.</li><li>x: The starting x position of the piece</li><li>y: The starting y position of the piece</li><li>scale: The amount to scale the piece image by</li></ul>
+
+<h4>Matches</h4>
+
+<pre><code>[ 
+	{ piece: &quot;cervical&quot;, x: 29, 	y: 18 }, 	
+	{ piece: &quot;ribs&quot;, 	x: -70, 	y: -22} 
+]</code></pre>
+
+<ul><li><strong>piece</strong>: The id for the piece</li><li><strong>x</strong>: The x offset from the center of the piece of the connecting point</li><li><strong>y</strong>: The y offset from the center of the piece of the connecting point</li></ul></article>
     </section>
 
 
@@ -88,13 +128,13 @@ loader.loadPuzzle(PuzzleObject);</code></pre>
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Boundary.html">Boundary</a></li><li><a href="Event.html">Event</a></li><li><a href="Piece.html">Piece</a></li><li><a href="PieceContainer.html">PieceContainer</a></li><li><a href="Point.html">Point</a></li><li><a href="Puzzle.html">Puzzle</a></li><li><a href="PuzzleBuilder.html">PuzzleBuilder</a></li><li><a href="PuzzleController.html">PuzzleController</a></li><li><a href="PuzzleView.html">PuzzleView</a></li><li><a href="RotateHandle.html">RotateHandle</a></li></ul><h3>Global</h3><ul><li><a href="global.html#DEG2RAD">DEG2RAD</a></li><li><a href="global.html#RAD2DEG">RAD2DEG</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Boundary.html">Boundary</a></li><li><a href="Event.html">Event</a></li><li><a href="Piece.html">Piece</a></li><li><a href="PieceContainer.html">PieceContainer</a></li><li><a href="Point.html">Point</a></li><li><a href="Puzzle.html">Puzzle</a></li><li><a href="PuzzleBuilder.html">PuzzleBuilder</a></li><li><a href="PuzzleController.html">PuzzleController</a></li><li><a href="PuzzleView.html">PuzzleView</a></li></ul><h3>Global</h3><ul><li><a href="global.html#DEG2RAD">DEG2RAD</a></li><li><a href="global.html#fullScreenApi">fullScreenApi</a></li><li><a href="global.html#RAD2DEG">RAD2DEG</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Tue May 14 2013 15:47:31 GMT-0600 (MDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Wed May 22 2013 16:09:12 GMT-0600 (MDT)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -40,11 +40,54 @@ Here is a sample puzzle object:
       ]
     };
     
-### Fixing a piece
+### Entities
 
-Sometimes, you may not want all of the piece to be manipulated. If that's the case you can set the fixed option to true along with a location to fix a piece.
+#### Background
 
-		pieces: [
-		  { id: "fixed-piece", src: "assets/fixed-piece.png", fixed: true, x:400, y:200 }
+	background: { id : "background", src : "assets/background.jpg" }
+
+  - **id**: Value must be `background`
+  - **src**: The path to the image to use for the background of the puzzle 
+
+#### Hint
+
+The hint is an overlay of the completed puzzle.  The user can request a hint, where it will temporarily show a low opacity layer of the completed puzzle.
+
+	hint: { id : "hint", src : "assets/hint.png" }
+
+  - **id**: Value must be `hint`
+  - **src**: The path to the image to use for the puzzle hint
+	
+#### Sounds
+
+The puzzle currently consists of two sound clips. One clip, `snap`, for when a piece "snaps" into place and another clip, `success`, for when the user has successfully completed the puzzle.  For cross platform support provide an MP3 and OGG of each sound clip.
+
+		sounds: [
+			{ id: "snap", mp3 : "assets/trex/sounds/thud.mp3", ogg : "assets/trex/sounds/thud.ogg" },
+			{ id: "success", mp3 : "assets/trex/sounds/Dinosaur_Growl.mp3", ogg : "assets/trex/sounds/Dinosaur_Growl.ogg" }
 		]
+	
+#### Pieces
 
+    { id: "lower-jaw", 	name: "Lower Jaw", src: "assets/trex/LowRes/N-LowerJaw.png", hover: "assets/trex/LowRes/H-LowerJaw.png", selected: "assets/trex/LowRes/S-LowerJaw.png", zindex: 13 }
+        					
+  - **id**: The id for the piece
+  - **name**: The display name for the piece
+  - **hover**: The path to the image to use for the hover state of the piece
+  - **selected**: The path to the image to use for the selected state of the piece
+  - fixed: Set to true if the piece should be fixed in place.
+  - x: The starting x position of the piece
+  - y: The starting y position of the piece
+  - scale: The amount to scale the piece image by
+	
+#### Matches
+
+	[ 
+		{ piece: "cervical", x: 29, 	y: 18 }, 	
+		{ piece: "ribs", 	x: -70, 	y: -22} 
+	]
+		        					
+  - **piece**: The id for the piece
+  - **x**: The x offset from the center of the piece of the connecting point
+  - **y**: The y offset from the center of the piece of the connecting point
+    

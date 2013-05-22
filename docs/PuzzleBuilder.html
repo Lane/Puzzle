@@ -134,6 +134,98 @@ builds the puzzle once all of the assets have loaded.
 	
         <tr>
             
+                <td class="name"><code>puzzleController</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="PuzzleController.html">PuzzleController</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">The controller of the puzzle</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>fileLoaded</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Event.html">Event</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">An event fired when a file loads</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>puzzleLoaded</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Event.html">Event</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">An event fired when the puzzle has completed loading</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>progressChange</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Event.html">Event</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">An event fired when the loading progress changes</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
                 <td class="name"><code>_queue</code></td>
             
             
@@ -173,7 +265,7 @@ builds the puzzle once all of the assets have loaded.
             
             
             
-            <td class="description last">The view state of the puzzle</td>
+            <td class="description last">An array of pieces for the puzzle</td>
         </tr>
 	
 	
@@ -224,7 +316,7 @@ builds the puzzle once all of the assets have loaded.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PuzzleBuilder.js.html">PuzzleBuilder.js</a>, <a href="PuzzleBuilder.js.html#line13">line 13</a>
+        <a href="PuzzleBuilder.js.html">PuzzleBuilder.js</a>, <a href="PuzzleBuilder.js.html#line17">line 17</a>
     </li></ul></dd>
     
     
@@ -270,7 +362,397 @@ builds the puzzle once all of the assets have loaded.
         <dl>
             
 <dt>
-    <h4 class="name" id="doneLoading"><span class="type-signature">&lt;static> </span>doneLoading<span class="signature">(event)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="getLoadingProgress"><span class="type-signature">&lt;static> </span>getLoadingProgress<span class="signature">()</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Gets the loading progress of the queue
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="PuzzleBuilder.js.html">PuzzleBuilder.js</a>, <a href="PuzzleBuilder.js.html#line88">line 88</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    A number between 0 and 1 representing the loading progress
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getPuzzle"><span class="type-signature">&lt;static> </span>getPuzzle<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="Puzzle.html">Puzzle</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Gets the model for the puzzle
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="PuzzleBuilder.js.html">PuzzleBuilder.js</a>, <a href="PuzzleBuilder.js.html#line79">line 79</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    The model for the puzzle
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="Puzzle.html">Puzzle</a></span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getPuzzleView"><span class="type-signature">&lt;static> </span>getPuzzleView<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="PuzzleView.html">PuzzleView</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Gets the view for the puzzle
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="PuzzleBuilder.js.html">PuzzleBuilder.js</a>, <a href="PuzzleBuilder.js.html#line70">line 70</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    The view for the puzzle
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="PuzzleView.html">PuzzleView</a></span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="handleFileLoad"><span class="type-signature">&lt;static> </span>handleFileLoad<span class="signature">(event)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Callback function that executes after every file that loads from the queue
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>event</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">The file load event</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="PuzzleBuilder.js.html">PuzzleBuilder.js</a>, <a href="PuzzleBuilder.js.html#line118">line 118</a>
+    </li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="handlePuzzleLoad"><span class="type-signature">&lt;static> </span>handlePuzzleLoad<span class="signature">(event)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -363,124 +845,7 @@ loadObject.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PuzzleBuilder.js.html">PuzzleBuilder.js</a>, <a href="PuzzleBuilder.js.html#line90">line 90</a>
-    </li></ul></dd>
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="fileLoaded"><span class="type-signature">&lt;static> </span>fileLoaded<span class="signature">(event)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        Callback function that executes after every file that loads from the queue
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>event</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-            
-            
-            
-            
-            
-            <td class="description last">The file load event</td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PuzzleBuilder.js.html">PuzzleBuilder.js</a>, <a href="PuzzleBuilder.js.html#line59">line 59</a>
+        <a href="PuzzleBuilder.js.html">PuzzleBuilder.js</a>, <a href="PuzzleBuilder.js.html#line172">line 172</a>
     </li></ul></dd>
     
     
@@ -598,7 +963,7 @@ loading queue.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="PuzzleBuilder.js.html">PuzzleBuilder.js</a>, <a href="PuzzleBuilder.js.html#line42">line 42</a>
+        <a href="PuzzleBuilder.js.html">PuzzleBuilder.js</a>, <a href="PuzzleBuilder.js.html#line97">line 97</a>
     </li></ul></dd>
     
     
@@ -639,13 +1004,13 @@ loading queue.
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Boundary.html">Boundary</a></li><li><a href="Event.html">Event</a></li><li><a href="Piece.html">Piece</a></li><li><a href="PieceContainer.html">PieceContainer</a></li><li><a href="Point.html">Point</a></li><li><a href="Puzzle.html">Puzzle</a></li><li><a href="PuzzleBuilder.html">PuzzleBuilder</a></li><li><a href="PuzzleController.html">PuzzleController</a></li><li><a href="PuzzleView.html">PuzzleView</a></li><li><a href="RotateHandle.html">RotateHandle</a></li></ul><h3>Global</h3><ul><li><a href="global.html#DEG2RAD">DEG2RAD</a></li><li><a href="global.html#RAD2DEG">RAD2DEG</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Boundary.html">Boundary</a></li><li><a href="Event.html">Event</a></li><li><a href="Piece.html">Piece</a></li><li><a href="PieceContainer.html">PieceContainer</a></li><li><a href="Point.html">Point</a></li><li><a href="Puzzle.html">Puzzle</a></li><li><a href="PuzzleBuilder.html">PuzzleBuilder</a></li><li><a href="PuzzleController.html">PuzzleController</a></li><li><a href="PuzzleView.html">PuzzleView</a></li></ul><h3>Global</h3><ul><li><a href="global.html#DEG2RAD">DEG2RAD</a></li><li><a href="global.html#fullScreenApi">fullScreenApi</a></li><li><a href="global.html#RAD2DEG">RAD2DEG</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Tue May 14 2013 15:47:32 GMT-0600 (MDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Wed May 22 2013 16:09:12 GMT-0600 (MDT)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -32,8 +32,12 @@
  * @constructor
  * @property {Puzzle} puzzle - The Puzzle that is built
  * @property {PuzzleView} puzzleView - The view state of the puzzle
+ * @property {PuzzleController} puzzleController - The controller of the puzzle
+ * @property {Event} fileLoaded - An event fired when a file loads
+ * @property {Event} puzzleLoaded - An event fired when the puzzle has completed loading
+ * @property {Event} progressChange - An event fired when the loading progress changes
  * @property {createjs.LoadQueue} _queue - The load queue for the puzzle
- * @property {Array} _pieces - The view state of the puzzle
+ * @property {Array} _pieces - An array of pieces for the puzzle
  * @property {Object} _loadObject - JSON representation of the puzzle
  */
 
@@ -42,6 +46,11 @@ function PuzzleBuilder() {
 	// create the puzzle
 	this.puzzle = new Puzzle();
 	this.puzzleView = new PuzzleView(this.puzzle);
+	this.puzzleController = new PuzzleController(this.puzzle, this.puzzleView);
+	
+	this.fileLoaded = new Event(this);
+	this.puzzleLoaded = new Event(this);
+	this.progressChange = new Event(this);
 	
 	this._queue = new createjs.LoadQueue();
 	this._pieces = new Array();
@@ -50,21 +59,67 @@ function PuzzleBuilder() {
 
 	this.initialize();
 
-}
+};
 
 pb = PuzzleBuilder.prototype;
 
 pb.initialize = function() {
-	var that = this;
+	var _this = this;
 	
-	new PuzzleController(this.puzzle, this.puzzleView);
+	this.fileLoaded.attach(this.handleFileLoad.bind(this));
+	//this.puzzleLoaded.attach(this.handlePuzzleLoad.bind(this));
 	
-	createjs.Sound.registerPlugins([createjs.WebAudioPlugin, createjs.FlashPlugin]);
-	createjs.Sound.registerSound("assets/success.mp3|assets/success.ogg", "success");
+	this._queue.installPlugin(createjs.Sound);
+	createjs.Sound.registerPlugins([createjs.WebAudioPlugin, createjs.HTMLAudioPlugin, createjs.FlashPlugin]);
 	
-	this._queue.addEventListener("complete", this.doneLoading.bind(this));
-	this._queue.addEventListener("fileload", this.fileLoaded.bind(this));
-}
+	this._queue.addEventListener("complete", function(event) { 
+		_this.puzzleLoaded.notify({ 
+			event: event
+		});
+	});
+	
+	this._queue.addEventListener("fileload", function(evt) { 
+		_this.fileLoaded.notify({ 
+			event: evt
+		});
+	});
+	
+	this._queue.addEventListener("progress", function(evt) { 
+		_this.progressChange.notify({ 
+			event: evt
+		});
+	});
+};
+
+// GETTERS
+// ----------------
+
+/**
+ * Gets the view for the puzzle
+ * @method PuzzleBuilder.getPuzzleView
+ * @returns {PuzzleView} The view for the puzzle
+ */
+pb.getPuzzleView = function() {
+	return this.puzzleView;
+};
+
+/**
+ * Gets the model for the puzzle
+ * @method PuzzleBuilder.getPuzzle
+ * @returns {Puzzle} The model for the puzzle
+ */
+pb.getPuzzle = function() {
+	return this.puzzle;
+};
+
+/**
+ * Gets the loading progress of the queue
+ * @method PuzzleBuilder.getLoadingProgress
+ * @returns {number} A number between 0 and 1 representing the loading progress
+ */
+pb.getLoadingProgress = function() {
+	return this._queue.progress;
+};
 
 /**
  * Takes a JSON representation of a puzzle and adds all the assets to the 
@@ -78,41 +133,68 @@ pb.loadPuzzle = function(pzl) {
 
 	// load background
 	this._queue.loadManifest(pzl.background);
-	this._queue.loadManifest(pzl.rotateHandle);
-	this._queue.loadManifest(pzl.pieces); // load pieces
+	this._queue.loadManifest(pzl.hint);
+	this._queue.loadManifest(this._createPieceManifest(pzl.pieces)); // load pieces
 	
-}
+	for(var i=0; i &lt; pzl.sounds.length; i++) {
+		var s = pzl.sounds[i];
+		this._queue.loadFile({id: s.id, src: s.mp3+"|"+s.ogg });
+	}
+};
 
 /**
  * Callback function that executes after every file that loads from the queue
- * @method PuzzleBuilder.fileLoaded
+ * @method PuzzleBuilder.handleFileLoad
  * @param {Object} event The file load event
  */
-pb.fileLoaded = function (event) {
-	var item = event.item; // A reference to the item that was passed in
+pb.handleFileLoad = function (sender, args) {
+	var item = args.event.item; // A reference to the item that was passed in
 	var type = item.type;
 	if(item.id == "background") {
 		var bg = new createjs.Bitmap(item.src);
+		bg.type = "background";
 		this.puzzle._background = bg;
+		this.puzzle.setAspectRatio(bg.image.width/bg.image.height);
+		this.puzzleView._canvas.width = bg.image.width;
+		this.puzzleView._canvas.height = bg.image.height;
+	} else if(item.id == "hint") {
+		this.puzzle._hint = new createjs.Bitmap(item.src);
+		this.puzzle._hint.alpha=0;
+		this.puzzle._hint.type = "hint";
 	} else if(item.id == "rotate-handle") {
-		var rh = new createjs.Bitmap(item.src);
-	  rh.name = "rotate-handle";
-	  rh.x = 0;
-	  rh.y = 0;
-		rh.regX = rh.image.width/2|0;
-		rh.regY = rh.image.height/2|0;
-	  rh.scaleX = rh.scaleY = rh.scale = 0.25;
-	  rh.type = "rotate-handle";
-	  
-	  this.puzzle._rotateHandle = rh;
-	
+		// do nothing
 	} else {
 		if (type == createjs.LoadQueue.IMAGE) {
-			this._pieces.push(new Piece({img:event.result, name: item.id}));
+			if(item.state == 'neutral') {
+				this._pieces.push(new Piece({
+					img:args.event.result, 
+					name: item.id, 
+					displayName: item.name,
+					fixed:item.fixed, 
+					parentX:item.x, 
+					parentY:item.y,
+					zindex: item.zindex,
+					scale: item.scale || 1
+				}));
+			}
 		}
 	}
-	debug.log("File loaded", event);
-}
+	debug.log("File loaded", args.event);
+};
+
+
+pb._createPieceManifest = function(pcs) {
+	var manifest = [];
+	for(var i=0; i &lt; pcs.length; i++) {
+		pcs[i].state = 'neutral';
+		manifest.push(pcs[i]);
+		if(pcs[i].hover !== null)
+			manifest.push({ id: pcs[i].id+"-hover", src: pcs[i].hover, state: 'hover' });
+		if(pcs[i].selected !== null)
+			manifest.push({ id: pcs[i].id+"-selected", src: pcs[i].selected, state: 'selected' });
+	}
+	return manifest;
+};
 
 /**
  * Callback function that executes after all files in the manifest have loaded.
@@ -121,19 +203,23 @@ pb.fileLoaded = function (event) {
  * function also sets the matches of all the pieces, as defined in the 
  * loadObject.
  *
- * @method PuzzleBuilder.doneLoading
+ * @method PuzzleBuilder.handlePuzzleLoad
  * @param {Object} event The finished loading event
  */
-pb.doneLoading = function(event) {
+pb.handlePuzzleLoad = function(sender, args) {
 
 	var pzl = this._loadObject;
 
 	while((p=this._pieces.pop()) != null) {
+	
+		p.imgNeutral = this._queue.getResult(p.name);
+		p.imgHover = this._queue.getResult(p.name+'-hover');
+		p.imgSelected = this._queue.getResult(p.name+'-selected');
+	
 		var options = {};
 		options.pieces = [p];
-		console.log(p);
-		options.x = p.regX+Math.round(Math.random()*(this.puzzle.getCanvas().width-p.image.width));
-		options.y = p.regY+Math.round(Math.random()*(this.puzzle.getCanvas().height-p.image.height));
+		options.x = p.regX+Math.round(Math.random()*(this.puzzleView.getCanvas().width-p.image.width));
+		options.y = p.regY+Math.round(Math.random()*(this.puzzleView.getCanvas().height-p.image.height));
 		this.puzzle.addPieceContainer(new PieceContainer(options));
 	}
 		
@@ -166,7 +252,7 @@ pb.doneLoading = function(event) {
 		createjs.Ticker.setPaused(false);
 		createjs.Ticker.addEventListener("tick", that.puzzleView.update.bind(that.puzzleView));
 	}
-}</code></pre>
+};</code></pre>
         </article>
     </section>
 
@@ -176,13 +262,13 @@ pb.doneLoading = function(event) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Boundary.html">Boundary</a></li><li><a href="Event.html">Event</a></li><li><a href="Piece.html">Piece</a></li><li><a href="PieceContainer.html">PieceContainer</a></li><li><a href="Point.html">Point</a></li><li><a href="Puzzle.html">Puzzle</a></li><li><a href="PuzzleBuilder.html">PuzzleBuilder</a></li><li><a href="PuzzleController.html">PuzzleController</a></li><li><a href="PuzzleView.html">PuzzleView</a></li><li><a href="RotateHandle.html">RotateHandle</a></li></ul><h3>Global</h3><ul><li><a href="global.html#DEG2RAD">DEG2RAD</a></li><li><a href="global.html#RAD2DEG">RAD2DEG</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Boundary.html">Boundary</a></li><li><a href="Event.html">Event</a></li><li><a href="Piece.html">Piece</a></li><li><a href="PieceContainer.html">PieceContainer</a></li><li><a href="Point.html">Point</a></li><li><a href="Puzzle.html">Puzzle</a></li><li><a href="PuzzleBuilder.html">PuzzleBuilder</a></li><li><a href="PuzzleController.html">PuzzleController</a></li><li><a href="PuzzleView.html">PuzzleView</a></li></ul><h3>Global</h3><ul><li><a href="global.html#DEG2RAD">DEG2RAD</a></li><li><a href="global.html#fullScreenApi">fullScreenApi</a></li><li><a href="global.html#RAD2DEG">RAD2DEG</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Tue May 14 2013 15:47:31 GMT-0600 (MDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Wed May 22 2013 16:09:12 GMT-0600 (MDT)
 </footer>
 
 <script> prettyPrint(); </script>

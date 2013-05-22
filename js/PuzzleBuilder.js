@@ -5,8 +5,12 @@
  * @constructor
  * @property {Puzzle} puzzle - The Puzzle that is built
  * @property {PuzzleView} puzzleView - The view state of the puzzle
+ * @property {PuzzleController} puzzleController - The controller of the puzzle
+ * @property {Event} fileLoaded - An event fired when a file loads
+ * @property {Event} puzzleLoaded - An event fired when the puzzle has completed loading
+ * @property {Event} progressChange - An event fired when the loading progress changes
  * @property {createjs.LoadQueue} _queue - The load queue for the puzzle
- * @property {Array} _pieces - The view state of the puzzle
+ * @property {Array} _pieces - An array of pieces for the puzzle
  * @property {Object} _loadObject - JSON representation of the puzzle
  */
 
@@ -58,6 +62,36 @@ pb.initialize = function() {
 			event: evt
 		});
 	});
+};
+
+// GETTERS
+// ----------------
+
+/**
+ * Gets the view for the puzzle
+ * @method PuzzleBuilder.getPuzzleView
+ * @returns {PuzzleView} The view for the puzzle
+ */
+pb.getPuzzleView = function() {
+	return this.puzzleView;
+};
+
+/**
+ * Gets the model for the puzzle
+ * @method PuzzleBuilder.getPuzzle
+ * @returns {Puzzle} The model for the puzzle
+ */
+pb.getPuzzle = function() {
+	return this.puzzle;
+};
+
+/**
+ * Gets the loading progress of the queue
+ * @method PuzzleBuilder.getLoadingProgress
+ * @returns {number} A number between 0 and 1 representing the loading progress
+ */
+pb.getLoadingProgress = function() {
+	return this._queue.progress;
 };
 
 /**
@@ -121,18 +155,6 @@ pb.handleFileLoad = function (sender, args) {
 	debug.log("File loaded", args.event);
 };
 
-
-pb.getPuzzleView = function() {
-	return this.puzzleView;
-};
-
-pb.getPuzzle = function() {
-	return this.puzzle;
-};
-
-pb.getLoadingProgress = function() {
-	return this._queue.progress;
-};
 
 pb._createPieceManifest = function(pcs) {
 	var manifest = [];

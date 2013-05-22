@@ -127,6 +127,11 @@ pz.getSelectedPiece = function () {
 	return this._selectedPiece;
 };
 
+/**
+ * Gets the aspect ratio of the puzzle
+ * @method Puzzle.getAspectRatio
+ * @returns {number} The decimal representation of the aspect ratio
+ */
 pz.getAspectRatio = function() {
 	return this._aspectRatio;
 }
@@ -158,13 +163,23 @@ pz.setSelectedPiece = function (pc) {
   });
 };
 
+/**
+ * Sets the aspect ratio of the puzzle
+ * @method Puzzle.setAspectRatio
+ * @param {number} ratio The decimal value of the ratio (width/height)
+ */
 pz.setAspectRatio = function(ratio) {
 	this._aspectRatio = ratio;
 }
 
 // FUNCTIONS
 // ----------------------------
-	
+
+/**
+ * Adds a piece container to the puzzle
+ * @method Puzzle.addPieceContainer
+ * @param {PieceContainer} pc The piece container to add to the puzzle
+ */
 pz.addPieceContainer = function (pc) {
   this._pieceContainers.push(pc);
   pc._puzzle = this;
@@ -175,7 +190,13 @@ pz.addPieceContainer = function (pc) {
   	}
   });
 };
-	
+
+/**
+ * Removes a piece container from the puzzle
+ * @method Puzzle.removePieceContainer
+ * @param {PieceContainer} pc The piece container to remove to the puzzle
+ * @returns {boolean} True if the piece is removed, false if it is not
+ */
 pz.removePieceContainer = function (pc) {
 	for(var i = 0; i < this._pieceContainers.length; i++) {
 		if(this._pieceContainers[i].id == pc.id)
@@ -190,13 +211,18 @@ pz.removePieceContainer = function (pc) {
 					type : "removepiececontainer"
 				}
 			});
-			
 			return true;
 		}
 	}
 	return false;
 };
-	
+
+/**
+ * Connects two pieces at the point passed to the function
+ * @method Puzzle.connectPointWithMatch
+ * @param {Point} pt The point to connect
+ * @returns {Puzzle} this puzzle
+ */	
 pz.connectPointWithMatch = function(pt) {
 	
 	var staticPoint = pt.getMatch();
@@ -214,8 +240,10 @@ pz.connectPointWithMatch = function(pt) {
 	staticPoint.getPiece().removePoint(staticPoint);
 	pt = null;
 	
+	// deselect the snapped piece container
 	movedPoint.getPiece().getParentPieceContainer().resetPiece(true);
-		
+	
+	// let the puzzle know that we connected two points	
 	this.pointsConnected.notify({ 
 		pieceContainer: movedPoint.getPiece().getParentPieceContainer(), 
 		event :  {
@@ -223,6 +251,7 @@ pz.connectPointWithMatch = function(pt) {
 		}
 	});
 	
+	// check if the puzzle is finished
 	if(this.isComplete())
 	{
 		this.puzzleComplete.notify({ 
@@ -233,17 +262,24 @@ pz.connectPointWithMatch = function(pt) {
 		});
 	}
 	
-	return movedPoint.getPiece().getParentPieceContainer();
+	return this;
 		
 };
 
+/**
+ * Takes the pieces from one piece container and moves them into another
+ * piece container
+ * @method Puzzle.connectPointWithMatch
+ * @param {PieceContainer} from The piece container to move from
+ * @param {PieceContainer} to The piece container to move to
+ * @param {Point} connectPoint The point to merge to
+ */	
 pz.mergePieceContainers = function(from, to, connectPoint) {
+
 	var fromPieces = from.getPieces();
 	var pc = null;
-	var offsets = [
-		connectPoint.getStageOffset(), 
-		connectPoint.getMatch().getStageOffset()
-	];
+	
+	// calculate the difference so the pieces are placed correctly when moved
 	var difference = { 
 		x: 	(connectPoint.x+connectPoint.piece.x)
 				-(connectPoint.getMatch().x+connectPoint.getMatch().piece.x),
@@ -251,6 +287,7 @@ pz.mergePieceContainers = function(from, to, connectPoint) {
 				-(connectPoint.getMatch().y+connectPoint.getMatch().piece.y)
 	};
 	
+	// pop off each piece and move it to the piece container
 	while((pc=fromPieces.pop()) != null) {	
 		pc.set({
 			x: difference.x+pc.x, 
@@ -261,14 +298,25 @@ pz.mergePieceContainers = function(from, to, connectPoint) {
 		to.setBoundary();
 		from.removePiece(pc);
 	}
-	this.removePieceContainer(from);
-};
 	
+	// clean up the stage by removing the empty piece container
+	this.removePieceContainer(from);
+	
+	return this;
+	
+};
+
+/**
+ * Removes selected status from the selected piece
+ * @method Puzzle.deselectPieces
+ * @returns {Puzzle} This puzzle
+ */	
 pz.deselectPieces = function() {
 	if(this._selectedPiece !== null) {
 		this._selectedPiece.resetPiece(true);
 		var oldPiece = this._selectedPiece;
 		this._selectedPiece = null;
+		// let the puzzle know the selected piece has changed
 		this.selectedPieceChanged.notify({ 
 			oldPiece : oldPiece,
 			event :  {
@@ -276,8 +324,14 @@ pz.deselectPieces = function() {
 			}
 		});
 	}
+	return this;
 };
 
+/**
+ * Checks to see if the puzzle is in a complete state
+ * @method Puzzle.isComplete
+ * @returns {boolean} true if the puzzle is complete, false if not
+ */	
 pz.isComplete = function() {
 	if(this._pieceContainers.length == 1)
 		return true;

@@ -29,27 +29,17 @@
  * Represents a 2D puzzle element. 
  *
  * @constructor
- * @param {DOMElement} canvas - The canvas to render the puzzle to
  * @param {Array} pieceContainers - The piece containers for the puzzle
- * @property {DOMElement} _canvas - The canvas the puzzle is rendered to
  * @property {Array} _pieceContainers - The piece containers inside the puzzle
  * @property {Piece} _selectedPiece - The currently selected piece
  */
-function Puzzle(canvas, pieceContainers) {
-	if(typeof(canvas) == 'undefined') {
-		var canvas = document.getElementById('puzzleCanvas');
-		if(canvas == null) {
-			canvas = document.createElement("canvas");
-			canvas.id = "puzzleCanvas";
-			document.getElementsByTagName('body')[0].appendChild(canvas);
-		}
-	}
-	
-	this._canvas = canvas;
+function Puzzle(pieceContainers) {
 
 	this._pieceContainers = pieceContainers || new Array();
 
 	this._selectedPiece = null;
+	
+	this._aspectRatio = 16/9;
 	
 	this.initialize();
 };
@@ -123,6 +113,12 @@ pz.initialize = function() {
 	 * @type {Event}
 	 */
 	this.releasePiece = new Event(this);
+	
+	/**
+	 * Fired when the puzzle is done
+	 * @type {Event}
+	 */
+	this.puzzleComplete = new Event(this);
 }
 
 
@@ -159,12 +155,12 @@ pz.getSelectedPiece = function () {
 };
 
 /**
- * Gets the puzzle canvas
- * @method Puzzle.getCanvas
- * @returns {DOMElement} The canvas DOM Element
+ * Gets the aspect ratio of the puzzle
+ * @method Puzzle.getAspectRatio
+ * @returns {number} The decimal representation of the aspect ratio
  */
-pz.getCanvas = function() {
-	return this._canvas;
+pz.getAspectRatio = function() {
+	return this._aspectRatio;
 }
 
 // SETTERS
@@ -182,7 +178,9 @@ pz.setSelectedPiece = function (pc) {
 		oldPiece.resetPiece(true);
 	
   this._selectedPiece = pc;
-  this._selectedPiece.selectPiece();
+  if(pc !== null)
+  	this._selectedPiece.selectPiece();
+  	
   this.selectedPieceChanged.notify({ 
   	oldPiece : oldPiece,
   	newPiece : this._selectedPiece,
@@ -192,9 +190,23 @@ pz.setSelectedPiece = function (pc) {
   });
 };
 
+/**
+ * Sets the aspect ratio of the puzzle
+ * @method Puzzle.setAspectRatio
+ * @param {number} ratio The decimal value of the ratio (width/height)
+ */
+pz.setAspectRatio = function(ratio) {
+	this._aspectRatio = ratio;
+}
+
 // FUNCTIONS
 // ----------------------------
-	
+
+/**
+ * Adds a piece container to the puzzle
+ * @method Puzzle.addPieceContainer
+ * @param {PieceContainer} pc The piece container to add to the puzzle
+ */
 pz.addPieceContainer = function (pc) {
   this._pieceContainers.push(pc);
   pc._puzzle = this;
@@ -205,7 +217,13 @@ pz.addPieceContainer = function (pc) {
   	}
   });
 };
-	
+
+/**
+ * Removes a piece container from the puzzle
+ * @method Puzzle.removePieceContainer
+ * @param {PieceContainer} pc The piece container to remove to the puzzle
+ * @returns {boolean} True if the piece is removed, false if it is not
+ */
 pz.removePieceContainer = function (pc) {
 	for(var i = 0; i &lt; this._pieceContainers.length; i++) {
 		if(this._pieceContainers[i].id == pc.id)
@@ -220,13 +238,18 @@ pz.removePieceContainer = function (pc) {
 					type : "removepiececontainer"
 				}
 			});
-			
 			return true;
 		}
 	}
 	return false;
 };
-	
+
+/**
+ * Connects two pieces at the point passed to the function
+ * @method Puzzle.connectPointWithMatch
+ * @param {Point} pt The point to connect
+ * @returns {Puzzle} this puzzle
+ */	
 pz.connectPointWithMatch = function(pt) {
 	
 	var staticPoint = pt.getMatch();
@@ -234,34 +257,56 @@ pz.connectPointWithMatch = function(pt) {
 	
 	// merge the piece containers
 	this.mergePieceContainers(
-		staticPoint.piece.getParentPieceContainer(), 
-		movedPoint.piece.getParentPieceContainer(), 
-		pt
+		movedPoint.getPiece().getParentPieceContainer(), 
+		staticPoint.getPiece().getParentPieceContainer(),
+		pt.getMatch()
 	);
 	
 	// remove the matched points from the pieces
-	movedPoint.piece.removePoint(movedPoint);
-	staticPoint.piece.removePoint(staticPoint);
+	movedPoint.getPiece().removePoint(movedPoint);
+	staticPoint.getPiece().removePoint(staticPoint);
 	pt = null;
-		
+	
+	// deselect the snapped piece container
+	movedPoint.getPiece().getParentPieceContainer().resetPiece(true);
+	
+	// let the puzzle know that we connected two points	
 	this.pointsConnected.notify({ 
-		pieceContainer: movedPoint.piece.getParentPieceContainer(), 
+		pieceContainer: movedPoint.getPiece().getParentPieceContainer(), 
 		event :  {
 			type : "pointsconnected"
 		}
 	});
 	
-	return movedPoint.piece.getParentPieceContainer();
+	// check if the puzzle is finished
+	if(this.isComplete())
+	{
+		this.puzzleComplete.notify({ 
+			pieceContainer: movedPoint.getPiece().getParentPieceContainer(), 
+			event :  {
+				type : "puzzlecomplete"
+			}
+		});
+	}
+	
+	return this;
 		
 };
-	
+
+/**
+ * Takes the pieces from one piece container and moves them into another
+ * piece container
+ * @method Puzzle.connectPointWithMatch
+ * @param {PieceContainer} from The piece container to move from
+ * @param {PieceContainer} to The piece container to move to
+ * @param {Point} connectPoint The point to merge to
+ */	
 pz.mergePieceContainers = function(from, to, connectPoint) {
+
 	var fromPieces = from.getPieces();
 	var pc = null;
-	var offsets = [
-		connectPoint.getStageOffset(), 
-		connectPoint.getMatch().getStageOffset()
-	];
+	
+	// calculate the difference so the pieces are placed correctly when moved
 	var difference = { 
 		x: 	(connectPoint.x+connectPoint.piece.x)
 				-(connectPoint.getMatch().x+connectPoint.getMatch().piece.x),
@@ -269,6 +314,7 @@ pz.mergePieceContainers = function(from, to, connectPoint) {
 				-(connectPoint.getMatch().y+connectPoint.getMatch().piece.y)
 	};
 	
+	// pop off each piece and move it to the piece container
 	while((pc=fromPieces.pop()) != null) {	
 		pc.set({
 			x: difference.x+pc.x, 
@@ -279,14 +325,25 @@ pz.mergePieceContainers = function(from, to, connectPoint) {
 		to.setBoundary();
 		from.removePiece(pc);
 	}
-	this.removePieceContainer(from);
-};
 	
+	// clean up the stage by removing the empty piece container
+	this.removePieceContainer(from);
+	
+	return this;
+	
+};
+
+/**
+ * Removes selected status from the selected piece
+ * @method Puzzle.deselectPieces
+ * @returns {Puzzle} This puzzle
+ */	
 pz.deselectPieces = function() {
 	if(this._selectedPiece !== null) {
 		this._selectedPiece.resetPiece(true);
 		var oldPiece = this._selectedPiece;
 		this._selectedPiece = null;
+		// let the puzzle know the selected piece has changed
 		this.selectedPieceChanged.notify({ 
 			oldPiece : oldPiece,
 			event :  {
@@ -294,6 +351,18 @@ pz.deselectPieces = function() {
 			}
 		});
 	}
+	return this;
+};
+
+/**
+ * Checks to see if the puzzle is in a complete state
+ * @method Puzzle.isComplete
+ * @returns {boolean} true if the puzzle is complete, false if not
+ */	
+pz.isComplete = function() {
+	if(this._pieceContainers.length == 1)
+		return true;
+	return false;
 };
 	
 pz.toString = function() {
@@ -326,13 +395,13 @@ pz.toString = function() {
 </div>
 
 <nav>
-    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Boundary.html">Boundary</a></li><li><a href="Event.html">Event</a></li><li><a href="Piece.html">Piece</a></li><li><a href="PieceContainer.html">PieceContainer</a></li><li><a href="Point.html">Point</a></li><li><a href="Puzzle.html">Puzzle</a></li><li><a href="PuzzleBuilder.html">PuzzleBuilder</a></li><li><a href="PuzzleController.html">PuzzleController</a></li><li><a href="PuzzleView.html">PuzzleView</a></li><li><a href="RotateHandle.html">RotateHandle</a></li></ul><h3>Global</h3><ul><li><a href="global.html#DEG2RAD">DEG2RAD</a></li><li><a href="global.html#RAD2DEG">RAD2DEG</a></li></ul>
+    <h2><a href="index.html">Index</a></h2><h3>Classes</h3><ul><li><a href="Boundary.html">Boundary</a></li><li><a href="Event.html">Event</a></li><li><a href="Piece.html">Piece</a></li><li><a href="PieceContainer.html">PieceContainer</a></li><li><a href="Point.html">Point</a></li><li><a href="Puzzle.html">Puzzle</a></li><li><a href="PuzzleBuilder.html">PuzzleBuilder</a></li><li><a href="PuzzleController.html">PuzzleController</a></li><li><a href="PuzzleView.html">PuzzleView</a></li></ul><h3>Global</h3><ul><li><a href="global.html#DEG2RAD">DEG2RAD</a></li><li><a href="global.html#fullScreenApi">fullScreenApi</a></li><li><a href="global.html#RAD2DEG">RAD2DEG</a></li></ul>
 </nav>
 
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Tue May 14 2013 15:47:31 GMT-0600 (MDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Wed May 22 2013 16:09:12 GMT-0600 (MDT)
 </footer>
 
 <script> prettyPrint(); </script>
