@@ -262,7 +262,7 @@ pz.connectPointWithMatch = function(pt) {
 		});
 	}
 	
-	return this;
+	return movedPoint.piece.getParentPieceContainer();
 		
 };
 
