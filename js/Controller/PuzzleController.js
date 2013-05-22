@@ -67,7 +67,7 @@ ctrl.pieceContainerRemoved = function(sender, args) {
 
 ctrl.pieceAdded = function(sender, args) {
 	args.piece.parent.updatePoints();
-	createjs.Sound.play("snap"); 
+	createjs.Sound.play("snap").setVolume(0.5); 
 	this._view.buildPuzzle();
   debug.log(args, "Added piece to container");
 };
