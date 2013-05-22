@@ -17,6 +17,7 @@
 				<script src="js/libs/modernizr-2.6.2.min.js"></script>
         <script src="http://code.createjs.com/createjs-2013.02.12.min.js" type="text/javascript"></script>
         <script src="http://code.createjs.com/preloadjs-0.3.0.min.js" type="text/javascript"></script>
+        <script src="http://code.createjs.com/tweenjs-0.4.1.min.js" type="text/javascript"></script>
         <script src="js/vendor/easeljs/filters/ColorFilter.js"></script>
         <script src="js/libs/ba-debug.js"></script>
     </head>
@@ -45,6 +46,7 @@
       		</div>
       		<div id="nav">
       			<a id="fstoggle" href="#" class="btn btn-hint">Fullscreen</a>
+      			<a id="hint-toggle" href="#" class="btn btn-hint">Show Hint</a>
       		</div>
       		<p id="piece-label" class="inactive"></p>
       	</div>
@@ -62,139 +64,18 @@
         <script src="js/View/PuzzleView.js"></script>
         <script src="js/Controller/PuzzleController.js"></script>        
         <script src="js/PuzzleBuilder.js"></script>
-        <script>
-       			var puzzle;
-       			
-       			(function() {
-       			    var fullScreenApi = {
-       			            supportsFullScreen: false,
-       			            isFullScreen: function() { return false; },
-       			            requestFullScreen: function() {},
-       			            cancelFullScreen: function() {},
-       			            fullScreenEventName: '-',
-       			            prefix: ''
-       			        },
-       			        browserPrefixes = 'webkit moz o ms'.split(' ');
-       			 
-       			    // check for current native support
-       			    if (typeof document.exitFullscreen != 'undefined') {
-       			        fullScreenApi.supportsFullScreen = true;
-       			    // check for draft native support
-       			    } else if (typeof document.cancelFullScreen != 'undefined') {
-       			        fullScreenApi.supportsFullScreen = true;
-       			    } else {
-       			        // check for fullscreen support by vendor prefix
-       			        for (var i = 0, il = browserPrefixes.length; i < il; i++ ) {
-       			            fullScreenApi.prefix = browserPrefixes[i];
-       			            if (typeof document[fullScreenApi.prefix + 'CancelFullScreen' ] != 'undefined' ) {
-       			                fullScreenApi.supportsFullScreen = true;
-       			                break;
-       			            }
-       			        }
-       			    }
-       			
-       			    // update methods to do something useful
-       			    if (fullScreenApi.supportsFullScreen) {
-       			        fullScreenApi.fullScreenEventName = fullScreenApi.prefix + 'fullscreenchange';
-       			        fullScreenApi.isFullScreen = function() {
-       			            switch (this.prefix) {
-       			                case '':
-       			                    return document.fullScreen;
-       			                case 'webkit':
-       			                    return document.webkitIsFullScreen;
-       			                default:
-       			                    return document[this.prefix + 'FullScreen'];
-       			            }
-       			        }
-       			        fullScreenApi.requestFullScreen = function(el) {
-       			            return (this.prefix === '') ? el.requestFullScreen() : el[this.prefix + 'RequestFullScreen']();
-       			        }
-       			        fullScreenApi.cancelFullScreen = function(el) {
-       			            return (this.prefix === '') ? document.cancelFullScreen() : document[this.prefix + 'CancelFullScreen']();
-       			        }
-       			    }
-       			
-       			    // export api
-       			    window.fullScreenApi = fullScreenApi;
-       			})();
-       			
-       			var pfx = ["webkit", "moz", "ms", "o", ""];
-       			function RunPrefixMethod(obj, method) {
-       				var p = 0, m, t;
-       				while (p < pfx.length && !obj[m]) {
-       					m = method;
-       					if (pfx[p] == "") {
-       						m = m.substr(0,1).toLowerCase() + m.substr(1);
-       					}
-       					m = pfx[p] + m;
-       					t = typeof obj[m];
-       					if (t != "undefined") {
-       						pfx = [pfx[p]];
-       						return (t == "function" ? obj[m]() : obj[m]);
-       					}
-       					p++;
-       				}
-       			}
-       			
+        <script>       			
        			debug.setLevel(0);
        			//var debugPoints = true;
        			
         		$(document).ready(function() {
       
-        			var TestPuzzle = {
-        				background: { id : "background", src : "assets/layout_grid.gif" },
-        				pieces: [
-        					{ id: "300x100", src: "assets/test/300x100.png" },
-        					{ id: "100x300", src: "assets/test/100x300.png" },
-        					{ id: "200x200", src: "assets/test/200x200.png" },
-        					{ id: "100x100", src: "assets/test/100x100.png" }
-        				],
-        				matches: [
-        					[ 
-        						{ piece: "300x100", x: -150, y: 0 		}, 	
-        						{ piece: "100x300", x: -50, 	y: -150 } 
-        					],
-        					[ 
-        						{ piece: "300x100", x: 150, 	y: 0		}, 	
-        						{ piece: "200x200", x: 0, 		y: -100	} 
-        					],
-        					[ 
-        						{ piece: "100x300", x: 50, 	y: -150		}, 	
-        						{ piece: "100x100", x: 0, 		y: 50		} 
-        					],
-        					[ 
-        						{ piece: "200x200", x: 0, 		y: 100	}, 	
-        						{ piece: "100x100", x: 0, 		y: -50	} 
-        					]
-        				]
-        			};
-        			
-        			var HorsePuzzle = {
-        				background: { id : "background", src : "assets/layout_grid.gif" },
-        				pieces: [
-        					{ id: "head", src: "assets/horse/head.png" },
-        					{ id: "back-legs", src: "assets/horse/back-legs.png" },
-        					{ id: "front-legs", src: "assets/horse/front-legs.png" },
-        					{ id: "back", src: "assets/horse/back.png" }
-        				],
-        				matches: [
-        					[ 
-        						{ piece: "head", x: -135, y: 60 	}, 	
-        						{ piece: "back", x: 240, 	y: -80 	} 
-        					],
-        					[ 
-        						{ piece: "front-legs", x: -25, 	y: -164	}, 	
-        						{ piece: "back", 			 x: 200, 	y: 85		} 
-        					],
-        					[ 
-        						{ piece: "back-legs", x: 80, 		y: -225	}, 	
-        						{ piece: "back", 			x: -88, 	y: -70	} 
-        					]
-        				]
-        			};
-        			
         			var DinoPuzzle = {
         				background: { id : "background", src : "assets/tyrannosaurus/background.jpg" },
+        				sounds: [
+        					{ id: "snap", mp3 : "assets/tyrannosaurus/sounds/Clank.mp3", ogg : "assets/tyrannosaurus/sounds/Clank.ogg" },
+        					{ id: "success", mp3 : "assets/tyrannosaurus/sounds/Dinosaur_Growl.mp3", ogg : "assets/tyrannosaurus/sounds/Dinosaur_Growl.ogg" }
+        				],
         				pieces: [
         					{ id: "arm", name: "Arm", src: "assets/tyrannosaurus/arm.png" },
         					{ id: "back-ribs", name: "Back, Ribs", src: "assets/tyrannosaurus/back-ribs.png" },
@@ -237,6 +118,89 @@
         				]
         			};
         			
+        			var TrexPuzzle = {
+        				background: { id : "background", src : "assets/tyrannosaurus/background.jpg" },
+        				hint: { id : "hint", src: "assets/trex/LowRes/hint.png" },
+        				sounds: [
+        					{ id: "snap", mp3 : "assets/trex/sounds/Clank.mp3", ogg : "assets/trex/sounds/Clank.ogg" },
+        					{ id: "success", mp3 : "assets/trex/sounds/Dinosaur_Growl.mp3", ogg : "assets/trex/sounds/Dinosaur_Growl.ogg" }
+        				],
+        				pieces: [
+        					{ id: "cervical", 	name: "Cervical", src: "assets/trex/LowRes/N-Cervical.png", hover: "assets/trex/LowRes/H-Cervical.png", selected: "assets/trex/LowRes/S-Cervical.png", zindex: 11 },
+        					{ id: "dorsal", 		name: "Dorsal", src: "assets/trex/LowRes/N-Dorsal.png", hover: "assets/trex/LowRes/H-Dorsal.png", selected: "assets/trex/LowRes/S-Dorsal.png", zindex: 5 },
+        					{ id: "gastracia", 	name: "Gastracia", src: "assets/trex/LowRes/N-Gastracia.png", hover: "assets/trex/LowRes/H-Gastracia.png", selected: "assets/trex/LowRes/S-Gastracia.png", zindex: 4 },
+        					{ id: "ischium", 		name: "Ischium", src: "assets/trex/LowRes/N-Ischium.png", hover: "assets/trex/LowRes/H-Ischium.png", selected: "assets/trex/LowRes/S-Ischium.png", zindex: 7 },
+        					{ id: "left-arm", 	name: "Left Arm", src: "assets/trex/LowRes/N-LArm.png", hover: "assets/trex/LowRes/H-LArm.png", selected: "assets/trex/LowRes/S-LArm.png", zindex: 12  },
+        					{ id: "left-leg", 	name: "Left Leg", src: "assets/trex/LowRes/N-LLeg.png", hover: "assets/trex/LowRes/H-LLeg.png", selected: "assets/trex/LowRes/S-LLeg.png", zindex: 10 },
+        					{ id: "lower-jaw", 	name: "Lower Jaw", src: "assets/trex/LowRes/N-LowerJaw.png", hover: "assets/trex/LowRes/H-LowerJaw.png", selected: "assets/trex/LowRes/S-LowerJaw.png", zindex: 13 },
+        					{ id: "pubis", 			name: "Pubis", src: "assets/trex/LowRes/N-Pubis.png", hover: "assets/trex/LowRes/H-Pubis.png", selected: "assets/trex/LowRes/S-Pubis.png", zindex: 8 },
+        					{ id: "right-arm", 	name: "Right Arm", src: "assets/trex/LowRes/N-RArm.png", hover: "assets/trex/LowRes/H-RArm.png", selected: "assets/trex/LowRes/S-RArm.png", zindex: 1 },
+        					{ id: "ribs", 			name: "Ribs", src: "assets/trex/LowRes/N-Ribs.png", hover: "assets/trex/LowRes/H-Ribs.png", selected: "assets/trex/LowRes/S-Ribs.png", zindex: 6 },
+        					{ id: "right-leg", 	name: "Right Leg", src: "assets/trex/LowRes/N-Rleg.png", hover: "assets/trex/LowRes/H-Rleg.png", selected: "assets/trex/LowRes/S-Rleg.png", zindex: 2  },
+        					{ id: "sacral-and-illium", name: "Sacral and Illium", src: "assets/trex/LowRes/N-SacralAndIllium.png", hover: "assets/trex/LowRes/H-SacralAndIllium.png", selected: "assets/trex/LowRes/S-SacralAndIllium.png", fixed: true, x:416, y:118, zindex: 9 },
+        					{ id: "skull", 			name: "Skull", src: "assets/trex/LowRes/N-Skull.png", hover: "assets/trex/LowRes/H-Skull.png", selected: "assets/trex/LowRes/S-Skull.png", zindex:14  },
+        					{ id: "tail", 			name: "Tail", src: "assets/trex/LowRes/N-Tail.png", hover: "assets/trex/LowRes/H-Tail.png", selected: "assets/trex/LowRes/S-Tail.png", zindex: 3 }
+        				],
+        				matches: [
+        					[ 
+        						{ piece: "skull", x: 44, y:1 }, 	
+        						{ piece: "lower-jaw", x: 20 , y: -35 } 
+        					],
+        					[ 
+        						{ piece: "skull", 		x: 45, 	y: -25 }, 	
+        						{ piece: "cervical", 	x: -36, 	y: -17 } 
+        					],
+									[ 
+										{ piece: "cervical", x: 29, 	y: 18 }, 	
+										{ piece: "ribs", 	x: -70, 	y: -22} 
+									],
+									[ 
+										{ piece: "cervical", x: 26, 	y: -2 }, 	
+										{ piece: "dorsal", 	x: -79, 	y: -4 } 
+									],
+									[ 
+										{ piece: "dorsal", x: -14, 	y: -5 }, 	
+										{ piece: "ribs", 	x: -8, 	y: -43 } 
+									],
+									[ 
+										{ piece: "dorsal", x: -27,  y: -2 }, 	
+										{ piece: "left-arm", 	x: 23, 	y: -56 } 
+									],
+									[ 
+										{ piece: "dorsal", x: -27, 	y: -3 }, 	
+										{ piece: "right-arm", 	x: 31, 	y: -45 } 
+									],
+									[ 
+										{ piece: "sacral-and-illium", x: -48, 	y: -3}, 	
+										{ piece: "dorsal", 	x: 66, 	y: 6 } 
+									],
+									[ 
+										{ piece: "sacral-and-illium", x: -7, 	y: 17 }, 	
+										{ piece: "left-leg", 	x: -61, 	y: -106 } 
+									],
+									[ 
+										{ piece: "sacral-and-illium", x: -8, 	y: 18 }, 	
+										{ piece: "right-leg", 	x: 19, 	y: -88 } 
+									],
+									[ 
+										{ piece: "sacral-and-illium", x: -23 , 	y: 22}, 	
+										{ piece: "pubis", 	x: 14, 	y: -45 } 
+									],
+									[ 
+										{ piece: "sacral-and-illium", x: 8 , 	y: 26 }, 	
+										{ piece: "ischium", 	x: -20 , 	y: -28 } 
+									],
+									[ 
+										{ piece: "pubis", x: -22, 	y: 32 }, 	
+										{ piece: "gastracia", x: 63, 	y: 18 } 
+									],
+									[ 
+										{ piece: "sacral-and-illium", x: 53, 	y: 13 }, 	
+										{ piece: "tail", 	x: -174, 	y: -2} 
+									]
+        				]
+        			};
+        			
         			var loader = new PuzzleBuilder();
         			
         			var welcomeScreen = document.getElementById("interface");
@@ -245,9 +209,12 @@
         			var holder = document.getElementById("fullscreen");
         			var pieceLabel = document.getElementById("piece-label");
         			var fstoggle = document.getElementById("fstoggle");
+        			var hintToggle = document.getElementById("hint-toggle");
         			
         			
-        			loader.loadPuzzle(DinoPuzzle);
+        			loader.loadPuzzle(TrexPuzzle);
+        			
+        			window.puzzle = loader.puzzle;
         			
         			loader.progressChange.attach(function(sender,args) {
         				var e = args.event;
@@ -274,20 +241,30 @@
         				loader.handlePuzzleLoad();
         				holder.style.width = window.innerWidth+'px';
         				loader.getPuzzleView().resizePuzzle(window.innerWidth, window.innerHeight);
-        				if(!fullScreenApi.supportsFullScreen) {
+        				if(!fullScreenApi.supportsFullScreen || true) {
         					fstoggle.style.display = "none";
+        				}
+        				
+        				// connect the initial pieces
+        				puzzle.connectPointWithMatch(puzzle.getPieceByName("ischium").getPoints()[0]);
+        				var pubisPoints = puzzle.getPieceByName("pubis").getPoints();
+        				for(var i = 0; i < pubisPoints.length; i++) {
+        					if(pubisPoints[i].getMatch().getPiece().name == "sacral-and-illium")
+        					{
+        						puzzle.connectPointWithMatch(pubisPoints[i]);
+        					}
+        				}
+        				hintToggle.onclick = function() {
+        					loader.puzzleView.showHint();
         				}
         			};
         			
-        			puzzle = loader.puzzle;
+        			
         			
       				window.onresize = function(event) {
       					holder.style.width = window.innerWidth+'px';
       					loader.getPuzzleView().resizePuzzle(window.innerWidth, window.innerHeight);
       				}
-        			
-        			
-        			
         			
         			fstoggle.onclick = function() {
 	        			if (RunPrefixMethod(document, "FullScreen") || RunPrefixMethod(document, "IsFullScreen")) {
@@ -297,7 +274,6 @@
 	        				RunPrefixMethod(holder, "RequestFullScreen");
 	        			}
 							}
-							
         		});
         		
       		

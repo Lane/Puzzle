@@ -23,6 +23,8 @@ function Piece(options) {
 	
 	this.displayName = options.displayName || "Unnamed Piece";
 	
+	this.zindex = options.zindex || 1;
+	
 	if(typeof(options.fixed) !== "undefined")
 		this.fixed = true;
 		

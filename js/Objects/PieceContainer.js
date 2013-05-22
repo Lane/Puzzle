@@ -18,7 +18,6 @@ function PieceContainer(options) {
 	this._puzzle = null;
 	this._snapped = false;
 	this.boundary = new Boundary(9999, 9999, (2*-9999), (2*-9999));
-	
 	this.initialize(options);
 	
 }
@@ -35,7 +34,7 @@ pc.initialize = function(options) {
 	
 	// set parameters
 	this.name = options.name || "container"+this.id;
-	this.cursor = options.cursor || "pointer";
+	this.cursor = options.cursor || "move";
 	this.x = options.x || 250;
 	this.y = options.y || 250;
 	this._selected = false;
@@ -53,7 +52,7 @@ pc.initialize = function(options) {
 	}
 	
 	if(!this._fixed) {
-		this.alpha = 0.65;
+		this.alpha = 0.8;
 	}
 	
 	for(var i=0; i < this._pieces.length; i++) {
@@ -66,71 +65,10 @@ pc.initialize = function(options) {
 			}
 		}
 	}
-	
-	var _this = this;
-	if(!this._fixed) {
-		// Piece container interaction events
-		this.addEventListener("mouseover", function(event) { 
-			_this._puzzle.mouseOverPiece.notify({ 
-				event: event, 
-				pieceContainer: _this
-			});
-		});
-		
-		this.addEventListener("mouseout", function(event) { 
-			_this._puzzle.mouseOutPiece.notify({ 
-				event: event, 
-				pieceContainer: _this
-			});
-		});
-		
-		this.addEventListener("mousedown", function(event) {
-		
-			var pc = event.target;
-			var offset = {x:pc.x-event.stageX, y:pc.y-event.stageY};
-			var ob = pc.parent.getObjectUnderPoint(event.stageX, event.stageY);
-			
-			// if the user pressed down on a piece
-			if(ob.type !== null) {
-				if(ob.type == "piece") {
-					event.addEventListener("mousemove", function(evt) {
-						evt.offset = offset;
-						_this._puzzle.dragPiece.notify({ 
-							event: evt, 
-							pieceContainer: _this
-						});
-					});
-				}
-				
-				// if the user pressed down on the rotate handle
-				if(ob.type == "rotate-handle") {
-					var start = ob.parent.rotation;
-					offset = {x:event.stageX, y:event.stageY};
-					event.addEventListener("mousemove", function(evt) {
-						evt.offset = offset;
-						evt.start = start;
-						_this._puzzle.dragRotateHandle.notify({ 
-							event: evt, 
-							pieceContainer: _this
-						});
-					});
-				}
-			}
-			
-			// check if any pieces match once the user lets go
-			event.addEventListener("mouseup", function(evt) {
-				_this._puzzle.releasePiece.notify({ 
-					event: evt, 
-					pieceContainer: _this
-				});
-			});
-			
-		});
-	}
-	
+
 	this.setBoundary();
 	
-	this.addChild(this._rotateHandle);	
+	//this.addChild(this._rotateHandle);	
 }
 
 // SETTERS
@@ -199,7 +137,7 @@ pc.getPieceString = function () {
 		if(i !== (this._pieces.length-1))
   		ps += this._pieces[i].displayName + ", ";
   	else 
-  		ps += "and " + this._pieces[i].displayName;
+  		ps += this._pieces[i].displayName;
   }
   return ps;
 }
@@ -318,11 +256,14 @@ pc.removePiece = function (p) {
  * @returns {PieceContainer} This piece container
  **/
 pc.selectPiece = function() {
-	this.addChild(this._rotateHandle);
+	//this.addChild(this._rotateHandle);
 	this._selected = true;
 	this._rotateHandle.visible = true;
 	this.parent.addChild(this);
-	this.filters = [new createjs.ColorFilter(1, 1, 0.6, 1)];
+	//this.filters = [new createjs.ColorFilter(1, 1, 0.6, 1)];
+	for(var i = 0; i < this._pieces.length; i++) {
+		this._pieces[i].image = this._pieces[i].imgSelected;
+	}
 	return this;
 }
 
@@ -333,7 +274,10 @@ pc.selectPiece = function() {
  **/
 pc.hoverPiece = function() {
 	if(!this._selected) {
-		this.filters = [new createjs.ColorFilter(0.8, 1, 0.8, 1)];
+		//this.filters = [new createjs.ColorFilter(0.8, 1, 0.8, 1)];
+		for(var i = 0; i < this._pieces.length; i++) {
+			this._pieces[i].image = this._pieces[i].imgHover;
+		}
 	}
 	return this;
 }
@@ -349,7 +293,10 @@ pc.resetPiece = function(force) {
 	if(!this._selected || force) {
 		this._selected = false;
 		this._rotateHandle.visible = false;
-		this.filters = [];
+		//this.filters = [];
+		for(var i = 0; i < this._pieces.length; i++) {
+			this._pieces[i].image = this._pieces[i].imgNeutral;
+		}
 	}
 	return this;
 }
@@ -364,12 +311,29 @@ pc.resetPiece = function(force) {
 pc.matchPieces = function() {
 	for(var i = 0; i < this._pieces.length; i++) {
 		var matches = this._pieces[i].getMatches();
+		// there might be more than one match, but we only want to make one at a time
 		for(var j = 0; j < matches.length; j++) {
-			this._puzzle.connectPointWithMatch(matches[j]);
+			// if both pieces are in the same piece container, don't connect them
+			if(matches[j].getPiece().parent.id !== matches[j].getMatch().getPiece().parent.id) {
+				this._puzzle.connectPointWithMatch(matches[j]);
+			} else {
+				// they're already matched, remove this
+				matches[j].getPiece().removePoint(matches[j]);
+				matches[j].getMatch().getPiece().removePoint(matches[j].getMatch());
+			}
 			debug.log(matches[j], "Match has been made");
 		}
 	}
 	return this;
+}
+
+pc.isMatched = function() {
+	var matches = false;
+	for(var i = 0; i < this._pieces.length; i++) {
+		if(this._pieces[i].getMatches().length > 0)
+			matches = true;
+	}
+	return matches;
 }
 
 /** 
@@ -433,7 +397,7 @@ pc.updatePoints = function() {
 		}
 	}
 	return this;
-}
+};
 
 /**
  * Goes through every point of every piece within this piece container 
@@ -449,7 +413,26 @@ pc.updatePointsOffset = function() {
 		}
 	}
 	return this;
-}
+};
+
+/**
+ * Goes through all the pieces in this piece container and sorts them 
+ * based on the value of their z-index.
+ * @method PieceContainer.sortPieces
+ * @return {PieceContainer} This piece container
+ **/
+pc.sortPieces = function() {
+
+	this._pieces.sort(function(a,b) {
+		if(a.zindex < b.zindex)
+			return -1;
+		if(a.zindex > b.zindex)
+			return 1;
+		return 0;
+	});
+	
+};
+
 
 /**
  * Get a string representation of the PieceContainer
@@ -470,9 +453,8 @@ pc.toString = function() {
 	for(var i = 0; i < this._pieces.length; i++) {
 		pcString += this._pieces[i].toString();
 	}
-	
 	return pcString;
-}
+};
 
 /**
  * Get an html string representation of the PieceContainer

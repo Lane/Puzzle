@@ -2,23 +2,11 @@
  * Represents a 2D puzzle element. 
  *
  * @constructor
- * @param {DOMElement} canvas - The canvas to render the puzzle to
  * @param {Array} pieceContainers - The piece containers for the puzzle
- * @property {DOMElement} _canvas - The canvas the puzzle is rendered to
  * @property {Array} _pieceContainers - The piece containers inside the puzzle
  * @property {Piece} _selectedPiece - The currently selected piece
  */
-function Puzzle(canvas, pieceContainers) {
-	if(typeof(canvas) == 'undefined') {
-		var canvas = document.getElementById('puzzleCanvas');
-		if(canvas == null) {
-			canvas = document.createElement("canvas");
-			canvas.id = "puzzleCanvas";
-			document.getElementsByTagName('body')[0].appendChild(canvas);
-		}
-	}
-	
-	this._canvas = canvas;
+function Puzzle(pieceContainers) {
 
 	this._pieceContainers = pieceContainers || new Array();
 
@@ -98,6 +86,12 @@ pz.initialize = function() {
 	 * @type {Event}
 	 */
 	this.releasePiece = new Event(this);
+	
+	/**
+	 * Fired when the puzzle is done
+	 * @type {Event}
+	 */
+	this.puzzleComplete = new Event(this);
 }
 
 
@@ -132,15 +126,6 @@ pz.getPieceByName = function(name) {
 pz.getSelectedPiece = function () {
 	return this._selectedPiece;
 };
-
-/**
- * Gets the puzzle canvas
- * @method Puzzle.getCanvas
- * @returns {DOMElement} The canvas DOM Element
- */
-pz.getCanvas = function() {
-	return this._canvas;
-}
 
 pz.getAspectRatio = function() {
 	return this._aspectRatio;
@@ -219,27 +204,39 @@ pz.connectPointWithMatch = function(pt) {
 	
 	// merge the piece containers
 	this.mergePieceContainers(
-		movedPoint.piece.getParentPieceContainer(), 
-		staticPoint.piece.getParentPieceContainer(),
+		movedPoint.getPiece().getParentPieceContainer(), 
+		staticPoint.getPiece().getParentPieceContainer(),
 		pt.getMatch()
 	);
 	
 	// remove the matched points from the pieces
-	movedPoint.piece.removePoint(movedPoint);
-	staticPoint.piece.removePoint(staticPoint);
+	movedPoint.getPiece().removePoint(movedPoint);
+	staticPoint.getPiece().removePoint(staticPoint);
 	pt = null;
+	
+	movedPoint.getPiece().getParentPieceContainer().resetPiece(true);
 		
 	this.pointsConnected.notify({ 
-		pieceContainer: movedPoint.piece.getParentPieceContainer(), 
+		pieceContainer: movedPoint.getPiece().getParentPieceContainer(), 
 		event :  {
 			type : "pointsconnected"
 		}
 	});
 	
-	return movedPoint.piece.getParentPieceContainer();
+	if(this.isComplete())
+	{
+		this.puzzleComplete.notify({ 
+			pieceContainer: movedPoint.getPiece().getParentPieceContainer(), 
+			event :  {
+				type : "puzzlecomplete"
+			}
+		});
+	}
+	
+	return movedPoint.getPiece().getParentPieceContainer();
 		
 };
-	
+
 pz.mergePieceContainers = function(from, to, connectPoint) {
 	var fromPieces = from.getPieces();
 	var pc = null;
@@ -279,6 +276,12 @@ pz.deselectPieces = function() {
 			}
 		});
 	}
+};
+
+pz.isComplete = function() {
+	if(this._pieceContainers.length == 1)
+		return true;
+	return false;
 };
 	
 pz.toString = function() {

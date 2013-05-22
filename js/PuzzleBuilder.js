@@ -39,8 +39,7 @@ pb.initialize = function() {
 	//this.puzzleLoaded.attach(this.handlePuzzleLoad.bind(this));
 	
 	this._queue.installPlugin(createjs.Sound);
-	createjs.Sound.registerPlugins([createjs.WebAudioPlugin, createjs.FlashPlugin]);
-	createjs.Sound.registerSound("assets/success.mp3|assets/success.ogg", "success");
+	createjs.Sound.registerPlugins([createjs.WebAudioPlugin, createjs.HTMLAudioPlugin, createjs.FlashPlugin]);
 	
 	this._queue.addEventListener("complete", function(event) { 
 		_this.puzzleLoaded.notify({ 
@@ -59,8 +58,6 @@ pb.initialize = function() {
 			event: evt
 		});
 	});
-	
-	
 };
 
 /**
@@ -75,13 +72,18 @@ pb.loadPuzzle = function(pzl) {
 
 	// load background
 	this._queue.loadManifest(pzl.background);
+	this._queue.loadManifest(pzl.hint);
 	if(typeof(pzl.rotateHandle) !== "undefined")
 		pzl.rotateHandle = { id: "rotate-handle", src : "assets/rotate.png" };
 	
 	this._queue.loadManifest(pzl.rotateHandle);
 
-	this._queue.loadManifest(pzl.pieces); // load pieces
+	this._queue.loadManifest(this._createPieceManifest(pzl.pieces)); // load pieces
 	
+	for(var i=0; i < pzl.sounds.length; i++) {
+		var s = pzl.sounds[i];
+		this._queue.loadFile({id: s.id, src: s.mp3+"|"+s.ogg });
+	}
 };
 
 /**
@@ -94,10 +96,15 @@ pb.handleFileLoad = function (sender, args) {
 	var type = item.type;
 	if(item.id == "background") {
 		var bg = new createjs.Bitmap(item.src);
+		bg.type = "background";
 		this.puzzle._background = bg;
 		this.puzzle.setAspectRatio(bg.image.width/bg.image.height);
-		this.puzzle._canvas.width = bg.image.width;
-		this.puzzle._canvas.height = bg.image.height;
+		this.puzzleView._canvas.width = bg.image.width;
+		this.puzzleView._canvas.height = bg.image.height;
+	} else if(item.id == "hint") {
+		this.puzzle._hint = new createjs.Bitmap(item.src);
+		this.puzzle._hint.alpha=0;
+		this.puzzle._hint.type = "hint";
 	} else if(item.id == "rotate-handle") {
 		var rh = new createjs.Bitmap(item.src);
 	  rh.name = "rotate-handle";
@@ -112,14 +119,17 @@ pb.handleFileLoad = function (sender, args) {
 	
 	} else {
 		if (type == createjs.LoadQueue.IMAGE) {
-			this._pieces.push(new Piece({
-				img:args.event.result, 
-				name: item.id, 
-				displayName: item.name,
-				fixed:item.fixed, 
-				parentX:item.x, 
-				parentY:item.y
-			}));
+			if(item.state == 'neutral') {
+				this._pieces.push(new Piece({
+					img:args.event.result, 
+					name: item.id, 
+					displayName: item.name,
+					fixed:item.fixed, 
+					parentX:item.x, 
+					parentY:item.y,
+					zindex: item.zindex
+				}));
+			}
 		}
 	}
 	debug.log("File loaded", args.event);
@@ -138,6 +148,19 @@ pb.getLoadingProgress = function() {
 	return this._queue.progress;
 };
 
+pb._createPieceManifest = function(pcs) {
+	var manifest = [];
+	for(var i=0; i < pcs.length; i++) {
+		pcs[i].state = 'neutral';
+		manifest.push(pcs[i]);
+		if(pcs[i].hover !== null)
+			manifest.push({ id: pcs[i].id+"-hover", src: pcs[i].hover, state: 'hover' });
+		if(pcs[i].selected !== null)
+			manifest.push({ id: pcs[i].id+"-selected", src: pcs[i].selected, state: 'selected' });
+	}
+	return manifest;
+};
+
 /**
  * Callback function that executes after all files in the manifest have loaded.
  * This function will pop all the pieces that have been added to
@@ -153,10 +176,15 @@ pb.handlePuzzleLoad = function(sender, args) {
 	var pzl = this._loadObject;
 
 	while((p=this._pieces.pop()) != null) {
+	
+		p.imgNeutral = this._queue.getResult(p.name);
+		p.imgHover = this._queue.getResult(p.name+'-hover');
+		p.imgSelected = this._queue.getResult(p.name+'-selected');
+	
 		var options = {};
 		options.pieces = [p];
-		options.x = p.regX+Math.round(Math.random()*(this.puzzle.getCanvas().width-p.image.width));
-		options.y = p.regY+Math.round(Math.random()*(this.puzzle.getCanvas().height-p.image.height));
+		options.x = p.regX+Math.round(Math.random()*(this.puzzleView.getCanvas().width-p.image.width));
+		options.y = p.regY+Math.round(Math.random()*(this.puzzleView.getCanvas().height-p.image.height));
 		this.puzzle.addPieceContainer(new PieceContainer(options));
 	}
 		

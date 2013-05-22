@@ -33,6 +33,8 @@ ctrl.initialize = function() {
 	this._model.releasePiece.attach(this.pieceContainerReleased);
 	this._model.dragPiece.attach(this.pieceContainerDragged.bind(this));
 	this._model.dragRotateHandle.attach(this.rotateHandleDragged.bind(this));
+	
+	this._model.puzzleComplete.attach(this.puzzleCompleted.bind(this));
 }
 
 ctrl.pressedOnNothing = function(sender, args) {
@@ -65,7 +67,7 @@ ctrl.pieceContainerRemoved = function(sender, args) {
 
 ctrl.pieceAdded = function(sender, args) {
 	args.piece.parent.updatePoints();
-	var instance = createjs.Sound.play("success"); 
+	createjs.Sound.play("snap"); 
 	this._view.buildPuzzle();
   debug.log(args, "Added piece to container");
 };
@@ -119,3 +121,7 @@ ctrl.hoveredOver = function(sender, args) {
 	args.pieceContainer.hoverPiece();
 	this._view.updatePieceContainer(args.pieceContainer);
 };
+
+ctrl.puzzleCompleted = function(sender,args) {	
+	createjs.Sound.play("success"); 
+}
