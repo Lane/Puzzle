@@ -128,8 +128,8 @@ pb.handleFileLoad = function (sender, args) {
 		bg.type = "background";
 		this.puzzle._background = bg;
 		this.puzzle.setAspectRatio(bg.image.width/bg.image.height);
-		this.puzzleView._canvas.width = bg.image.width;
-		this.puzzleView._canvas.height = bg.image.height;
+		this.puzzleView._canvas.width = 878;
+		this.puzzleView._canvas.height = 494; // TODO: SET TO BACKGROUND DIM
 	} else if(item.id == "hint") {
 		this.puzzle._hint = new createjs.Bitmap(item.src);
 		this.puzzle._hint.alpha=0;
