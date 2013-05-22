@@ -6,7 +6,6 @@
  * @param {Object} options Option overrides
  * @property {Array} _pieces - The pieces inside this container
  * @property {boolean} _selected - The selected status of this PieceContainer
- * @property {RotateHandle} _rotateHandle - Control used to rotate the PieceContainer
  * @property {Puzzle} _puzzle - The puzzle that this PieceContainer belongs to
  * @property {Boundary} boundary - The boundary of this piece container
  */
@@ -14,7 +13,6 @@ function PieceContainer(options) {
 	
 	this._pieces = options.pieces || new Array();
 	this._selected = false;
-	this._rotateHandle = new RotateHandle();
 	this._puzzle = null;
 	this._snapped = false;
 	this.boundary = new Boundary(9999, 9999, (2*-9999), (2*-9999));
@@ -68,7 +66,6 @@ pc.initialize = function(options) {
 
 	this.setBoundary();
 	
-	//this.addChild(this._rotateHandle);	
 }
 
 // SETTERS
@@ -185,8 +182,8 @@ pc.addPiece = function (p) {
   var oldReg = { x: this.regX, y: this.regY };
   
   // set the new reg point to the center of the bounding box
-  this.regX = this._rotateHandle.x = this.boundary.getCenter().x;
-  this.regY = this._rotateHandle.y = this.boundary.getCenter().y;
+  this.regX = this.boundary.getCenter().x;
+  this.regY = this.boundary.getCenter().y;
   
   // determine the reg point difference and set position
   var regDiff = { x: this.regX-oldReg.x, y: this.regY-oldReg.y };
@@ -256,9 +253,7 @@ pc.removePiece = function (p) {
  * @returns {PieceContainer} This piece container
  **/
 pc.selectPiece = function() {
-	//this.addChild(this._rotateHandle);
 	this._selected = true;
-	this._rotateHandle.visible = true;
 	this.parent.addChild(this);
 	//this.filters = [new createjs.ColorFilter(1, 1, 0.6, 1)];
 	for(var i = 0; i < this._pieces.length; i++) {
@@ -292,7 +287,6 @@ pc.resetPiece = function(force) {
 	force = typeof force !== 'undefined' ? force : false;
 	if(!this._selected || force) {
 		this._selected = false;
-		this._rotateHandle.visible = false;
 		//this.filters = [];
 		for(var i = 0; i < this._pieces.length; i++) {
 			this._pieces[i].image = this._pieces[i].imgNeutral;

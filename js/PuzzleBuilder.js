@@ -73,11 +73,6 @@ pb.loadPuzzle = function(pzl) {
 	// load background
 	this._queue.loadManifest(pzl.background);
 	this._queue.loadManifest(pzl.hint);
-	if(typeof(pzl.rotateHandle) !== "undefined")
-		pzl.rotateHandle = { id: "rotate-handle", src : "assets/rotate.png" };
-	
-	this._queue.loadManifest(pzl.rotateHandle);
-
 	this._queue.loadManifest(this._createPieceManifest(pzl.pieces)); // load pieces
 	
 	for(var i=0; i < pzl.sounds.length; i++) {
@@ -106,17 +101,7 @@ pb.handleFileLoad = function (sender, args) {
 		this.puzzle._hint.alpha=0;
 		this.puzzle._hint.type = "hint";
 	} else if(item.id == "rotate-handle") {
-		var rh = new createjs.Bitmap(item.src);
-	  rh.name = "rotate-handle";
-	  rh.x = 0;
-	  rh.y = 0;
-		rh.regX = rh.image.width/2|0;
-		rh.regY = rh.image.height/2|0;
-	  rh.scaleX = rh.scaleY = rh.scale = 0.25;
-	  rh.type = "rotate-handle";
-	  
-	  this.puzzle._rotateHandle = rh;
-	
+		// do nothing
 	} else {
 		if (type == createjs.LoadQueue.IMAGE) {
 			if(item.state == 'neutral') {

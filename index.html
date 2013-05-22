@@ -35,10 +35,17 @@
 	      			<p>
 	      				The following screen contains an interactive 2D puzzle.  The hips of the Tyrannosaurus are already in place, move and rotate the other pieces of the puzzle into place to rebuild the Tyrannosaurus. 
 	      			</p>
+	      			<ul id="controls">
+	      				<li><strong>Select:</strong> Click on a piece</li>
+	      				<li><strong>Deselect:</strong> Double Click away from a piece</li>
+	      				<li><strong>Move:</strong> Click and drag on a piece</li>
+	      				<li><strong>Rotate:</strong> Select a piece, then click and drag away from the piece</li>
+	      			</ul>
       			</div>
       			
       			<div class="action-row">
       				<div id="loader"> 
+      					<span id="loading-label"></span>
       					<div id="progress-bar"></div>
       				</div>
       				<a id="start" href="#" class="btn btn-start btn-disabled">Loading</a>
@@ -59,7 +66,6 @@
         <script src="js/Objects/PieceContainer.js"></script>
         <script src="js/Objects/Piece.js"></script>
         <script src="js/Objects/Point.js"></script>
-        <script src="js/Objects/RotateHandle.js"></script>
         <script src="js/Model/Puzzle.js"></script>
         <script src="js/View/PuzzleView.js"></script>
         <script src="js/Controller/PuzzleController.js"></script>        
@@ -70,54 +76,6 @@
        			
         		$(document).ready(function() {
       
-        			var DinoPuzzle = {
-        				background: { id : "background", src : "assets/tyrannosaurus/background.jpg" },
-        				sounds: [
-        					{ id: "snap", mp3 : "assets/tyrannosaurus/sounds/Clank.mp3", ogg : "assets/tyrannosaurus/sounds/Clank.ogg" },
-        					{ id: "success", mp3 : "assets/tyrannosaurus/sounds/Dinosaur_Growl.mp3", ogg : "assets/tyrannosaurus/sounds/Dinosaur_Growl.ogg" }
-        				],
-        				pieces: [
-        					{ id: "arm", name: "Arm", src: "assets/tyrannosaurus/arm.png" },
-        					{ id: "back-ribs", name: "Back, Ribs", src: "assets/tyrannosaurus/back-ribs.png" },
-        					{ id: "belly-ribs", name: "Belly, Ribs", src: "assets/tyrannosaurus/belly-ribs.png" },
-        					{ id: "hips", name: "Hips", src: "assets/tyrannosaurus/hips.png", fixed: true, x:400, y:200 },
-        					{ id: "leg", name: "Leg", src: "assets/tyrannosaurus/leg.png" },
-        					{ id: "neck", name: "Neck", src: "assets/tyrannosaurus/neck.png" },
-        					{ id: "skull", name: "Skull", src: "assets/tyrannosaurus/skull.png" },
-        					{ id: "tail", name: "Tail", src: "assets/tyrannosaurus/tail.png" },
-        				],
-        				matches: [
-        					[ 
-        						{ piece: "skull", x: 45, y: -45 	}, 	
-        						{ piece: "neck", x: -39, 	y: -16 	} 
-        					],
-        					[ 
-        						{ piece: "neck", x: 32, y: 18 	}, 	
-        						{ piece: "back-ribs", x: -80, 	y: -25 	} 
-        					],
-        					[ 
-        						{ piece: "back-ribs", x: -25, y: -35 	}, 	
-        						{ piece: "arm", x: 25, 	y: -60 	} 
-        					],
-        					[ 
-        						{ piece: "back-ribs", x: 75, y: -28 	}, 	
-        						{ piece: "hips", x: -51, y: -50  	} 
-        					],
-        					[ 
-        						{ piece: "hips", x: 2, y: -32 	}, 	
-        						{ piece: "leg", x: -60, y: -120  	} 
-        					],
-        					[ 
-        						{ piece: "hips", x: -70, y: 67 	}, 	
-        						{ piece: "belly-ribs", x: 60, y: 25  	} 
-        					],
-        					[ 
-        						{ piece: "hips", x: 55, y: -40 	}, 	
-        						{ piece: "tail", x: -185, y: -10  	} 
-        					]
-        				]
-        			};
-        			
         			var TrexPuzzle = {
         				background: { id : "background", src : "assets/tyrannosaurus/background.jpg" },
         				hint: { id : "hint", src: "assets/trex/LowRes/hint.png" },
@@ -204,6 +162,7 @@
         			var loader = new PuzzleBuilder();
         			
         			var welcomeScreen = document.getElementById("interface");
+        			var loadingLabel = document.getElementById("loading-label");
         			var progressBar = document.getElementById("progress-bar");
         			var startButton = document.getElementById("start");
         			var holder = document.getElementById("fullscreen");
@@ -220,11 +179,19 @@
         				var e = args.event;
         				var amountLoaded = Math.round(e.loaded*100);
         				progressBar.style.width = amountLoaded+"%";
+        				progressBar.style.opacity = e.loaded;
+        			});
+        			
+        			loader.fileLoaded.attach(function(sender, args) {
+        				console.log(args.event.item);
+        				if(typeof(args.event.item.id) !== "undefined")
+        					loadingLabel.innerText = "Loaded " + args.event.item.type + ": " + args.event.item.id;
         			});
         			
         			loader.puzzleLoaded.attach(function(sender,args) {
         				startButton.innerText = "Get Started";
         				startButton.className = "btn btn-start btn-enabled";
+        				loadingLabel.innerText = "Loading complete";
         			});
         			
         			loader.getPuzzle().selectedPieceChanged.attach(function(sender,args) {
@@ -241,7 +208,7 @@
         				loader.handlePuzzleLoad();
         				holder.style.width = window.innerWidth+'px';
         				loader.getPuzzleView().resizePuzzle(window.innerWidth, window.innerHeight);
-        				if(!fullScreenApi.supportsFullScreen || true) {
+        				if(!fullScreenApi.supportsFullScreen || true) { // get rid of true for detection
         					fstoggle.style.display = "none";
         				}
         				

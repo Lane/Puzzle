@@ -69,7 +69,7 @@ pv.initialize = function() {
 			if(_this._hoveredPiece !== null) {
 				var tmppc = _this._hoveredPiece;
 				if(_this._model.getSelectedPiece() !== null) {
-					document.body.style.cursor='url("assets/trex/rotate.png"), auto';
+					document.body.style.cursor='url("assets/trex/rotate24.png") 12 12, auto';
 				} else {
 					document.body.style.cursor='default';
 				}
@@ -84,6 +84,16 @@ pv.initialize = function() {
 	
 	// attach listeners to stage events
 	if(!Modernizr.touch) {
+	
+		this._stage.addEventListener("dblclick", function(event) {
+			console.log(event);
+			var ob = _this._stage.getObjectUnderPoint(event.stageX, event.stageY);
+			if(ob.type == "background" || ob.type == "hint") {
+				_this.clickedOnNothing.notify({ event: event });
+				document.body.style.cursor='default';
+			}
+		});
+	
 		this._stage.addEventListener("mousedown", function(event) {
 			
 			var stage = _this._stage;
@@ -94,12 +104,13 @@ pv.initialize = function() {
 			
 			// if no pieces were clicked
 			if(ob.type == null || ob.type == "background" || ob.type == "hint") {
-				//_this.clickedOnNothing.notify({ event: event });
+				
 				
 				var spc = _this._model.getSelectedPiece();
 				if(spc !== null) {
 					var start = spc.rotation;
 					offset = {x:event.stageX, y:event.stageY};
+					
 					event.addEventListener("mousemove", function(evt) {
 						
 						evt.offset = offset;
@@ -125,11 +136,6 @@ pv.initialize = function() {
 								pieceContainer: pc
 							});
 						});
-					}
-					
-					// if the user pressed down on the rotate handle
-					if(ob.type == "rotate-handle") {
-						
 					}
 				}
 				
@@ -257,6 +263,7 @@ pv.buildPuzzle = function () {
 	// add unfixed pieces
 	for(var i = 0; i < this._model._pieceContainers.length; i++) {
 		if(!this._model._pieceContainers[i].isFixed()) {
+			this._model._pieceContainers[i].sortPieces();
 			for(var j = 0; j < this._model._pieceContainers[i]._pieces.length; j++) {
 				this._model._pieceContainers[i].addChild(this._model._pieceContainers[i]._pieces[j]);
 			}
