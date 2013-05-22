@@ -45,6 +45,7 @@ pv.initialize = function() {
 	
 	var _this = this;
 	
+	// get rid of text cursor on drag
 	document.onselectstart = function(){ return false; }
 	
 	this._stage.addEventListener("stagemousemove", function(event) {
@@ -83,7 +84,7 @@ pv.initialize = function() {
 	});
 	
 	// attach listeners to stage events
-	if(!Modernizr.touch) {
+	if(!Modernizr.touch || todo) {
 	
 		this._stage.addEventListener("dblclick", function(event) {
 			console.log(event);

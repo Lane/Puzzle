@@ -150,6 +150,8 @@ pb.handleFileLoad = function (sender, args) {
 					scale: item.scale || 1
 				}));
 			}
+		} else if (type == createjs.LoadQueue.IMAGE) {
+		
 		}
 	}
 	debug.log("File loaded", args.event);

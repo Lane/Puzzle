@@ -9,10 +9,11 @@ body {
 }
 
 .canvasHolder {
-	width: 100%;
-	padding-bottom: 56.26423690205%;
+	
 	overflow: hidden;
 	position: relative;
+	width: 878px;
+	height: 494px;
 }
 
 #interface {
@@ -183,14 +184,9 @@ h1 {
 	line-height: 1em;
 }
 
-@media (min-width: 867px) {
+
 	body {
 		font-size: 1em;
 	}
-}
 
-@media (min-width: 985px) {
-	body {
-		font-size: 1.145em;
-	}
-}
+

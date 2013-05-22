@@ -73,6 +73,7 @@
         <script>       			
        			debug.setLevel(0);
        			//var debugPoints = true;
+       			var todo = true;
        			
         		$(document).ready(function() {
       
@@ -80,7 +81,7 @@
         				background: { id : "background", src : "assets/tyrannosaurus/background.jpg" },
         				hint: { id : "hint", src: "assets/trex/LowRes/hint.png" },
         				sounds: [
-        					{ id: "snap", mp3 : "assets/trex/sounds/thud.mp3", ogg : "assets/trex/sounds/thud.ogg" },
+        					{ id: "snap", mp3 : "assets/trex/sounds/snap3.mp3", ogg : "assets/trex/sounds/snap3.ogg" },
         					{ id: "success", mp3 : "assets/trex/sounds/Dinosaur_Growl.mp3", ogg : "assets/trex/sounds/Dinosaur_Growl.ogg" }
         				],
         				pieces: [
@@ -230,8 +231,8 @@
         			startButton.onclick = function(event) {
         				holder.className = "canvasHolder started";
         				loader.handlePuzzleLoad();
-        				holder.style.width = window.innerWidth+'px';
-        				loader.getPuzzleView().resizePuzzle(window.innerWidth, window.innerHeight);
+        				//holder.style.width = window.innerWidth+'px';
+        				//loader.getPuzzleView().resizePuzzle(878, 494);
         				if(!fullScreenApi.supportsFullScreen || true) { // get rid of true for detection
         					fstoggle.style.display = "none";
         				}
@@ -251,11 +252,12 @@
         			};
         			
         			
-        			
+        			/*
       				window.onresize = function(event) {
       					holder.style.width = window.innerWidth+'px';
       					loader.getPuzzleView().resizePuzzle(window.innerWidth, window.innerHeight);
       				}
+      				*/
         			
         			fstoggle.onclick = function() {
 	        			if (RunPrefixMethod(document, "FullScreen") || RunPrefixMethod(document, "IsFullScreen")) {
