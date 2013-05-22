@@ -31,7 +31,7 @@
       		<div id="interface">
       			<h1>Build a Tyrannosaurus</h1>
       			<div class="welcome-body">
-	      			<img id="instructions" src="assets/tyrannosaurus/instructions.gif" />
+	      			<img id="instructions" src="assets/trex/LowRes/instructions.gif" />
 	      			<p>
 	      				The following screen contains an interactive 2D puzzle.  The hips of the Tyrannosaurus are already in place, move and rotate the other pieces of the puzzle into place to rebuild the Tyrannosaurus. 
 	      			</p>
@@ -158,6 +158,26 @@
 									]
         				]
         			};
+        			
+        			var highResPieces = [
+        				{ id: "cervical", 	name: "Cervical", src: "assets/trex/HighRes/N-Cervical.png", hover: "assets/trex/HighRes/H-Cervical.png", selected: "assets/trex/HighRes/S-Cervical.png", zindex: 11, scale:0.5 },
+        				{ id: "dorsal", 		name: "Dorsal", src: "assets/trex/HighRes/N-Dorsal.png", hover: "assets/trex/HighRes/H-Dorsal.png", selected: "assets/trex/HighRes/S-Dorsal.png", zindex: 5, scale:0.5 },
+        				{ id: "gastracia", 	name: "Gastracia", src: "assets/trex/HighRes/N-Gastracia.png", hover: "assets/trex/HighRes/H-Gastracia.png", selected: "assets/trex/HighRes/S-Gastracia.png", zindex: 4, scale:0.5 },
+        				{ id: "ischium", 		name: "Ischium", src: "assets/trex/HighRes/N-Ischium.png", hover: "assets/trex/HighRes/H-Ischium.png", selected: "assets/trex/HighRes/S-Ischium.png", zindex: 7, scale:0.5 },
+        				{ id: "left-arm", 	name: "Left Arm", src: "assets/trex/HighRes/N-LArm.png", hover: "assets/trex/HighRes/H-LArm.png", selected: "assets/trex/HighRes/S-LArm.png", zindex: 12, scale:0.5  },
+        				{ id: "left-leg", 	name: "Left Leg", src: "assets/trex/HighRes/N-LLeg.png", hover: "assets/trex/HighRes/H-LLeg.png", selected: "assets/trex/HighRes/S-LLeg.png", zindex: 10, scale:0.5},
+        				{ id: "lower-jaw", 	name: "Lower Jaw", src: "assets/trex/HighRes/N-lowerjaw.png", hover: "assets/trex/HighRes/H-lowerjaw.png", selected: "assets/trex/HighRes/S-lowerjaw.png", zindex: 13, scale:0.5 },
+        				{ id: "pubis", 			name: "Pubis", src: "assets/trex/HighRes/N-Pubis.png", hover: "assets/trex/HighRes/H-Pubis.png", selected: "assets/trex/HighRes/S-Pubis.png", zindex: 8, scale:0.5 },
+        				{ id: "right-arm", 	name: "Right Arm", src: "assets/trex/HighRes/N-RArm.png", hover: "assets/trex/HighRes/H-RArm.png", selected: "assets/trex/HighRes/S-RArm.png", zindex: 1, scale:0.5 },
+        				{ id: "ribs", 			name: "Ribs", src: "assets/trex/HighRes/N-Ribs.png", hover: "assets/trex/HighRes/H-Ribs.png", selected: "assets/trex/HighRes/S-Ribs.png", zindex: 6, scale:0.5 },
+        				{ id: "right-leg", 	name: "Right Leg", src: "assets/trex/HighRes/N-RightLeg.png", hover: "assets/trex/HighRes/H-RightLeg.png", selected: "assets/trex/HighRes/S-RightLeg.png", zindex: 2, scale:0.5  },
+        				{ id: "sacral-and-illium", name: "Sacral and Illium", src: "assets/trex/HighRes/N-SacralAndIllium.png", hover: "assets/trex/HighRes/H-SacralAndIllium.png", scale:0.5, selected: "assets/trex/HighRes/S-SacralAndIllium.png", fixed: true, x:416, y:118, zindex: 9 },
+        				{ id: "skull", 			name: "Skull", src: "assets/trex/HighRes/N-skull.png", hover: "assets/trex/HighRes/H-skull.png", selected: "assets/trex/HighRes/S-skull.png", zindex:14, scale:0.5  },
+        				{ id: "tail", 			name: "Tail", src: "assets/trex/HighRes/N-Tail.png", hover: "assets/trex/HighRes/H-Tail.png", selected: "assets/trex/HighRes/S-Tail.png", zindex: 3, scale:0.5 }
+        			];
+        			
+        			// if high res
+        			// TrexPuzzle.pieces = highResPieces; 
         			
         			var loader = new PuzzleBuilder();
         			

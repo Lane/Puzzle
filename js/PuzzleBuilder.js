@@ -112,7 +112,8 @@ pb.handleFileLoad = function (sender, args) {
 					fixed:item.fixed, 
 					parentX:item.x, 
 					parentY:item.y,
-					zindex: item.zindex
+					zindex: item.zindex,
+					scale: item.scale || 1
 				}));
 			}
 		}
