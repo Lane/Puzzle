@@ -204,7 +204,6 @@
         			});
         			
         			loader.fileLoaded.attach(function(sender, args) {
-        				console.log(args.event.item);
         				if(typeof(args.event.item.id) !== "undefined")
         					loadingLabel.innerText = "Loaded " + args.event.item.type + ": " + args.event.item.id;
         			});

@@ -123,35 +123,19 @@ pb.loadPuzzle = function(pzl) {
 pb.handleFileLoad = function (sender, args) {
 	var item = args.event.item; // A reference to the item that was passed in
 	var type = item.type;
-	if(item.id == "background") {
-		var bg = new createjs.Bitmap(item.src);
-		bg.type = "background";
-		this.puzzle._background = bg;
-		this.puzzle.setAspectRatio(bg.image.width/bg.image.height);
-		this.puzzleView._canvas.width = 878;
-		this.puzzleView._canvas.height = 494; // TODO: SET TO BACKGROUND DIM
-	} else if(item.id == "hint") {
-		this.puzzle._hint = new createjs.Bitmap(item.src);
-		this.puzzle._hint.alpha=0;
-		this.puzzle._hint.type = "hint";
-	} else if(item.id == "rotate-handle") {
-		// do nothing
-	} else {
-		if (type == createjs.LoadQueue.IMAGE) {
-			if(item.state == 'neutral') {
-				this._pieces.push(new Piece({
-					img:args.event.result, 
-					name: item.id, 
-					displayName: item.name,
-					fixed:item.fixed, 
-					parentX:item.x, 
-					parentY:item.y,
-					zindex: item.zindex,
-					scale: item.scale || 1
-				}));
-			}
-		} else if (type == createjs.LoadQueue.IMAGE) {
-		
+
+	if (type == createjs.LoadQueue.IMAGE) {
+		if(item.state == 'neutral') {
+			this._pieces.push(new Piece({
+				img:args.event.result, 
+				name: item.id, 
+				displayName: item.name,
+				fixed:item.fixed, 
+				parentX:item.x, 
+				parentY:item.y,
+				zindex: item.zindex,
+				scale: item.scale || 1
+			}));
 		}
 	}
 	debug.log("File loaded", args.event);
@@ -182,11 +166,20 @@ pb._createPieceManifest = function(pcs) {
  * @param {Object} event The finished loading event
  */
 pb.handlePuzzleLoad = function(sender, args) {
-
-	var pzl = this._loadObject;
-
-	while((p=this._pieces.pop()) != null) {
 	
+	// Set the puzzle width and height
+	var bg = this._queue.getResult('background');
+	this.puzzleView.getCanvas().width = bg.width;
+	this.puzzleView.getCanvas().height = bg.height;
+	
+	// Set the puzzle background
+	this.puzzle.setBackground(bg);
+	
+	// Set the puzzle hint
+	this.puzzle.setHint(this._queue.getResult('hint'));
+
+	// Add all the pieces in random spots
+	while((p=this._pieces.pop()) != null) {	
 		p.imgNeutral = this._queue.getResult(p.name);
 		p.imgHover = this._queue.getResult(p.name+'-hover');
 		p.imgSelected = this._queue.getResult(p.name+'-selected');
@@ -197,7 +190,10 @@ pb.handlePuzzleLoad = function(sender, args) {
 		options.y = p.regY+Math.round(Math.random()*(this.puzzleView.getCanvas().height-p.image.height));
 		this.puzzle.addPieceContainer(new PieceContainer(options));
 	}
-		
+	
+	var pzl = this._loadObject;
+	
+	// Setup all the matches
 	for(var i = 0; i < pzl.matches.length; i++) {
 		var newPoint = new Point(
 			this.puzzle.getPieceByName(pzl.matches[i][0].piece),
@@ -211,20 +207,6 @@ pb.handlePuzzleLoad = function(sender, args) {
 		));
 	}
 	
+	// Build the puzzle
 	this.puzzleView.buildPuzzle();
-	
-	createjs.Ticker.setFPS(24);
-	createjs.Ticker.addEventListener("tick", this.puzzleView.update.bind(this.puzzleView));
-	
-	var that = this;
-	
-	// lets not let this run when no one is here
-	window.onblur = function() { 
-		createjs.Ticker.setPaused(true); 
-		createjs.Ticker.removeEventListener("tick", that.puzzleView.update.bind(that.puzzleView));
-	}
-	window.onfocus = function() { 
-		createjs.Ticker.setPaused(false);
-		createjs.Ticker.addEventListener("tick", that.puzzleView.update.bind(that.puzzleView));
-	}
 };

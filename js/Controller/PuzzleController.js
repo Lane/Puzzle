@@ -17,24 +17,24 @@ function PuzzleController(model, view) {
 var ctrl = PuzzleController.prototype;
 
 ctrl.initialize = function() {
+	// Events fired by user interaction
 	this._view.clickedOnPiece.attach(this.pressedOnPieceContainer.bind(this));
 	this._view.clickedOnNothing.attach(this.pressedOnNothing.bind(this));
+	this._view.mouseOverPiece.attach(this.hoveredOver.bind(this));
+	this._view.mouseOutPiece.attach(this.hoveredOut.bind(this));
+	this._view.releasePiece.attach(this.pieceContainerReleased);
+	this._view.dragPiece.attach(this.pieceContainerDragged.bind(this));
+	this._view.dragRotateHandle.attach(this.rotateHandleDragged.bind(this));
 	
+	// Events fired when puzzle data changes
 	this._model.pieceContainerAdded.attach(this.pieceContainerAdded.bind(this));
 	this._model.pieceContainerRemoved.attach(this.pieceContainerRemoved.bind(this));
 	this._model.pieceAdded.attach(this.pieceAdded.bind(this));
 	this._model.pieceRemoved.attach(this.pieceRemoved.bind(this));
 	this._model.selectedPieceChanged.attach(this.selectedPieceChanged.bind(this));
 	this._model.pointsConnected.attach(this.pointsConnected.bind(this));
-	
-	// attach PieceContainer events
-	this._model.mouseOverPiece.attach(this.hoveredOver.bind(this));
-	this._model.mouseOutPiece.attach(this.hoveredOut.bind(this));
-	this._model.releasePiece.attach(this.pieceContainerReleased);
-	this._model.dragPiece.attach(this.pieceContainerDragged.bind(this));
-	this._model.dragRotateHandle.attach(this.rotateHandleDragged.bind(this));
-	
 	this._model.puzzleComplete.attach(this.puzzleCompleted.bind(this));
+	this._model.backgroundSet.attach(this.backgroundSet.bind(this));
 }
 
 ctrl.pressedOnNothing = function(sender, args) {
@@ -124,4 +124,10 @@ ctrl.hoveredOver = function(sender, args) {
 
 ctrl.puzzleCompleted = function(sender,args) {	
 	createjs.Sound.play("success"); 
-}
+};
+
+ctrl.backgroundSet = function(sender,args) {
+	console.log(args.bg);
+	this._view.setAspectRatio(args.bg.image.width/args.bg.image.height);
+	this._view.resizePuzzle(args.bg.image.width, args.bg.image.height);
+};

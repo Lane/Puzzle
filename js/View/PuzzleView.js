@@ -1,11 +1,22 @@
 /**
  * The PuzzleView contains the stage and does any of the actual rendering 
- * to the canvas.
+ * to the canvas. The view also handles user interaction and notifies the 
+ * controller when events take place.
  *
  * @constructor
  * @param {Puzzle} options Option overrides
+ * @property {DOMElement} _canvas - HTML Canvas Element the puzzle is rendered to
+ * @property {createjs.Stage} _stage - Stage that contains the puzzle
+ * @property {boolean} _animating - Set to true when animation is happening on the stage
+ * @property {number} _aspectRatio - The aspect ratio (width/height) of the puzzle, used for resizing
+ * @property {Puzzle} _model - The puzzle object
  * @property {Event} clickedOnPiece - Event that occurs when the user clicks on a piece
  * @property {Event} clickedOnNothing - Event that occurs when the user clicks on nothing
+ * @property {Event} mouseOverPiece - Event that occurs when the mouse goes over a piece
+ * @property {Event} mouseOutPiece - Event that occurs when the mouse leaves a piece
+ * @property {Event} dragPiece - Event that occurs when the user drags a piece
+ * @property {Event} dragRotateHandle - Event that occurs when the user drags the rotate handle
+ * @property {Event} releasePiece - Event that occurs when the user releases a piece after dragging
  */
 function PuzzleView(model) {
 
@@ -19,14 +30,18 @@ function PuzzleView(model) {
 	}
 	
 	this._canvas = canvas;
-	
 	this._animating = false;
-
+	this._aspectRatio = 16/9;
   this._model = model;
   this._stage = new createjs.Stage(this._canvas);
   
   this.clickedOnPiece = new Event(this);
   this.clickedOnNothing = new Event(this);
+  this.mouseOverPiece = new Event(this);
+  this.mouseOutPiece = new Event(this);
+  this.dragPiece = new Event(this);
+  this.dragRotateHandle = new Event(this);
+  this.releasePiece = new Event(this);
 
 	this.initialize();
 }
@@ -36,9 +51,8 @@ var pv = PuzzleView.prototype;
 pv.initialize = function() {
 	this._stage._needsUpdate = false;
 	
-	createjs.Touch.enable(this._stage);
 	this._stage.mouseEventsEnabled = true;
-	this._stage.enableMouseOver(10000);
+	this._stage.enableMouseOver(1000);
 	this._stage.mouseMoveOutside = true;
 	
 	this._hoveredPiece = null;
@@ -60,7 +74,7 @@ pv.initialize = function() {
 			if(_this._hoveredPiece == null && !ob.isFixed()) {
 				_this._hoveredPiece = ob;
 				document.body.style.cursor='pointer';
-				_this._model.mouseOverPiece.notify({ 
+				_this.mouseOverPiece.notify({ 
 					event: event, 
 					pieceContainer: ob
 				});
@@ -74,7 +88,7 @@ pv.initialize = function() {
 				} else {
 					document.body.style.cursor='default';
 				}
-				_this._model.mouseOutPiece.notify({ 
+				_this.mouseOutPiece.notify({ 
 					event: event, 
 					pieceContainer: tmppc
 				});
@@ -86,15 +100,16 @@ pv.initialize = function() {
 	// attach listeners to stage events
 	if(!Modernizr.touch || todo) {
 	
+		// Double click fires "clickedOnNothing", which deselects the currently selected piece
 		this._stage.addEventListener("dblclick", function(event) {
-			console.log(event);
 			var ob = _this._stage.getObjectUnderPoint(event.stageX, event.stageY);
 			if(ob.type == "background" || ob.type == "hint") {
 				_this.clickedOnNothing.notify({ event: event });
 				document.body.style.cursor='default';
 			}
 		});
-	
+		
+		// Mouse down fires "clickedOnPiece" if a piece was selected
 		this._stage.addEventListener("mousedown", function(event) {
 			
 			var stage = _this._stage;
@@ -112,11 +127,11 @@ pv.initialize = function() {
 					var start = spc.rotation;
 					offset = {x:event.stageX, y:event.stageY};
 					
+					// Mouse move when the user has moused down on an empty area causes rotation
 					event.addEventListener("mousemove", function(evt) {
-						
 						evt.offset = offset;
 						evt.start = start;
-						_this._model.dragRotateHandle.notify({ 
+						_this.dragRotateHandle.notify({ 
 							event: evt, 
 							pieceContainer: spc
 						});
@@ -129,10 +144,11 @@ pv.initialize = function() {
 				// if the user pressed down on a piece
 				if(ob.type !== null) {
 					if(ob.type == "piece" && !ob.parent.isFixed()) {
+						// Mouse move when the user moused down on a piece causes movement
 						event.addEventListener("mousemove", function(evt) {
 							evt.offset = offset;
 							document.body.style.cursor='move';
-							_this._model.dragPiece.notify({ 
+							_this.dragPiece.notify({ 
 								event: evt, 
 								pieceContainer: pc
 							});
@@ -143,7 +159,7 @@ pv.initialize = function() {
 				// check if any pieces match once the user lets go
 				event.addEventListener("mouseup", function(evt) {
 					document.body.style.cursor='pointer';
-					_this._model.releasePiece.notify({ 
+					_this.releasePiece.notify({ 
 						event: evt, 
 						pieceContainer: pc
 					});
@@ -153,6 +169,22 @@ pv.initialize = function() {
 		});
 	} else {
 		// HANDLE TOUCH
+		createjs.Touch.enable(this._stage);
+	}
+	
+	createjs.Ticker.setFPS(24);
+	createjs.Ticker.addEventListener("tick", this.update.bind(this));
+	
+	var that = this;
+	
+	// lets not let this run when no one is here
+	window.onblur = function() { 
+		createjs.Ticker.setPaused(true); 
+		createjs.Ticker.removeEventListener("tick", that.update.bind(that));
+	}
+	window.onfocus = function() { 
+		createjs.Ticker.setPaused(false);
+		createjs.Ticker.addEventListener("tick", that.update.bind(that));
 	}
 };
 
@@ -162,6 +194,24 @@ pv.getStage = function() {
 
 pv.getCanvas = function() {
 	return this._canvas;
+};
+
+/**
+ * Gets the aspect ratio of the puzzle
+ * @method PuzzleView.getAspectRatio
+ * @returns {number} The decimal representation of the aspect ratio
+ */
+pv.getAspectRatio = function() {
+	return this._aspectRatio;
+};
+
+/**
+ * Sets the aspect ratio of the puzzle
+ * @method PuzzleView.setAspectRatio
+ * @param {number} ratio The decimal value of the ratio (width/height)
+ */
+pv.setAspectRatio = function(ratio) {
+	this._aspectRatio = ratio;
 };
 
 pv.update = function (event) {
@@ -210,11 +260,13 @@ pv.resizePuzzle = function(width, height) {
 	}
 
 	// scale the puzzle to width / height
-	var bgWidth = this._model._background.image.width*this._stage.scaleX;
-	var scaleAmount = this._canvas.width/bgWidth;
+	var bgWidth = width;
+	var scaleAmount = 1;
+	if(bgWidth > 0)
+		scaleAmount = this._canvas.width/bgWidth;
 	
-	this._canvas.style.width = width+'px';
-	this._canvas.style.height = width/this._model.getAspectRatio()+'px';
+	this._canvas.width = width;
+	this._canvas.height = Math.round(width/this._aspectRatio);
 	
 	this._stage.scaleX = this._stage.scaleY = scaleAmount;
 	this._stage._needsUpdate = true;
@@ -236,12 +288,12 @@ pv.showHint = function() {
 		this._animating = true;
 		createjs.Tween.get(this._model._hint).to({alpha:0.25}, 500).wait(5000).call(_this.hideHint.bind(_this));
 	}
-}
+};
 
 pv.hideHint = function() {
 	var _this = this;
 	createjs.Tween.get(this._model._hint).to({alpha:0}, 500).call(function() { _this._animating = false; });
-}
+};
 
 pv.buildPuzzle = function () {
 	this.removePieceContainers();
