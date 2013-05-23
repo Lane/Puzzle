@@ -226,7 +226,6 @@
         			
         			loader.getPuzzle().puzzleComplete.attach(function(sender,args) {
         				hintToggle.style.opacity = 0;
-        				window.parent.$(window.parent.document).trigger('complete', [false]);
         			});
         			
         			startButton.onclick = function(event) {
