@@ -9,27 +9,27 @@ function Event(sender) {
   this._listeners = [];
 }
 
-Event.prototype = {
-  attach : function (listener) {
-    this._listeners.push(listener);
-  },
-  notify : function (args) {
-    var index;
+var ep = Event.prototype;
 
-    for (index = 0; index < this._listeners.length; index += 1) {
-    	this._listeners[index](this._sender, args);
-    }
-      /*
-      if(debug && (puzzle.getSelectedPiece() != null)) {
-      	// puzzle to string
+/**
+ * Attaches a function to execute whenever this event is fired.
+ * @method Event.attach
+ * @param {Object} listener The function to attach to this event
+ */
+ep.attach = function (listener) {
+	this._listeners.push(listener);
+};
 
-      	debugEl = document.getElementById("puzzleDebug");
-      	debugEl.innerHTML = puzzle.getSelectedPiece().toString();
-      	
-      	//eventItem.innerHTML = eventType + " event fired";
-      	//eventListEl = document.getElementById("eventList");
-      	//eventListEl.insertBefore(eventItem, eventListEl.childNodes[0]);
-      }
-      */
+/**
+ * Notifies this event that it has been fired, then executes each
+ * of the functions that have been attached to this event.
+ * @method Event.notify
+ * @param {Object} args The arguments to pass to the listener functions
+ */
+ep.notify = function (args) {
+  var index;
+
+  for (index = 0; index < this._listeners.length; index += 1) {
+  	this._listeners[index](this._sender, args);
   }
 };

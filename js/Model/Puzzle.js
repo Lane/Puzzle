@@ -37,14 +37,17 @@ function Puzzle(pieceContainers) {
 
 var pz = Puzzle.prototype;
 
-pz.initialize = function() {
-
-}
+pz.initialize = function() { }
 
 
 // GETTERS
 // ----------------------------
 
+/**
+ * Gets the piece containers for the puzzle
+ * @method Puzzle.getPieceContainers
+ * @returns {Array} The piece containers for this puzzle
+ */	
 pz.getPieceContainers = function () {
 	return this._pieceContainers;
 };
@@ -101,6 +104,11 @@ pz.setSelectedPiece = function (pc) {
   });
 };
 
+/**
+ * Sets the background image for the puzzle
+ * @method Puzzle.setBackground
+ * @param {Image} bg The image object to use for the background
+ */
 pz.setBackground = function(bg) {
 	this._background = new createjs.Bitmap(bg);
 	this._background.type = "background";
@@ -113,6 +121,11 @@ pz.setBackground = function(bg) {
 	return this;
 }
 
+/**
+ * Sets the hint for the puzzle
+ * @method Puzzle.setHint
+ * @param {Image} hint The hint image containing the completed puzzle
+ */
 pz.setHint = function(hint) {
 	this._hint = new createjs.Bitmap(hint);
 	this._hint.alpha=0;

@@ -32,99 +32,49 @@
  * @param {Array} pieceContainers - The piece containers for the puzzle
  * @property {Array} _pieceContainers - The piece containers inside the puzzle
  * @property {Piece} _selectedPiece - The currently selected piece
+ * @property {createjs.Bitmap} _hint - An image overlay of the completed puzzle
+ * @property {createjs.Bitmap} _background - An image to use for the background of the puzzle
+ * @property {Piece} _selectedPiece - The currently selected piece
+ * @property {Event} pieceContainerAdded - Fired right after a new PieceContainer is pushed on _pieceContainers
+ * @property {Event} pieceContainerRemoved - Fired right after a PieceContainer is removed from _pieceContainers
+ * @property {Event} selectedPieceChanged - Fired when _selectedPiece changes
+ * @property {Event} pointsConnected - Fired when two PieceContainers have been connected at a Point
+ * @property {Event} pieceAdded - Fired when a piece is added to a piece container
+ * @property {Event} pieceRemoved - Fired when a piece is removed from a piece container
+ * @property {Event} puzzleComplete - Fired when the puzzle is done
  */
 function Puzzle(pieceContainers) {
 
 	this._pieceContainers = pieceContainers || new Array();
-
 	this._selectedPiece = null;
+	this._hint = null;
+	this._background = null;
 	
-	this._aspectRatio = 16/9;
+	this.pieceContainerAdded = new Event(this);
+	this.pieceContainerRemoved = new Event(this);
+	this.selectedPieceChanged = new Event(this);
+	this.pointsConnected = new Event(this);
+	this.pieceAdded = new Event(this);
+	this.pieceRemoved = new Event(this);
+	this.puzzleComplete = new Event(this);
+	this.backgroundSet = new Event(this);
 	
 	this.initialize();
 };
 
 var pz = Puzzle.prototype;
 
-pz.initialize = function() {
-
-	/**
-	 * Fired right after a new PieceContainer is pushed on _pieceContainers
-	 * @type {Event}
-	 */
-	this.pieceContainerAdded = new Event(this);
-	
-	/**
-	 * Fired right after a PieceContainer is removed from _pieceContainers
-	 * @type {Event}
-	 */
-	this.pieceContainerRemoved = new Event(this);
-	
-	/**
-	 * Fired when this._selectedPiece changes
-	 * @type {Event}
-	 */
-	this.selectedPieceChanged = new Event(this);
-	
-	/**
-	 * Fired when two PieceContainers have been merged at a Point
-	 * @type {Event}
-	 */
-	this.pointsConnected = new Event(this);
-	
-	/**
-	 * Fired when a piece is added to a piece container
-	 * @type {Event}
-	 */
-	this.pieceAdded = new Event(this);
-	
-	/**
-	 * Fired when a piece is removed to a piece container
-	 * @type {Event}
-	 */
-	this.pieceRemoved = new Event(this);
-	
-	/**
-	 * Fired when the mouse goes over a piece container
-	 * @type {Event}
-	 */
-	this.mouseOverPiece = new Event(this);
-	
-	/**
-	 * Fired when the mouse leaves a piece container
-	 * @type {Event}
-	 */
-	this.mouseOutPiece = new Event(this);
-	
-	/**
-	 * Fired when a piece container is dragged
-	 * @type {Event}
-	 */
-	this.dragPiece = new Event(this);
-	
-	/**
-	 * Fired when a rotate handle is dragged
-	 * @type {Event}
-	 */
-	this.dragRotateHandle = new Event(this);
-	
-	/**
-	 * Fired when a piece container is let go
-	 * @type {Event}
-	 */
-	this.releasePiece = new Event(this);
-	
-	/**
-	 * Fired when the puzzle is done
-	 * @type {Event}
-	 */
-	this.puzzleComplete = new Event(this);
-}
+pz.initialize = function() { }
 
 
 // GETTERS
 // ----------------------------
 
+/**
+ * Gets the piece containers for the puzzle
+ * @method Puzzle.getPieceContainers
+ * @returns {Array} The piece containers for this puzzle
+ */	
 pz.getPieceContainers = function () {
 	return this._pieceContainers;
 };
@@ -154,15 +104,6 @@ pz.getSelectedPiece = function () {
 	return this._selectedPiece;
 };
 
-/**
- * Gets the aspect ratio of the puzzle
- * @method Puzzle.getAspectRatio
- * @returns {number} The decimal representation of the aspect ratio
- */
-pz.getAspectRatio = function() {
-	return this._aspectRatio;
-}
-
 // SETTERS
 // ----------------------------
 
@@ -191,13 +132,35 @@ pz.setSelectedPiece = function (pc) {
 };
 
 /**
- * Sets the aspect ratio of the puzzle
- * @method Puzzle.setAspectRatio
- * @param {number} ratio The decimal value of the ratio (width/height)
+ * Sets the background image for the puzzle
+ * @method Puzzle.setBackground
+ * @param {Image} bg The image object to use for the background
  */
-pz.setAspectRatio = function(ratio) {
-	this._aspectRatio = ratio;
+pz.setBackground = function(bg) {
+	this._background = new createjs.Bitmap(bg);
+	this._background.type = "background";
+	this.backgroundSet.notify({
+		bg : this._background,
+		event : {
+			type : "backgroundset"
+		}
+	});
+	return this;
 }
+
+/**
+ * Sets the hint for the puzzle
+ * @method Puzzle.setHint
+ * @param {Image} hint The hint image containing the completed puzzle
+ */
+pz.setHint = function(hint) {
+	this._hint = new createjs.Bitmap(hint);
+	this._hint.alpha=0;
+	this._hint.type = "hint";
+	return this;
+}
+
+
 
 // FUNCTIONS
 // ----------------------------
@@ -289,7 +252,7 @@ pz.connectPointWithMatch = function(pt) {
 		});
 	}
 	
-	return this;
+	return movedPoint.piece.getParentPieceContainer();
 		
 };
 
@@ -401,7 +364,7 @@ pz.toString = function() {
 <br clear="both">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Wed May 22 2013 16:25:43 GMT-0600 (MDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0-dev</a> on Fri May 24 2013 12:37:57 GMT-0600 (MDT)
 </footer>
 
 <script> prettyPrint(); </script>

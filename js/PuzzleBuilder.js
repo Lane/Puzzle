@@ -123,7 +123,6 @@ pb.loadPuzzle = function(pzl) {
 pb.handleFileLoad = function (sender, args) {
 	var item = args.event.item; // A reference to the item that was passed in
 	var type = item.type;
-
 	if (type == createjs.LoadQueue.IMAGE) {
 		if(item.state == 'neutral') {
 			this._pieces.push(new Piece({
@@ -141,7 +140,12 @@ pb.handleFileLoad = function (sender, args) {
 	debug.log("File loaded", args.event);
 };
 
-
+/**
+ * Takes the pieces defined in the puzzle object and creates a manifest
+ * that can be passed to the load queue.
+ * @method PuzzleBuilder._createPieceManifest
+ * @param {Object} event The pieces section of the puzzle object
+ */
 pb._createPieceManifest = function(pcs) {
 	var manifest = [];
 	for(var i=0; i < pcs.length; i++) {

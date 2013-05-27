@@ -127,7 +127,6 @@ ctrl.puzzleCompleted = function(sender,args) {
 };
 
 ctrl.backgroundSet = function(sender,args) {
-	console.log(args.bg);
 	this._view.setAspectRatio(args.bg.image.width/args.bg.image.height);
 	this._view.resizePuzzle(args.bg.image.width, args.bg.image.height);
 };
