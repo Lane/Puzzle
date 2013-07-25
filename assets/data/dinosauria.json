@@ -1,0 +1,162 @@
+{
+	"id" : "dinosauria",
+	"title" : "Dinosauria Puzzle",
+	"instructionText": "Move each piece into its corresponding place on the Dinosauria Tree.",
+	"instructionGif": "assets/tyrannosaurus/instructions.gif",
+	"instructionMouse": "assets/dinosauria/mouse-gestures.png",
+	"instructionTouch": "assets/dinosauria/touch-gestures.png",
+	"options": { 
+		"allowRotate" : false, 
+		"allowHint" : false, 
+		"showLabels" : false, 
+		"snapAll" : true, 
+		"snapRadius" : 50, 
+		"showTitle" : false 
+	},
+    "background": { 
+    	"id" : "background", 
+    	"src" : "assets/dinosauria/background-lowres.gif" 
+    },
+    "hint" : { 
+    	"id" : "hint", 
+    	"src" : "assets/parasaurolophus/Hint-LR.png" 
+    },
+    "sounds": [
+        { "id" : "snap", "mp3" : "assets/trex/sounds/snap3.mp3", "ogg" : "assets/trex/sounds/snap3.ogg" },
+        { "id" : "success", "mp3" : "assets/trex/sounds/Dinosaur_Growl.mp3", "ogg" : "assets/trex/sounds/Dinosaur_Growl.ogg" }
+    ],
+    "pieces": [
+        { 
+        	"id" : "theropods", 
+        	"name" : "Theropods", 
+        	"src" : "assets/dinosauria/Normal-NR-Theropods.png", 
+        	"hover" : "assets/dinosauria/hover-NR-Theropods.png", 
+        	"selected" : "assets/dinosauria/selected-NR-Theropods.png", 
+        	"zindex" : 10
+        },
+		{ 
+			"id" : "stegasaurs", 
+			"name" : "Stegasaurs", 
+			"src" : "assets/dinosauria/Normal-NR-Stegasaurs.png", 
+			"hover" : "assets/dinosauria/hover-NR-Stegasaurs.png", 
+			"selected" : "assets/dinosauria/selected-NR-Stegasaurs.png", 
+			"zindex" : 9
+		},
+		{ 
+			"id" : "sauropods", 
+			"name" : "Sauropods", 
+			"src" : "assets/dinosauria/Normal-NR-Sauropods.png", 
+			"hover" : "assets/dinosauria/hover-NR-Sauropods.png", 
+			"selected" : "assets/dinosauria/selected-NR-Sauropods.png", 
+			"zindex" : 8
+		},
+		{ 
+			"id" : "saurischian-hips", 
+			"name" : "SaurischianHips", 
+			"src" : "assets/dinosauria/Normal-NR-SaurischianHips.png", 
+			"hover" : "assets/dinosauria/hover-NR-SaurischianHips.png", 
+			"selected" : "assets/dinosauria/selected-NR-SaurischianHips.png", 
+			"zindex" : 7
+		},
+		{ 
+			"id" : "pachycephalosaurs", 
+			"name" : "Pachycephalosaurs", 
+			"src" : "assets/dinosauria/Normal-NR-Pachycephalosaurs.png", 
+			"hover" : "assets/dinosauria/hover-NR-Pachycephalosaurs.png", 
+			"selected" : "assets/dinosauria/selected-NR-Pachycephalosaurs.png", 
+			"zindex" : 6
+		},
+		{ 
+			"id" : "ornithiscian-hips", 
+			"name" : "OrnithiscianHips", 
+			"src" : "assets/dinosauria/Normal-NR-OrnithiscianHips.png", 
+			"hover" : "assets/dinosauria/hover-NR-OrnithiscianHips.png", 
+			"selected" : "assets/dinosauria/selected-NR-OrnithiscianHips.png", 
+			"zindex" : 5
+		},
+		{ 
+			"id" : "hadrosaurs", 
+			"name" : "Hadrosaurs", 
+			"src" : "assets/dinosauria/Normal-NR-Hadrosaurs.png", 
+			"hover" : "assets/dinosauria/hover-NR-Hadrosaurs.png", 
+			"selected" : "assets/dinosauria/selected-NR-Hadrosaurs.png", 
+			"zindex" : 4
+		},
+		{ 
+			"id" : "ceratopsians", 
+			"name" : "Ceratopsians", 
+			"src" : "assets/dinosauria/Normal-NR-Ceratopsians.png", 
+			"hover" : "assets/dinosauria/hover-NR-Ceratopsians.png", 
+			"selected" : "assets/dinosauria/selected-NR-Ceratopsians.png", 
+			"zindex" : 3
+		},
+		{ 
+			"id" : "ankylosaurs", 
+			"name" : "Ankylosaurs", 
+			"src" : "assets/dinosauria/Normal-NR-Ankylosaurs.png", 
+			"hover" : "assets/dinosauria/hover-NR-Ankylosaurs.png", 
+			"selected" : "assets/dinosauria/selected-NR-Ankylosaurs.png", 
+			"zindex" : 2
+		},
+		{ 
+			"id" : "tree", 
+			"name" : "Dinosauria Tree", 
+			"src" : "assets/dinosauria/Normal-NR-Tree.png", 
+			"hover" : "assets/dinosauria/Normal-NR-Tree.png", 
+			"selected" : "assets/dinosauria/Normal-NR-Tree.png", 
+			"zindex" : 1, 
+			"fixed" : true, 
+			"x" :0, 
+			"y" :0
+		}
+    ],
+    "matches" : [
+        { "piece" : "tree", "x" : -245 , "y" : -151 },
+        { "piece" : "tree", "x" : 252 , "y" : -151 }, 
+        { "piece" : "tree", "x" : -360 , "y" : -151 },
+        { "piece" : "tree", "x" : -303 , "y" : 50 },
+        { "piece" : "tree", "x" : 125 , "y" : 50 },
+        { "piece" : "tree", "x" : -102 , "y" : -151 }, 
+        { "piece" : "tree", "x" : 15 , "y" : -151 },
+        { "piece" : "tree", "x" : 375 , "y" : -151 },
+        { "piece" : "tree", "x" : 139 , "y" : -151 }
+    ],
+    "success" : [
+        [ 
+            { "piece" : "theropods", "x" : 0, "y" :0 },     
+            { "piece" : "tree", "x" : -245 , "y" : -151 } 
+        ],
+        [ 
+            { "piece" : "stegasaurs", "x" : 0, "y" :0 },     
+            { "piece" : "tree", "x" : 252 , "y" : -151 } 
+        ],
+        [ 
+            { "piece" : "sauropods", "x" : 0, "y" :0 },     
+            { "piece" : "tree", "x" : -360 , "y" : -151 } 
+        ],
+        [ 
+            { "piece" : "saurischian-hips", "x" : 0, "y" :0 },     
+            { "piece" : "tree", "x" : -303 , "y" : 50 } 
+        ],
+        [ 
+            { "piece" : "ornithiscian-hips", "x" : 0, "y" :0 },     
+            { "piece" : "tree", "x" : 125 , "y" : 50 } 
+        ],
+        [ 
+            { "piece" : "hadrosaurs", "x" : 0, "y" :0 },     
+            { "piece" : "tree", "x" : -102 , "y" : -151 } 
+        ],
+        [ 
+            { "piece" : "ceratopsians", "x" : 0, "y" :0 },     
+            { "piece" : "tree", "x" : 15 , "y" : -151 } 
+        ],
+        [ 
+            { "piece" : "ankylosaurs", "x" : 0, "y" :0 },     
+            { "piece" : "tree", "x" : 375 , "y" : -151 } 
+        ],
+        [ 
+            { "piece" : "pachycephalosaurs", "x" : 0, "y" :0 },     
+            { "piece" : "tree", "x" : 139 , "y" : -151 } 
+        ]
+    ]
+};

@@ -22,11 +22,16 @@ ctrl.initialize = function() {
 	this._view.clickedOnNothing.attach(this.pressedOnNothing.bind(this));
 	this._view.mouseOverPiece.attach(this.hoveredOver.bind(this));
 	this._view.mouseOutPiece.attach(this.hoveredOut.bind(this));
-	this._view.releasePiece.attach(this.pieceContainerReleased);
+	this._view.releasePiece.attach(this.pieceContainerReleased.bind(this));
 	this._view.dragPiece.attach(this.pieceContainerDragged.bind(this));
 	this._view.dragRotateHandle.attach(this.rotateHandleDragged.bind(this));
-	
+	this._view.clickStartButton.attach(this.startPuzzle.bind(this));
+	this._view.validationRequested.attach(this.handleValidation.bind(this));
+
 	// Events fired when puzzle data changes
+	this._model.fileLoaded.attach(this.handleFileLoad.bind(this));
+	this._model.progressChange.attach(this.progressChanged.bind(this));
+	this._model.puzzleLoaded.attach(this.loadingComplete.bind(this));
 	this._model.pieceContainerAdded.attach(this.pieceContainerAdded.bind(this));
 	this._model.pieceContainerRemoved.attach(this.pieceContainerRemoved.bind(this));
 	this._model.pieceAdded.attach(this.pieceAdded.bind(this));
@@ -35,7 +40,64 @@ ctrl.initialize = function() {
 	this._model.pointsConnected.attach(this.pointsConnected.bind(this));
 	this._model.puzzleComplete.attach(this.puzzleCompleted.bind(this));
 	this._model.backgroundSet.attach(this.backgroundSet.bind(this));
-}
+};
+
+ctrl.handleFileLoad = function (sender, args) {
+	var item = args.event.item; // A reference to the item that was passed in
+	var type = item.type;
+	if(item.id === 'background')
+	{
+		this._view.setAspectRatio(args.event.result.width/args.event.result.height);
+		this._view.resizeHolder($(window).width());
+		this._view.showBackground(item.src);
+	}
+		
+	if (type == createjs.LoadQueue.IMAGE) {
+		if(item.state == 'neutral') {
+			this._model._pieces.push(new Piece({
+				img:args.event.result, 
+				name: item.id, 
+				displayName: item.name,
+				fixed:item.fixed, 
+				parentX:item.x, 
+				parentY:item.y,
+				zindex: item.zindex,
+				scale: item.scale || 1
+			}));
+		}
+	}
+	debug.log("File loaded", args.event);
+};
+
+ctrl.handleValidation = function(sender, args) {
+	if(this._model.isInSuccessState()) {
+		this._view.notifySuccess();
+	} else {
+		this._view.notifyFail();
+	}
+};
+
+ctrl.progressChanged = function(sender, args) {
+	var e = args.event;
+	var amount = Math.round(e.loaded*100);
+	this._view.updateProgressBar(amount);
+};
+
+ctrl.startPuzzle = function() {
+	this._view.hideLoadingWindow();
+	// Build the puzzle
+	this._model.setupPuzzle();
+	this._view.buildPuzzle();
+	if(this._model._options.allowHint)
+		setTimeout(this._view.showHintToggle(), 10000)
+
+	this._view.resizePuzzle(window.innerWidth, window.innerHeight);
+};
+
+ctrl.loadingComplete = function() {
+
+	this._view.enableStartButton();
+};
 
 ctrl.pressedOnNothing = function(sender, args) {
 	this._model.deselectPieces();
@@ -79,11 +141,18 @@ ctrl.pieceRemoved = function(sender, args) {
 };
 
 ctrl.selectedPieceChanged = function(sender, args) {
-	if(typeof(args.oldPiece) !== "undefined" && args.oldPiece != null) {
+	if(typeof(args.oldPiece) !== "undefined" && args.oldPiece !== null) {
 		this._view.updatePieceContainer(args.oldPiece);
 	}
-	if(typeof(args.newPiece) !== "undefined" && args.newPiece != null) {
+	if(typeof(args.newPiece) !== "undefined" && args.newPiece !== null) {
 		this._view.updatePieceContainer(args.newPiece);
+		if(this._model._options.showLabels)
+			this._view.showPieceLabel(args.newPiece);
+	}
+	else
+	{
+		if(this._model._options.showLabels)
+			this._view.hidePieceLabel();
 	}
 	debug.log("Selected piece changed");
 };
@@ -95,6 +164,8 @@ ctrl.pointsConnected = function(sender, args) {
 };
 
 ctrl.rotateHandleDragged = function(sender, args) {
+	if(!this._model._options.allowRotate)
+		return;
 	args.pieceContainer.rotatePiece(args.event);
 	this._view.triggerRefresh();
 };
@@ -108,7 +179,12 @@ ctrl.pieceContainerDragged = function(sender, args) {
 };
 
 ctrl.pieceContainerReleased = function(sender, args) {
-	args.pieceContainer.updatePointsOffset().matchPieces();
+	args.pieceContainer.updatePointsOffset();
+	if(!this._model._options.snapAll)
+		args.pieceContainer.matchPieces();
+	else
+		args.pieceContainer.snapPiece();
+	this._view.updatePieceContainer(args.pieceContainer);
 	debug.log(args, "Piece released");
 };
 
@@ -124,6 +200,7 @@ ctrl.hoveredOver = function(sender, args) {
 
 ctrl.puzzleCompleted = function(sender,args) {	
 	createjs.Sound.play("success"); 
+	this._view.hideHintToggle();
 };
 
 ctrl.backgroundSet = function(sender,args) {

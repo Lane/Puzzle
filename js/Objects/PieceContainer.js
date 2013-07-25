@@ -318,8 +318,15 @@ pc.matchPieces = function() {
 			debug.log(matches[j], "Match has been made");
 		}
 	}
+
 	return this;
-}
+};
+
+pc.snapPiece = function() {
+	if(this.isMatched) 
+		this.resetPiece(true);
+	return this;
+};
 
 pc.isMatched = function() {
 	var matches = false;

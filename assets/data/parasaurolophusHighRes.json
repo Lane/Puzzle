@@ -1,0 +1,193 @@
+{ "background" : { "id" : "background",
+      "src" : "assets/trex/HighRes/background.jpg"
+    },
+  "hint" : { "id" : "hint",
+      "src" : "assets/parasaurolophus/hint-HR.jpg"
+    },
+  "instructionGif" : "assets/tyrannosaurus/instructions.gif",
+  "instructionMouse" : "assets/parasaurolophus/mouse-gestures.png",
+  "instructionText" : "Move each piece into its corresponding place on the Dinosauria Tree.",
+  "instructionTouch" : "assets/dinosauria/touch-gestures.png",
+  "matches" : [ [ { "piece" : "cervical",
+          "x" : -88,
+          "y" : -68
+        },
+        { "piece" : "skull",
+          "x" : -6,
+          "y" : 36
+        }
+      ],
+      [ { "piece" : "cervical",
+          "x" : 94,
+          "y" : 10
+        },
+        { "piece" : "dorsal",
+          "x" : -132,
+          "y" : 94
+        }
+      ],
+      [ { "piece" : "dorsal",
+          "x" : -24,
+          "y" : -14
+        },
+        { "piece" : "ribs",
+          "x" : -26,
+          "y" : -104
+        }
+      ],
+      [ { "piece" : "gastracia",
+          "x" : 52,
+          "y" : -6
+        },
+        { "piece" : "ribs",
+          "x" : -16,
+          "y" : 146
+        }
+      ],
+      [ { "piece" : "right-arm",
+          "x" : 128,
+          "y" : -176
+        },
+        { "piece" : "ribs",
+          "x" : -20,
+          "y" : 0
+        }
+      ],
+      [ { "piece" : "left-arm",
+          "x" : 80,
+          "y" : -176
+        },
+        { "piece" : "ribs",
+          "x" : -22,
+          "y" : 0
+        }
+      ],
+      [ { "piece" : "dorsal",
+          "x" : 176,
+          "y" : -28
+        },
+        { "piece" : "hip",
+          "x" : -124,
+          "y" : -6
+        }
+      ],
+      [ { "piece" : "left-leg",
+          "x" : 176,
+          "y" : -202
+        },
+        { "piece" : "hip",
+          "x" : -44,
+          "y" : 0
+        }
+      ],
+      [ { "piece" : "right-leg",
+          "x" : -66,
+          "y" : -244
+        },
+        { "piece" : "hip",
+          "x" : -46,
+          "y" : 0
+        }
+      ],
+      [ { "piece" : "tail",
+          "x" : -364,
+          "y" : 12
+        },
+        { "piece" : "hip",
+          "x" : 46,
+          "y" : -42
+        }
+      ]
+    ],
+  "pieces" : [ { "hover" : "assets/parasaurolophus/Cervical-HR-H.png",
+        "id" : "cervical",
+        "name" : "Cervical",
+        "selected" : "assets/parasaurolophus/Cervical-HR-S.png",
+        "src" : "assets/parasaurolophus/Cervical-HR.png",
+        "zindex" : 4
+      },
+      { "hover" : "assets/parasaurolophus/Dorsal-HR-H.png",
+        "id" : "dorsal",
+        "name" : "Dorsal",
+        "selected" : "assets/parasaurolophus/Dorsal-HR-S.png",
+        "src" : "assets/parasaurolophus/Dorsal-HR.png",
+        "zindex" : 5
+      },
+      { "hover" : "assets/parasaurolophus/Gastracia-HR-H.png",
+        "id" : "gastracia",
+        "name" : "Gastracia",
+        "selected" : "assets/parasaurolophus/Gastracia-HR-S.png",
+        "src" : "assets/parasaurolophus/Gastracia-HR.png",
+        "zindex" : 2
+      },
+      { "fixed" : true,
+        "hover" : "assets/parasaurolophus/Hip-HR-H.png",
+        "id" : "hip",
+        "name" : "Hip",
+        "selected" : "assets/parasaurolophus/Hip-HR-S.png",
+        "src" : "assets/parasaurolophus/Hip-HR.png",
+        "x" : 918,
+        "y" : 282,
+        "zindex" : 7
+      },
+      { "hover" : "assets/parasaurolophus/LeftArm-HR-H.png",
+        "id" : "left-arm",
+        "name" : "Left Arm",
+        "selected" : "assets/parasaurolophus/LeftArm-HR-S.png",
+        "src" : "assets/parasaurolophus/LeftArm-HR.png",
+        "zindex" : 10
+      },
+      { "hover" : "assets/parasaurolophus/LeftLeg-HR-H.png",
+        "id" : "left-leg",
+        "name" : "Left Leg",
+        "selected" : "assets/parasaurolophus/LeftLeg-HR-S.png",
+        "src" : "assets/parasaurolophus/LeftLeg-HR.png",
+        "zindex" : 8
+      },
+      { "hover" : "assets/parasaurolophus/Ribs-HR-H.png",
+        "id" : "ribs",
+        "name" : "Ribs",
+        "selected" : "assets/parasaurolophus/Ribs-HR-S.png",
+        "src" : "assets/parasaurolophus/Ribs-HR.png",
+        "zindex" : 9
+      },
+      { "hover" : "assets/parasaurolophus/RightArm-HR-H.png",
+        "id" : "right-arm",
+        "name" : "Right Arm",
+        "selected" : "assets/parasaurolophus/RightArm-HR-S.png",
+        "src" : "assets/parasaurolophus/RightArm-HR.png",
+        "zindex" : 1
+      },
+      { "hover" : "assets/parasaurolophus/RightLeg-HR-H.png",
+        "id" : "right-leg",
+        "name" : "Right Leg",
+        "selected" : "assets/parasaurolophus/RightLeg-HR-S.png",
+        "src" : "assets/parasaurolophus/RightLeg-HR.png",
+        "zindex" : 3
+      },
+      { "hover" : "assets/parasaurolophus/Skull-HR-H.png",
+        "id" : "skull",
+        "name" : "Skull",
+        "selected" : "assets/parasaurolophus/Skull-HR-S.png",
+        "src" : "assets/parasaurolophus/Skull-HR.png",
+        "zindex" : 11
+      },
+      { "hover" : "assets/parasaurolophus/Tail-HR-H.png",
+        "id" : "tail",
+        "name" : "Tail",
+        "selected" : "assets/parasaurolophus/Tail-HR-S.png",
+        "src" : "assets/parasaurolophus/Tail-HR.png",
+        "zindex" : 6
+      }
+    ],
+  "sounds" : [ { "id" : "snap",
+        "mp3" : "assets/trex/sounds/snap3.mp3",
+        "ogg" : "assets/trex/sounds/snap3.ogg"
+      },
+      { "id" : "success",
+        "mp3" : "assets/trex/sounds/Dinosaur_Growl.mp3",
+        "ogg" : "assets/trex/sounds/Dinosaur_Growl.ogg"
+      }
+    ],
+  "title" : "Parasaurolophus"
+}

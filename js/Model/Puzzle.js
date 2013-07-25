@@ -16,12 +16,29 @@
  * @property {Event} pieceRemoved - Fired when a piece is removed from a piece container
  * @property {Event} puzzleComplete - Fired when the puzzle is done
  */
-function Puzzle(pieceContainers) {
+function Puzzle(data) {
 
-	this._pieceContainers = pieceContainers || new Array();
+	this._pieceContainers = new Array();
+	this._pieces = new Array();
 	this._selectedPiece = null;
 	this._hint = null;
+	this._data = data || { };
 	this._background = null;
+	this._queue = new createjs.LoadQueue();	
+	this._View = null;
+	this._Controller = null;
+	this._options = {
+		allowRotate: true,
+		allowHint: true,
+		showLabels: true,
+		snapAll: false,
+		snapRadius: 50
+	};
+
+	if (typeof data.options == 'object') {
+		this._options = $.extend(this._options, data.options);
+	}
+	
 	
 	this.pieceContainerAdded = new Event(this);
 	this.pieceContainerRemoved = new Event(this);
@@ -31,13 +48,175 @@ function Puzzle(pieceContainers) {
 	this.pieceRemoved = new Event(this);
 	this.puzzleComplete = new Event(this);
 	this.backgroundSet = new Event(this);
+	this.puzzleLoaded = new Event(this);
+	this.fileLoaded = new Event(this);
+	this.progressChange = new Event(this);
 	
 	this.initialize();
+
+	
 };
 
 var pz = Puzzle.prototype;
 
-pz.initialize = function() { }
+pz.initialize = function() { 
+	
+	// Install the sound plugin
+	this._queue.installPlugin(createjs.Sound);
+	createjs.Sound.registerPlugins([createjs.WebAudioPlugin, createjs.HTMLAudioPlugin, createjs.FlashPlugin]);
+	
+	var _pzl = this;
+
+	// Setup the loading listeners
+	this._queue.addEventListener("complete", function(event) { 
+
+		_pzl.puzzleLoaded.notify({ 
+			event: event
+		});
+	});
+	
+	this._queue.addEventListener("fileload", function(evt) { 
+		_pzl.fileLoaded.notify({ 
+			event: evt
+		});
+	});
+	
+	this._queue.addEventListener("progress", function(evt) { 
+		_pzl.progressChange.notify({ 
+			event: evt
+		});
+	});
+
+	this._View = new PuzzleView(this);
+	this._View.showLoadingWindow(
+		this._data.title, 
+		this._data.instructionText,
+		this._data.instructionGif,
+		this._data.instructionMouse
+	);
+	this._Controller = new PuzzleController(this, this._View);
+
+	this.loadPuzzle();
+};
+
+pz.loadPuzzle = function() {
+
+	var pzl = this._data;
+
+	// Load background
+	this._queue.loadManifest(pzl.background);
+
+	// Load the hint image
+	this._queue.loadManifest(pzl.hint);
+
+	var pieceManifest = (function(pcs) {
+		var manifest = [];
+		for(var i=0; i < pcs.length; i++) {
+			pcs[i].state = 'neutral';
+			manifest.push(pcs[i]);
+			if(pcs[i].hover !== null)
+				manifest.push({ id: pcs[i].id+"-hover", src: pcs[i].hover, state: 'hover' });
+			if(pcs[i].selected !== null)
+				manifest.push({ id: pcs[i].id+"-selected", src: pcs[i].selected, state: 'selected' });
+		}
+		return manifest;
+	})(pzl.pieces);
+
+	// Load the pieces
+	this._queue.loadManifest(pieceManifest);
+
+	// Load the sounds
+	for(var i=0; i < pzl.sounds.length; i++) {
+		var s = pzl.sounds[i];
+		this._queue.loadFile({id: s.id, src: s.mp3+"|"+s.ogg });
+	}
+
+};
+
+pz.setupPuzzle = function() {
+	// Set the puzzle width and height
+	var bg = this._queue.getResult('background');
+	
+	// Set the puzzle background
+	this.setBackground(bg);
+	
+	// Set the puzzle hint
+	if(this._options.allowHint){
+		this.setHint(this._queue.getResult('hint'));
+		this._View.enableHintButton();
+	}
+
+	if(this._options.snapAll) {
+		this._View.enableValidateButton();
+	}
+		
+
+	// Add all the pieces in random spots
+	while((p=this._pieces.pop()) != null) {	
+		p.imgNeutral = this._queue.getResult(p.name);
+		p.imgHover = this._queue.getResult(p.name+'-hover');
+		p.imgSelected = this._queue.getResult(p.name+'-selected');
+	
+		var options = {};
+		var bgSize = this.getBackgroundSize();
+		options.pieces = [p];
+		options.x = p.regX+Math.round(Math.random()*(this._View.getCanvas().width-p.image.width));
+		options.y = p.regY+Math.round(Math.random()*(this._View.getCanvas().height-p.image.height));
+		this.addPieceContainer(new PieceContainer(options));
+	}
+	
+	var pzl = this._data;
+	
+	// If you can snap to any point, setup the success state
+	if(this._options.snapAll) {
+		// setup matches to snap to
+		for(var i = 0; i < pzl.matches.length; i++) {
+			for(var j = 0; j < pzl.pieces.length; j++) {
+				var newPoint = new Point(
+					this.getPieceByName(pzl.matches[i].piece),
+					pzl.matches[i].x,
+					pzl.matches[i].y
+				);
+				newPoint.setMatch(new Point(this.getPieceByName(pzl.pieces[j].id),0,0));
+			}
+		}
+		// build the success state for the puzzle
+		var successState = new Array();
+		for(var i = 0; i < pzl.success.length; i++) {
+			var piece1 = this.getPieceByName(pzl.success[i][0].piece);
+			var piece2 = this.getPieceByName(pzl.success[i][1].piece);
+			// todo: account for piece1 offset
+			var successCondition = {
+				id: piece1.name,
+				x: piece2.boundary.width/2+pzl.success[i][1].x, 
+				y: piece2.boundary.height/2+pzl.success[i][1].y, 
+			};
+			successState.push(successCondition);
+		} 
+		this.setSuccessState(successState);
+
+	// Pieces only snap to their match
+	} else {
+		for(var i = 0; i < pzl.matches.length; i++) {
+			var newPoint = new Point(
+				this.getPieceByName(pzl.matches[i][0].piece),
+				pzl.matches[i][0].x,
+				pzl.matches[i][0].y
+			);
+			newPoint.setMatch(new Point(
+				this.getPieceByName(pzl.matches[i][1].piece),
+				pzl.matches[i][1].x,
+				pzl.matches[i][1].y
+			));
+		}
+	}
+
+	// notify that the puzzle is ready
+	this.puzzleLoaded.notify({
+		event: { name: "Puzzle Loaded" }
+	});
+
+};
 
 
 // GETTERS
@@ -68,6 +247,17 @@ pz.getPieceByName = function(name) {
 	return false;
 };
 
+pz.getContainerByPieceName = function(name) {
+	for(var i = 0; i < this._pieceContainers.length; i++) {
+		for(var j = 0; j < this._pieceContainers[i]._pieces.length; j++) {
+			if(this._pieceContainers[i]._pieces[j].name == name) {
+				return this._pieceContainers[i];
+			}
+		}
+	}
+	return false;
+};
+
 /**
  * Gets the selected puzzle PieceContainer
  * @method Puzzle.getSelectedPiece
@@ -75,6 +265,18 @@ pz.getPieceByName = function(name) {
  */
 pz.getSelectedPiece = function () {
 	return this._selectedPiece;
+};
+
+/**
+ * Get puzzle background size
+ * @method Puzzle.getBackgroundSize
+ * @returns {Object} Width and height of the background
+ */
+pz.getBackgroundSize = function () {
+	return { 
+		width: 	this._background.image.width, 
+		height: this._background.image.width 
+	}
 };
 
 // SETTERS
@@ -131,7 +333,12 @@ pz.setHint = function(hint) {
 	this._hint.alpha=0;
 	this._hint.type = "hint";
 	return this;
-}
+};
+
+pz.setSuccessState = function(success) {
+	this._successState = success;
+	return this;
+};
 
 
 
@@ -288,6 +495,24 @@ pz.deselectPieces = function() {
 		});
 	}
 	return this;
+};
+
+pz.isInSuccessState = function() {
+	var threshold = 0;
+	if(typeof this._successState === "undefined")
+		return false;
+
+	for(var i = 0; i < this._successState.length; i++) {
+		var sc = this._successState[i];
+		var pc = this.getContainerByPieceName(sc.id);
+		threshold += Math.abs(sc.x-pc.x);
+		threshold += Math.abs(sc.y-pc.y);
+	}
+
+	if(threshold > 20)
+		return false;
+	
+	return true;
 };
 
 /**

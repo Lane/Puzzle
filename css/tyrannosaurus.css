@@ -9,11 +9,10 @@ body {
 }
 
 .canvasHolder {
-	
+	width: 100%;
+	padding-bottom: 56.26423690205%;
 	overflow: hidden;
 	position: relative;
-	width: 878px;
-	height: 494px;
 }
 
 #interface {
@@ -124,6 +123,7 @@ h1 {
 	padding: 1.3em 1em;
 	color: #ffefbf;
 	background: rgba(0,0,0,0.6);
+	display:none;
 }
 
 #progress-bar {

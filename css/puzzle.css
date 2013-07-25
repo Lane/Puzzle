@@ -1,0 +1,265 @@
+body {
+	background: #000;
+	color: #fff;
+	font-size: 0.84em;
+	line-height: 1.42em;
+	font-family: sans-serif;
+	margin: 0;
+	padding: 0;
+	font-family: "Open Sans Condensed", sans-serif;
+}
+
+.canvasHolder {
+	overflow: hidden;
+	position: relative;
+	background-size: 100% auto;
+}
+
+#interface {
+	background: rgba(0,0,0,0.75);
+	padding:  2em;
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	text-shadow:  0px 1px 4px #000;
+	transition: opacity 0.5s ease-in-out;
+}
+
+canvas {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+
+
+.action-row {
+	text-align: right;
+	border-top: 1px solid #ffefbf;
+	padding-top: 1em;
+	margin-top:  1em;
+	position: absolute;
+	bottom: 1em;
+	left: 2em;
+	right: 2em;
+}
+
+#loading-window {
+	position:absolute;
+	top:50%;
+	margin-top:-17em;
+	left:50%;
+	padding:0.5em;
+	margin-left:-11.5em;
+	width: 23em;
+	height: 33.5em;
+	text-align: center;
+	background-color: #000;
+	background-color: rgba(0,0,0,0.65);
+}
+
+#loading-window * { z-index: 999; position:relative;}
+
+#loading-window .puzzle-loader-actions {
+	position:absolute;
+	bottom:8px;
+	left:8px;
+	right:8px;
+}
+
+#ntfy-window {
+	background-color: #000;
+	padding:0.5em;
+	width:23em;
+	position:absolute;
+	left:50%;
+	margin-left:-11.5em;
+	top:-100%;
+	z-index:998;
+	transition: top 0.25s ease-in-out;
+}
+
+
+
+#ntfy-window.active:before, #loading-window.active:before {
+	content: "";
+	position:fixed;
+	top:0;
+	left:0;
+	height:100%;
+	bottom:0;
+	right:0;
+	width:100%;
+	z-index:100;
+	background-color:rgba(0,0,0,0.35);
+}
+
+#loading-window.active:before {
+	z-index:1;
+}
+
+#ntfy-title, #puzzle-title {
+	margin:0;
+	padding:20px;
+	text-transform:uppercase;
+	text-shadow:2px 2px 0px rgba(0,0,0,0.35);
+	background:#333;
+	position:relative;
+	z-index:998;
+}
+
+.fail #ntfy-title {
+	background:#f30;
+}
+
+.success #ntfy-title {
+	background:#007c41;
+}
+
+#ntfy-close {
+	position:absolute;
+	right:22px;
+	top:26px;
+	z-index:999;
+}
+
+#ntfy-message {
+	padding:10px 20px 2px 20px;
+	font-size:1.2em;
+	font-weight:700;
+	position:relative;
+	z-index:998;
+}
+
+#puzzle-title {
+	text-transform:uppercase;
+	text-shadow: 2px 2px 0px rgba(0,0,0,0.65);
+	margin-bottom:8px;
+}
+
+#puzzle-gif {
+	width:100%;
+}
+
+#puzzle-intro {
+	font-size:1.2em;
+	font-weight:700;
+	text-shadow: 2px 2px 0px rgba(0,0,0,0.65);
+	padding:0.25em 1em;
+}
+
+.btn {
+	display: inline-block;
+	margin: 1em;
+	padding: 1em 2em;
+	font-size:1.2em;
+	color: #fff;
+	text-transform: uppercase;
+	line-height: 1em;
+	text-decoration: none;
+	font-weight: 700;
+	background-color:#007c41;
+	text-shadow:  2px 2px 0px rgba(0,40,0,0.65);
+	border-radius: 0px;
+	opacity: 1;
+	box-shadow: 4px 4px 0px rgba(0,0,0,0.65);
+	transition: all 0.25s ease-in-out;
+	text-transform:uppercase;
+	font-family:"Open Sans Condensed", sans-serif;
+	text-align:center;
+}
+
+.btn:hover {
+	background: #ffdb05;
+	color:#007c41;
+	text-shadow:  1px 1px 0px rgba(255,255,200,0.65);
+}
+
+
+.btn-start {
+	display:block;
+	text-align: center;
+	margin: 1px 0 0 0;
+}
+
+.btn-disabled, .btn-disabled:hover {
+	color:#333;
+	background-color: #666;
+	text-shadow:  1px 1px 0 #999;
+	opacity:0.85;
+}
+
+
+#nav {
+	position: absolute;
+	right: 1em;
+	bottom: -10em;
+}
+
+#progress-bar {
+	position: relative;
+	background: #ffdb05;
+	display: block;
+	line-height: 0;
+	height: 0.25em;
+	width: 0%;
+	transition: all 0.5s ease-in-out;
+}
+
+#piece-label {
+	display: none;
+	pointer-events: none;
+}
+
+.canvasHolder.started #loading-window {
+	opacity: 0;
+	pointer-events: none;
+}
+
+.canvasHolder.started #nav {
+	right: 1.5em;
+	bottom: 1.5em;
+}
+
+.canvasHolder.started #piece-label {
+	display: inline-block;
+	position: absolute;
+	font-size: 3em;
+	color: #fff;
+	text-shadow: 2px 2px 0 rgba(0,0,0,0.65);
+	left: 1em;
+	transition: top 0.2s ease-in-out;
+	font-weight:700;
+
+}
+
+.canvasHolder.started #piece-label.active {
+	top: 0em;
+}
+
+.canvasHolder.started #piece-label.inactive {
+	top: -5em;
+}
+
+#loading-label {
+	font-size: 1.2em;
+	display: block;
+	position: absolute;
+	right: 0;
+	text-transform: uppercase;
+	width: 100%;
+	top: 1px;
+	line-height: 1em;
+}
+
+.ctl-disabled {
+	display:none;
+}
+
+body {
+	font-size: 1em;
+}
+
+

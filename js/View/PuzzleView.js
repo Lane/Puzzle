@@ -28,20 +28,38 @@ function PuzzleView(model) {
 			document.getElementsByTagName('body')[0].appendChild(canvas);
 		}
 	}
-	
 	this._canvas = canvas;
 	this._animating = false;
 	this._aspectRatio = 16/9;
-  this._model = model;
-  this._stage = new createjs.Stage(this._canvas);
-  
-  this.clickedOnPiece = new Event(this);
-  this.clickedOnNothing = new Event(this);
-  this.mouseOverPiece = new Event(this);
-  this.mouseOutPiece = new Event(this);
-  this.dragPiece = new Event(this);
-  this.dragRotateHandle = new Event(this);
-  this.releasePiece = new Event(this);
+	this._model = model;
+	this._stage = new createjs.Stage(this._canvas);
+	this.clickedOnPiece = new Event(this);
+	this.clickedOnNothing = new Event(this);
+	this.mouseOverPiece = new Event(this);
+	this.mouseOutPiece = new Event(this);
+	this.dragPiece = new Event(this);
+	this.dragRotateHandle = new Event(this);
+	this.releasePiece = new Event(this);
+	this.clickStartButton = new Event(this);
+	this.validationRequested = new Event(this);
+
+	this.Components = {
+		pieceLabel : $('#piece-label'),
+		hintToggle : $('#hint-toggle'),
+		validateButton : $('#validate-btn'),
+		progressBar : $('#progress-bar'),
+		startButton : $('#start'),
+		loadingLabel : $('#loading-label'),
+		canvasHolder : $('#fullscreen'),
+		loadingTitle : $('#puzzle-title'),
+		loadingGif : $('#puzzle-gif'),
+		loadingIntro : $('#puzzle-intro'),
+		loadingGestures : $('#puzzle-gestures'),
+		notifyWindow : $('#ntfy-window'),
+		notifyTitle : $('#ntfy-title'),
+		notifyMessage : $('#ntfy-message'),
+		notifyClose : $('#ntfy-close')
+	};
 
 	this.initialize();
 }
@@ -63,7 +81,8 @@ pv.initialize = function() {
 	document.onselectstart = function(){ return false; }
 	
 	this._stage.addEventListener("stagemousemove", function(event) {
-		var ob = _this._stage.getObjectUnderPoint(_this._stage.mouseX, _this._stage.mouseY);
+		//console.log(event);
+		var ob = _this._stage.getObjectUnderPoint(event.stageX/_this._stage.scaleX, event.stageY/_this._stage.scaleY);
 		if(ob == null)
 			ob = {type:"background"}
 		
@@ -83,7 +102,7 @@ pv.initialize = function() {
 		} else {
 			if(_this._hoveredPiece !== null) {
 				var tmppc = _this._hoveredPiece;
-				if(_this._model.getSelectedPiece() !== null) {
+				if(_this._model.getSelectedPiece() !== null && _this._model._options.allowRotate) {
 					document.body.style.cursor='url("assets/trex/rotate24.png") 12 12, auto';
 				} else {
 					document.body.style.cursor='default';
@@ -102,7 +121,7 @@ pv.initialize = function() {
 	
 		// Double click fires "clickedOnNothing", which deselects the currently selected piece
 		this._stage.addEventListener("dblclick", function(event) {
-			var ob = _this._stage.getObjectUnderPoint(event.stageX, event.stageY);
+			var ob = _this._stage.getObjectUnderPoint(event.stageX/_this._stage.scaleX, event.stageY/_this._stage.scaleY);
 			if(ob.type == "background" || ob.type == "hint") {
 				_this.clickedOnNothing.notify({ event: event });
 				document.body.style.cursor='default';
@@ -111,26 +130,40 @@ pv.initialize = function() {
 		
 		// Mouse down fires "clickedOnPiece" if a piece was selected
 		this._stage.addEventListener("mousedown", function(event) {
-			
+			console.log(event);
+			var startTime = new Date().getTime();
 			var stage = _this._stage;
-			var ob = stage.getObjectUnderPoint(stage.mouseX, stage.mouseY);
+			var ob = stage.getObjectUnderPoint(stage.mouseX/stage.scaleX, stage.mouseY/stage.scaleX);
 	
 			var pc = ob.parent;
-			var offset = {x:pc.x-event.stageX, y:pc.y-event.stageY};
+			var offset = {
+					x:(pc.x-(event.stageX/stage.scaleX)), 
+					y:(pc.y-(event.stageY/stage.scaleY))
+				};
 			
 			// if no pieces were clicked
 			if(ob.type == null || ob.type == "background" || ob.type == "hint") {
-				
+
+				// if it's a quick click on nothing, deselect
+				event.addEventListener("mouseup", function(evt) {
+					var endTime = new Date().getTime();
+					if((endTime - startTime) < 250) {
+						_this.clickedOnNothing.notify({ event: evt });
+						document.body.style.cursor='default';
+					}
+				});
 				
 				var spc = _this._model.getSelectedPiece();
-				if(spc !== null) {
+				if(spc !== null && _this._model._options.allowRotate) {
 					var start = spc.rotation;
-					offset = {x:event.stageX, y:event.stageY};
+					offset = {x:event.stageX/stage.scaleX, y:event.stageY/stage.scaleY};
 					
 					// Mouse move when the user has moused down on an empty area causes rotation
 					event.addEventListener("mousemove", function(evt) {
 						evt.offset = offset;
 						evt.start = start;
+						evt.stageX = evt.stageX/stage.scaleX;
+						evt.stageY = evt.stageY/stage.scaleY;
 						_this.dragRotateHandle.notify({ 
 							event: evt, 
 							pieceContainer: spc
@@ -148,6 +181,8 @@ pv.initialize = function() {
 						event.addEventListener("mousemove", function(evt) {
 							evt.offset = offset;
 							document.body.style.cursor='move';
+							evt.stageX = evt.stageX/stage.scaleX;
+							evt.stageY = evt.stageY/stage.scaleY;
 							_this.dragPiece.notify({ 
 								event: evt, 
 								pieceContainer: pc
@@ -186,6 +221,32 @@ pv.initialize = function() {
 		createjs.Ticker.setPaused(false);
 		createjs.Ticker.addEventListener("tick", that.update.bind(that));
 	}
+
+	// hint button
+
+	that.Components.hintToggle.bind("click", function(e) {
+		that.showHint();
+	});
+
+
+	// start button
+	that.Components.startButton.bind("click", function(e) {
+		that.clickStartButton.notify({
+			event : e
+		});
+	});
+
+	that.Components.validateButton.bind("click", function(e) {
+		that.validationRequested.notify({
+			event : e
+		});
+	});
+
+	that.Components.notifyClose.bind("click", function(e) {
+		that.dismissNotification(that.Components.notifyWindow);
+	});
+
+
 };
 
 pv.getStage = function() {
@@ -214,6 +275,15 @@ pv.setAspectRatio = function(ratio) {
 	this._aspectRatio = ratio;
 };
 
+pv.updateProgressBar = function(amount) {
+	this.Components.progressBar.css('width', amount+'%');
+};
+
+pv.enableStartButton = function() {
+	this.Components.startButton.text("Start");
+	this.Components.startButton.attr('class', "btn btn-start");
+};
+
 pv.update = function (event) {
 	if(!createjs.Ticker.getPaused()) {
 	  if(this._stage._needsUpdate || this._animating) {
@@ -225,6 +295,34 @@ pv.update = function (event) {
   
 pv.triggerRefresh = function() {
 	this._stage._needsUpdate = true;
+};
+
+pv.showPieceLabel = function(pc) {
+	this.Components.pieceLabel.text(pc.getPieceString());
+	this.Components.pieceLabel.attr("class", "active")
+};
+
+pv.hidePieceLabel = function() {
+	this.Components.pieceLabel.attr('class', "inactive");
+};
+
+pv.showHintToggle = function() {
+	this.Components.hintToggle.show();
+};
+
+pv.hideHintToggle = function() {
+	this.Components.hintToggle.hide();
+};
+
+pv.showLoadingWindow = function(title, intro, instructionGif, gestureImg) {
+	this.Components.loadingTitle.text(title);
+	this.Components.loadingIntro.text(intro);
+	this.Components.loadingGif.attr('src', instructionGif);
+	this.Components.loadingGestures.attr('src', gestureImg);
+};
+
+pv.hideLoadingWindow = function() {
+	this.Components.canvasHolder.addClass("started");
 };
   
 // using cache create a new canvas for each element,
@@ -254,22 +352,30 @@ pv.updatePieceContainer = function(pc) {
 
 pv.resizePuzzle = function(width, height) {
 
-	if(typeof(this._stage.scaleX) == "undefined")
+	if(typeof(this._stage.scaleX) === "undefined")
 	{
 		this._stage.scaleX = this._stage.scaleY = 1;
 	}
+	
+	this._canvas.width = width;
+	this._canvas.height = Math.round(width/this._aspectRatio);
+
+	this.Components.canvasHolder.width(width+'px');
+	this.Components.canvasHolder.height(Math.round(width/this._aspectRatio)+'px');
 
 	// scale the puzzle to width / height
-	var bgWidth = width;
+	var bgWidth = this._model._background.image.width;
 	var scaleAmount = 1;
 	if(bgWidth > 0)
 		scaleAmount = this._canvas.width/bgWidth;
 	
-	this._canvas.width = width;
-	this._canvas.height = Math.round(width/this._aspectRatio);
-	
-	this._stage.scaleX = this._stage.scaleY = scaleAmount;
+	this._stage.scaleX = this._stage.scaleY = this._stage.scale = scaleAmount;
 	this._stage._needsUpdate = true;
+};
+
+pv.resizeHolder = function(width) {
+	this.Components.canvasHolder.width(width+'px');
+	this.Components.canvasHolder.height(Math.round(width/this._aspectRatio)+'px');
 };
   
 pv.removePieceContainers = function() {
@@ -284,7 +390,7 @@ pv.removePieceContainers = function() {
 
 pv.showHint = function() {
 	var _this = this;
-	if(!this._animating) {
+	if(!this._animating && this._model._options.allowHint) {
 		this._animating = true;
 		createjs.Tween.get(this._model._hint).to({alpha:0.25}, 500).wait(5000).call(_this.hideHint.bind(_this));
 	}
@@ -292,15 +398,49 @@ pv.showHint = function() {
 
 pv.hideHint = function() {
 	var _this = this;
-	createjs.Tween.get(this._model._hint).to({alpha:0}, 500).call(function() { _this._animating = false; });
+	if(this._model._options.allowHint)
+		createjs.Tween.get(this._model._hint).to({alpha:0}, 500).call(function() { _this._animating = false; });
+};
+
+pv.enableValidateButton = function() {
+		this.Components.validateButton.removeClass('ctl-disabled');
+};
+
+pv.enableHintButton = function() {
+	this.Components.hintToggle.removeClass('ctl-disabled');
+};
+
+pv.showBackground = function(bgurl) {
+	this.Components.canvasHolder.css('background-image', 'url('+bgurl+')');
+};
+
+pv.notifySuccess = function() {
+	this.showNotification('Correct!', 'You have successfully built the Dinosauria Tree.', 'success');
+};
+
+pv.notifyFail = function() {
+	this.showNotification('Incorrect!', 'Not all the pieces are in their correct position on the Dinosauria Tree.', 'fail');
+};
+
+pv.showNotification = function(title, message, type) {
+	this.Components.notifyTitle.text(title);
+	this.Components.notifyMessage.text(message);
+	this.Components.notifyWindow.attr('class',type + ' active');
+	var topPos = (this.Components.canvasHolder.height()/2)-this.Components.notifyWindow.height()/2;
+	this.Components.notifyWindow.css('top', topPos+'px')
+};
+
+pv.dismissNotification = function(element) {
+	element.removeAttr('style');
+	element.removeClass('active');
 };
 
 pv.buildPuzzle = function () {
 	this.removePieceContainers();
 	this._stage._needsUpdate = true;
-	if(this._model._background !== null)
+	if(this._model._background !== null && this._model._options.allowRotate)
 		this._stage.addChild(this._model._background);
-	if(this._model._hint !== null)
+	if(this._model._hint !== null && this._model._options.allowHint)
 		this._stage.addChild(this._model._hint);
 	
 	// add fixed pieces first so they are on the bottom, refactor this	
