@@ -30,6 +30,8 @@ function Piece(options) {
 		
 	this.parentX = options.parentX || 0;
 	this.parentY = options.parentY || 0;
+
+	this.snapRadius = options.snapRadius || 25;
 	
 	this.type = "piece";
 	
@@ -180,10 +182,13 @@ p.getMatches = function() {
  * @returns {Piece} this piece 
  */
 p.addPoint = function(pt) {
-	if(!this.hasPoint(pt)) {
-		this._points.push(pt);
-		pt.setPiece(this);
-	}
+	// LANE CHANGED ON JULY 19 TO ALLOW SNAP ALL
+	//if(!this.hasPoint(pt)) {
+	//	this._points.push(pt);
+	//	pt.setPiece(this);
+	//}
+	this._points.push(pt);
+	pt.setPiece(this);
 	return this;
 }
 

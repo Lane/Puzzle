@@ -1,0 +1,218 @@
+{ "background" : { "id" : "background",
+      "src" : "assets/trex/HighRes/background.jpg"
+    },
+  "hint" : { "id" : "hint",
+      "src" : "assets/trex/HighRes/hint.jpg"
+    },
+  "instructionGif" : "assets/tyrannosaurus/instructions.gif",
+  "instructionMouse" : "assets/trex/mouse-gestures.png",
+  "instructionText" : "The hips of the tyrannosaurus are in place, move and rotate the other pieces in to place to rebuild the Tyrannosaurus.",
+  "instructionTouch" : "assets/dinosauria/touch-gestures.png",
+  "matches" : [ [ { "piece" : "skull",
+          "x" : 88,
+          "y" : 2
+        },
+        { "piece" : "lower-jaw",
+          "x" : 40,
+          "y" : -70
+        }
+      ],
+      [ { "piece" : "skull",
+          "x" : 90,
+          "y" : -50
+        },
+        { "piece" : "cervical",
+          "x" : -72,
+          "y" : -34
+        }
+      ],
+      [ { "piece" : "cervical",
+          "x" : 58,
+          "y" : 36
+        },
+        { "piece" : "ribs",
+          "x" : -140,
+          "y" : -44
+        }
+      ],
+      [ { "piece" : "cervical",
+          "x" : 52,
+          "y" : -4
+        },
+        { "piece" : "dorsal",
+          "x" : -158,
+          "y" : -8
+        }
+      ],
+      [ { "piece" : "dorsal",
+          "x" : -28,
+          "y" : -10
+        },
+        { "piece" : "ribs",
+          "x" : -16,
+          "y" : -86
+        }
+      ],
+      [ { "piece" : "dorsal",
+          "x" : -54,
+          "y" : -4
+        },
+        { "piece" : "left-arm",
+          "x" : 46,
+          "y" : -112
+        }
+      ],
+      [ { "piece" : "dorsal",
+          "x" : -54,
+          "y" : -6
+        },
+        { "piece" : "right-arm",
+          "x" : 62,
+          "y" : -90
+        }
+      ],
+      [ { "piece" : "hip",
+          "x" : -88,
+          "y" : -116
+        },
+        { "piece" : "dorsal",
+          "x" : 142,
+          "y" : -22
+        }
+      ],
+      [ { "piece" : "hip",
+          "x" : -8,
+          "y" : -50
+        },
+        { "piece" : "left-leg",
+          "x" : -126,
+          "y" : -210
+        }
+      ],
+      [ { "piece" : "hip",
+          "x" : -10,
+          "y" : -52
+        },
+        { "piece" : "right-leg",
+          "x" : 44,
+          "y" : -176
+        }
+      ],
+      [ { "piece" : "hip",
+          "x" : -120,
+          "y" : 118
+        },
+        { "piece" : "gastracia",
+          "x" : 122,
+          "y" : 44
+        }
+      ],
+      [ { "piece" : "hip",
+          "x" : 76,
+          "y" : -46
+        },
+        { "piece" : "tail",
+          "x" : -388,
+          "y" : 14
+        }
+      ]
+    ],
+  "pieces" : [ { "hover" : "assets/trex/HighRes/H-Cervical.png",
+        "id" : "cervical",
+        "name" : "Cervical",
+        "selected" : "assets/trex/HighRes/S-Cervical.png",
+        "src" : "assets/trex/HighRes/N-Cervical.png",
+        "zindex" : 11
+      },
+      { "hover" : "assets/trex/HighRes/H-Dorsal.png",
+        "id" : "dorsal",
+        "name" : "Dorsal",
+        "selected" : "assets/trex/HighRes/S-Dorsal.png",
+        "src" : "assets/trex/HighRes/N-Dorsal.png",
+        "zindex" : 5
+      },
+      { "hover" : "assets/trex/HighRes/H-Gastracia.png",
+        "id" : "gastracia",
+        "name" : "Gastracia",
+        "selected" : "assets/trex/HighRes/S-Gastracia.png",
+        "src" : "assets/trex/HighRes/N-Gastracia.png",
+        "zindex" : 4
+      },
+      { "fixed" : true,
+        "hover" : "assets/trex/HighRes/H-Hip.png",
+        "id" : "hip",
+        "name" : "Hip",
+        "selected" : "assets/trex/HighRes/S-Hip.png",
+        "src" : "assets/trex/HighRes/N-Hip.png",
+        "x" : 800,
+        "y" : 390,
+        "zindex" : 7
+      },
+      { "hover" : "assets/trex/HighRes/H-LeftArm.png",
+        "id" : "left-arm",
+        "name" : "Left Arm",
+        "selected" : "assets/trex/HighRes/S-LeftArm.png",
+        "src" : "assets/trex/HighRes/N-LeftArm.png",
+        "zindex" : 12
+      },
+      { "hover" : "assets/trex/HighRes/H-LeftLeg.png",
+        "id" : "left-leg",
+        "name" : "Left Leg",
+        "selected" : "assets/trex/HighRes/S-LeftLeg.png",
+        "src" : "assets/trex/HighRes/N-LeftLeg.png",
+        "zindex" : 10
+      },
+      { "hover" : "assets/trex/HighRes/H-lowerjaw.png",
+        "id" : "lower-jaw",
+        "name" : "Lower Jaw",
+        "selected" : "assets/trex/HighRes/S-lowerjaw.png",
+        "src" : "assets/trex/HighRes/N-lowerjaw.png",
+        "zindex" : 13
+      },
+      { "hover" : "assets/trex/HighRes/H-RightArm.png",
+        "id" : "right-arm",
+        "name" : "Right Arm",
+        "selected" : "assets/trex/HighRes/S-RightArm.png",
+        "src" : "assets/trex/HighRes/N-RightArm.png",
+        "zindex" : 1
+      },
+      { "hover" : "assets/trex/HighRes/H-Ribs.png",
+        "id" : "ribs",
+        "name" : "Ribs",
+        "selected" : "assets/trex/HighRes/S-Ribs.png",
+        "src" : "assets/trex/HighRes/N-Ribs.png",
+        "zindex" : 6
+      },
+      { "hover" : "assets/trex/HighRes/H-RightLeg.png",
+        "id" : "right-leg",
+        "name" : "Right Leg",
+        "selected" : "assets/trex/HighRes/S-RightLeg.png",
+        "src" : "assets/trex/HighRes/N-RightLeg.png",
+        "zindex" : 2
+      },
+      { "hover" : "assets/trex/HighRes/H-skull.png",
+        "id" : "skull",
+        "name" : "Skull",
+        "selected" : "assets/trex/HighRes/S-skull.png",
+        "src" : "assets/trex/HighRes/N-skull.png",
+        "zindex" : 14
+      },
+      { "hover" : "assets/trex/HighRes/H-Tail.png",
+        "id" : "tail",
+        "name" : "Tail",
+        "selected" : "assets/trex/HighRes/S-Tail.png",
+        "src" : "assets/trex/HighRes/N-Tail.png",
+        "zindex" : 3
+      }
+    ],
+  "sounds" : [ { "id" : "snap",
+        "mp3" : "assets/trex/sounds/snap3.mp3",
+        "ogg" : "assets/trex/sounds/snap3.ogg"
+      },
+      { "id" : "success",
+        "mp3" : "assets/trex/sounds/Dinosaur_Growl.mp3",
+        "ogg" : "assets/trex/sounds/Dinosaur_Growl.ogg"
+      }
+    ],
+  "title" : "Tyrannosaurus Puzzle"
+}

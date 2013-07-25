@@ -289,7 +289,7 @@ pt.isMatched = function() {
 		x: Math.abs(thisOffset.x-thatOffset.x), 
 		y: Math.abs(thisOffset.y-thatOffset.y)
 	};
-	if(coorDiff.x > 11 || coorDiff.y > 11)
+	if(coorDiff.x > this.piece.snapRadius || coorDiff.y > this.piece.snapRadius)
 		return false;
 		
 	return true;

@@ -17,9 +17,9 @@
 function PuzzleBuilder() {
 
 	// create the puzzle
-	this.puzzle = new Puzzle();
-	this.puzzleView = new PuzzleView(this.puzzle);
-	this.puzzleController = new PuzzleController(this.puzzle, this.puzzleView);
+	this.puzzle = null;
+	this.puzzleView = null;
+	this.puzzleController = null;
 	
 	this.fileLoaded = new Event(this);
 	this.puzzleLoaded = new Event(this);
@@ -104,6 +104,10 @@ pb.loadPuzzle = function(pzl) {
 
 	this._loadObject = pzl;
 
+	this.puzzle = new Puzzle(new Array(), pzl.options);
+	this.puzzleView = new PuzzleView(this.puzzle);
+	this.puzzleController = new PuzzleController(this.puzzle, this.puzzleView);
+
 	// load background
 	this._queue.loadManifest(pzl.background);
 	this._queue.loadManifest(pzl.hint);
@@ -113,6 +117,8 @@ pb.loadPuzzle = function(pzl) {
 		var s = pzl.sounds[i];
 		this._queue.loadFile({id: s.id, src: s.mp3+"|"+s.ogg });
 	}
+
+
 };
 
 /**
@@ -173,14 +179,14 @@ pb.handlePuzzleLoad = function(sender, args) {
 	
 	// Set the puzzle width and height
 	var bg = this._queue.getResult('background');
-	this.puzzleView.getCanvas().width = bg.width;
-	this.puzzleView.getCanvas().height = bg.height;
+
 	
 	// Set the puzzle background
 	this.puzzle.setBackground(bg);
 	
 	// Set the puzzle hint
-	this.puzzle.setHint(this._queue.getResult('hint'));
+	if(this.puzzle._options.allowHint)
+		this.puzzle.setHint(this._queue.getResult('hint'));
 
 	// Add all the pieces in random spots
 	while((p=this._pieces.pop()) != null) {	
@@ -189,6 +195,7 @@ pb.handlePuzzleLoad = function(sender, args) {
 		p.imgSelected = this._queue.getResult(p.name+'-selected');
 	
 		var options = {};
+		var bgSize = this.puzzle.getBackgroundSize();
 		options.pieces = [p];
 		options.x = p.regX+Math.round(Math.random()*(this.puzzleView.getCanvas().width-p.image.width));
 		options.y = p.regY+Math.round(Math.random()*(this.puzzleView.getCanvas().height-p.image.height));
@@ -198,19 +205,50 @@ pb.handlePuzzleLoad = function(sender, args) {
 	var pzl = this._loadObject;
 	
 	// Setup all the matches
-	for(var i = 0; i < pzl.matches.length; i++) {
-		var newPoint = new Point(
-			this.puzzle.getPieceByName(pzl.matches[i][0].piece),
-			pzl.matches[i][0].x,
-			pzl.matches[i][0].y
-		);
-		newPoint.setMatch(new Point(
-			this.puzzle.getPieceByName(pzl.matches[i][1].piece),
-			pzl.matches[i][1].x,
-			pzl.matches[i][1].y
-		));
+	if(this.puzzle._options.snapAll) {
+		// setup matches to snap to
+		for(var i = 0; i < pzl.matches.length; i++) {
+			for(var j = 0; j < pzl.pieces.length; j++) {
+				var newPoint = new Point(
+					this.puzzle.getPieceByName(pzl.matches[i].piece),
+					pzl.matches[i].x,
+					pzl.matches[i].y
+				);
+				newPoint.setMatch(new Point(this.puzzle.getPieceByName(pzl.pieces[j].id),0,0));
+			}
+		}
+		// build the success state for the puzzle
+		var successState = new Array();
+		for(var i = 0; i < pzl.success.length; i++) {
+			var piece1 = this.puzzle.getPieceByName(pzl.success[i][0].piece);
+			var piece2 = this.puzzle.getPieceByName(pzl.success[i][1].piece);
+			// todo: account for piece1 offset
+			var successCondition = {
+				id: piece1.name,
+				x: piece2.boundary.width/2+pzl.success[i][1].x, 
+				y: piece2.boundary.height/2+pzl.success[i][1].y, 
+			};
+			successState.push(successCondition);
+		} 
+		this.puzzle.setSuccessState(successState);
+	} else {
+		for(var i = 0; i < pzl.matches.length; i++) {
+			var newPoint = new Point(
+				this.puzzle.getPieceByName(pzl.matches[i][0].piece),
+				pzl.matches[i][0].x,
+				pzl.matches[i][0].y
+			);
+			newPoint.setMatch(new Point(
+				this.puzzle.getPieceByName(pzl.matches[i][1].piece),
+				pzl.matches[i][1].x,
+				pzl.matches[i][1].y
+			));
+		}
 	}
+
 	
 	// Build the puzzle
 	this.puzzleView.buildPuzzle();
+	if(this.puzzle._options.allowHint)
+		setTimeout(this.puzzleView.showHintToggle(), 10000)
 };
