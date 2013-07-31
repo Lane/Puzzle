@@ -18,6 +18,7 @@
  */
 function Puzzle(data) {
 
+	this.id = data.id || 'puzzleRoot';
 	this._pieceContainers = new Array();
 	this._pieces = new Array();
 	this._selectedPiece = null;
@@ -32,7 +33,8 @@ function Puzzle(data) {
 		allowHint: true,
 		showLabels: true,
 		snapAll: false,
-		snapRadius: 50
+		snapRadius: 50,
+		showTitle: true
 	};
 
 	if (typeof data.options == 'object') {
@@ -60,6 +62,8 @@ function Puzzle(data) {
 var pz = Puzzle.prototype;
 
 pz.initialize = function() { 
+
+	$('body').addClass(this._data.id);
 	
 	// Install the sound plugin
 	this._queue.installPlugin(createjs.Sound);
@@ -160,8 +164,18 @@ pz.setupPuzzle = function() {
 		var options = {};
 		var bgSize = this.getBackgroundSize();
 		options.pieces = [p];
-		options.x = p.regX+Math.round(Math.random()*(this._View.getCanvas().width-p.image.width));
-		options.y = p.regY+Math.round(Math.random()*(this._View.getCanvas().height-p.image.height));
+		if(typeof(this._options.placementBox) === "object" && !p.fixed)
+		{
+			var b = this._options.placementBox;
+			options.x = b.x+p.regX+Math.round(Math.random()*(b.width-p.image.width));
+			options.y = b.y+p.regY+Math.round(Math.random()*(b.height-p.image.height));
+		}
+		else 
+		{
+			options.x = p.regX+Math.round(Math.random()*(this._View.getCanvas().width-p.image.width));
+			options.y = p.regY+Math.round(Math.random()*(this._View.getCanvas().height-p.image.height));	
+		}
+
 		this.addPieceContainer(new PieceContainer(options));
 	}
 	

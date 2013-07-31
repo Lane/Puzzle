@@ -3,10 +3,9 @@ body {
 	color: #fff;
 	font-size: 0.84em;
 	line-height: 1.42em;
-	font-family: sans-serif;
 	margin: 0;
 	padding: 0;
-	font-family: "Open Sans Condensed", sans-serif;
+	font-family: "DIN", sans-serif;
 }
 
 .canvasHolder {
@@ -15,24 +14,16 @@ body {
 	background-size: 100% auto;
 }
 
-#interface {
-	background: rgba(0,0,0,0.75);
-	padding:  2em;
-	position: absolute;
-	top: 0;
-	left: 0;
-	bottom: 0;
-	right: 0;
-	text-shadow:  0px 1px 4px #000;
-	transition: opacity 0.5s ease-in-out;
-}
-
 canvas {
 	position: absolute;
 	top: 0;
 	left: 0;
+	z-index:2;
 }
 
+a img {
+	border:none;
+}
 
 
 .action-row {
@@ -49,18 +40,26 @@ canvas {
 #loading-window {
 	position:absolute;
 	top:50%;
-	margin-top:-17em;
+	margin-top:-18.5em;
 	left:50%;
 	padding:0.5em;
 	margin-left:-11.5em;
 	width: 23em;
-	height: 33.5em;
+	height: 37em;
 	text-align: center;
 	background-color: #000;
 	background-color: rgba(0,0,0,0.65);
+	z-index:0;
+}
+
+.dinosauria #loading-window {
+	height: 34em;
+	margin-top:-17em;
 }
 
 #loading-window * { z-index: 999; position:relative;}
+
+#loading-window.active { z-index:999; }
 
 #loading-window .puzzle-loader-actions {
 	position:absolute;
@@ -76,8 +75,12 @@ canvas {
 	position:absolute;
 	left:50%;
 	margin-left:-11.5em;
-	top:-100%;
+	top:-26em;
 	z-index:998;
+	-webkit-transition: all 0.25s ease-in-out;
+	-moz-transition: top 0.25s ease-in-out;
+	-ms-transition: top 0.25s ease-in-out;
+	-o-transition: top 0.25s ease-in-out;
 	transition: top 0.25s ease-in-out;
 }
 
@@ -102,12 +105,12 @@ canvas {
 
 #ntfy-title, #puzzle-title {
 	margin:0;
-	padding:20px;
-	text-transform:uppercase;
+	padding: 20px 20px 15px;
 	text-shadow:2px 2px 0px rgba(0,0,0,0.35);
 	background:#333;
 	position:relative;
 	z-index:998;
+	font-family:'DIN', sans-serif;
 }
 
 .fail #ntfy-title {
@@ -121,7 +124,7 @@ canvas {
 #ntfy-close {
 	position:absolute;
 	right:22px;
-	top:26px;
+	top:23px;
 	z-index:999;
 }
 
@@ -134,14 +137,20 @@ canvas {
 }
 
 #puzzle-title {
-	text-transform:uppercase;
 	text-shadow: 2px 2px 0px rgba(0,0,0,0.65);
 	margin-bottom:8px;
 }
 
-#puzzle-gif {
-	width:100%;
+.puzzle-gif-holder {
+	position:relative;
 }
+
+#loading-window .puzzle-gif-holder img {
+	width:100%;
+	position:absolute;
+	top:0;left:0;
+}
+
 
 #puzzle-intro {
 	font-size:1.2em;
@@ -152,22 +161,26 @@ canvas {
 
 .btn {
 	display: inline-block;
-	margin: 1em;
-	padding: 1em 2em;
-	font-size:1.2em;
+	margin: 0em 0em 0em 1em;
+	padding: 1.2em 2em 1em;
+	font-size:1em;
 	color: #fff;
 	text-transform: uppercase;
 	line-height: 1em;
 	text-decoration: none;
 	font-weight: 700;
-	background-color:#007c41;
+	background-color: #007c41;
 	text-shadow:  2px 2px 0px rgba(0,40,0,0.65);
 	border-radius: 0px;
 	opacity: 1;
 	box-shadow: 4px 4px 0px rgba(0,0,0,0.65);
-	transition: all 0.25s ease-in-out;
+	-webkit-transition: all 0.1s ease-in-out;
+	-moz-transition: all 0.1s ease-in-out;
+	-ms-transition: all 0.1s ease-in-out;
+	-o-transition: all 0.1s ease-in-out;
+	transition: all 0.1s ease-in-out;
 	text-transform:uppercase;
-	font-family:"Open Sans Condensed", sans-serif;
+	font-family:"DIN", sans-serif;
 	text-align:center;
 }
 
@@ -196,6 +209,7 @@ canvas {
 	position: absolute;
 	right: 1em;
 	bottom: -10em;
+	z-index:5;
 }
 
 #progress-bar {
@@ -205,6 +219,10 @@ canvas {
 	line-height: 0;
 	height: 0.25em;
 	width: 0%;
+	-webkit-transition: all 0.5s ease-in-out;
+	-moz-transition: all 0.5s ease-in-out;
+	-ms-transition: all 0.5s ease-in-out;
+	-o-transition: all 0.5s ease-in-out;
 	transition: all 0.5s ease-in-out;
 }
 
@@ -226,10 +244,16 @@ canvas {
 .canvasHolder.started #piece-label {
 	display: inline-block;
 	position: absolute;
-	font-size: 3em;
+	font-size: 2em;
 	color: #fff;
 	text-shadow: 2px 2px 0 rgba(0,0,0,0.65);
 	left: 1em;
+	top:1em;
+	line-height:1em;
+	-webkit-transition: top 0.2s ease-in-out;
+	-moz-transition: top 0.2s ease-in-out;
+	-ms-transition: top 0.2s ease-in-out;
+	-o-transition: top 0.2s ease-in-out;
 	transition: top 0.2s ease-in-out;
 	font-weight:700;
 
@@ -237,6 +261,7 @@ canvas {
 
 .canvasHolder.started #piece-label.active {
 	top: 0em;
+	z-index:999;
 }
 
 .canvasHolder.started #piece-label.inactive {
@@ -258,8 +283,65 @@ canvas {
 	display:none;
 }
 
+#overall-title {
+	position: absolute;
+	right: 1em;
+	top: 1em;
+	text-shadow: 2px 2px 0px rgba(0,0,0,0.65);
+	line-height: 1em;
+	margin: 0;
+	z-index:999;
+}
+
 body {
 	font-size: 1em;
+}
+
+@media screen and (max-height:38em), screen and (max-width: 71.875em) {
+	.dinosauria #loading-window, #loading-window {
+		width:40em;
+		margin-left:-20em;
+		height:26em;
+		margin-top:-13em;
+	}
+	#loading-window img {
+		width:100%;
+	}
+
+	#loading-window .puzzle-gif-holder {
+		width:48%;
+		padding-top:0;
+	}
+	#loading-window .puzzle-gestures-holder {
+		width:48%;
+		position:absolute;
+		right:6px;
+		top:1em;
+	}
+}
+
+@media screen and (max-width: 71.875em) {
+		#puzzle-intro {
+		width:80%;
+		margin: 0em auto;
+		padding-top:10em;
+	}
+}
+
+@media screen and (min-height:38.01em) {
+	.puzzle-gif-holder {
+		padding-top: 56.26423690205%;
+		position:relative;
+	}
+}
+
+@media (max-width:58em) {
+	#nav a {
+		font-size:1em;
+	}
+	.canvasHolder.started #piece-label {
+		font-size:2em;
+	}
 }
 
 

@@ -87,9 +87,11 @@ ctrl.startPuzzle = function() {
 	this._view.hideLoadingWindow();
 	// Build the puzzle
 	this._model.setupPuzzle();
+	if(this._model._options.showTitle)
+		this._view.addTitle(this._model._data.title);
 	this._view.buildPuzzle();
 	if(this._model._options.allowHint)
-		setTimeout(this._view.showHintToggle(), 10000)
+		this._view.showHintToggle();
 
 	this._view.resizePuzzle(window.innerWidth, window.innerHeight);
 };

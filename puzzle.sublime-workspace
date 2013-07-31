@@ -1,0 +1,494 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"title",
+				"title"
+			],
+			[
+				"Para",
+				"ParasaurolophusHighRes"
+			],
+			[
+				"val",
+				"validateButton"
+			],
+			[
+				"cav",
+				"canvasHolder"
+			],
+			[
+				"ntfyTit",
+				"notifyTitle"
+			],
+			[
+				"loading",
+				"loadingIntro"
+			],
+			[
+				"canva",
+				"canvasHolder"
+			],
+			[
+				"pr",
+				"progressChanged"
+			],
+			[
+				"success",
+				"successCondition"
+			],
+			[
+				"piece",
+				"piece"
+			],
+			[
+				"scale",
+				"scaleX"
+			],
+			[
+				"scal",
+				"scaleX"
+			],
+			[
+				"Dino",
+				"DinosauriaHighRes"
+			],
+			[
+				"dorsal",
+				"dorsal"
+			],
+			[
+				"width",
+				"widthScreenToVirtual"
+			],
+			[
+				"heig",
+				"heightScreenToVirtual"
+			],
+			[
+				"he",
+				"heightVirtualToScreen"
+			],
+			[
+				"wid",
+				"width"
+			],
+			[
+				"wi",
+				"width"
+			],
+			[
+				"widt",
+				"widthVirtualToScreen"
+			],
+			[
+				"height",
+				"heightScreenToVirtual"
+			],
+			[
+				"vie",
+				"viewport2d"
+			],
+			[
+				"visi",
+				"visibleBox"
+			],
+			[
+				"depth",
+				"depthLevel"
+			],
+			[
+				"lineY",
+				"lineY"
+			],
+			[
+				"timeline",
+				"timelineinfo"
+			],
+			[
+				"real",
+				"realHeight"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "Packages/Compass/Compass.sublime-build",
+	"command_palette":
+	{
+		"height": 49.0,
+		"selected_items":
+		[
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"type",
+				"Compile TypeScript"
+			],
+			[
+				"diff",
+				"FileDiffs: Menu"
+			],
+			[
+				"com",
+				"Compile TypeScript"
+			],
+			[
+				"comp",
+				"Compile TypeScript"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
+			[
+				"remo",
+				"Package Control: Remove Package"
+			],
+			[
+				"Package Control: ",
+				"Package Control: List Packages"
+			]
+		],
+		"width": 435.0
+	},
+	"console":
+	{
+		"height": 340.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/lolson/Desktop/d101feature/module.html",
+		"/Users/lolson/Desktop/dino101.scss",
+		"/Users/lolson/htdocs/portfolio/examples/portfolio/templates/home.handlebar",
+		"/Users/lolson/Library/Application Support/Sublime Text 2/Packages/Emmet/Default (OSX).sublime-keymap",
+		"/Users/lolson/Documents/puzzle/Puzzle/css/tyrannosaurus.css",
+		"/Users/lolson/Documents/puzzle/Puzzle/js/Controller/PuzzleController.js",
+		"/var/folders/wc/f16lf57s74d8_znk7m1rhx2w0000gp/T/tsc_TUdpcz.js",
+		"/Users/lolson/Google Drive/Development/ChronoZoom/Source/Chronozoom.UI/Dumps/dino.json",
+		"/Users/lolson/Google Drive/Development/ChronoZoom/Source/Chronozoom.UI/scripts/vccontent.ts",
+		"/Users/lolson/Google Drive/Development/ChronoZoom/Source/Chronozoom.UI/scripts/vccontent.js",
+		"/var/folders/wc/f16lf57s74d8_znk7m1rhx2w0000gp/T/tsc_GiktEw.js",
+		"/Users/lolson/Google Drive/Development/ChronoZoom/Source/Chronozoom.UI/scripts/breadCrumbs.js",
+		"/var/folders/wc/f16lf57s74d8_znk7m1rhx2w0000gp/T/tsc__oB4sb.js",
+		"/Users/lolson/Google Drive/Development/ChronoZoom/Source/Chronozoom.UI/scripts/viewport-controller.js",
+		"/Users/lolson/Google Drive/Development/ChronoZoom/Source/Chronozoom.UI/scripts/search.ts",
+		"/Users/lolson/Google Drive/Development/ChronoZoom/Source/Chronozoom.UI/scripts/viewport-controller.ts",
+		"/Users/lolson/Google Drive/Development/ChronoZoom/Source/Chronozoom.UI/scripts/virtual-canvas.ts",
+		"/Users/lolson/Google Drive/Development/ChronoZoom/Source/Chronozoom.UI/scripts/timescale.js",
+		"/Users/lolson/Google Drive/Development/ChronoZoom/Source/Chronozoom.UI/scripts/cz.js",
+		"/Users/lolson/Google Drive/Development/ChronoZoom/Source/Chronozoom.UI/scripts/settings.js",
+		"/Users/lolson/Google Drive/Development/ChronoZoom/Source/Chronozoom.UI/scripts/layout.js",
+		"/Users/lolson/Google Drive/Development/ChronoZoom/Source/Chronozoom.UI/scripts/common.js",
+		"/var/folders/wc/f16lf57s74d8_znk7m1rhx2w0000gp/T/tsc_gmHNRG.js",
+		"/var/folders/wc/f16lf57s74d8_znk7m1rhx2w0000gp/T/tsc_pUwNhx.js",
+		"/opt/local/apache2/conf/httpd.conf",
+		"/Users/lolson/Google Drive/Development/ChronoZoom/Source/Chronozoom.UI/scripts/test.ts",
+		"/Users/lolson/Google Drive/Development/ChronoZoom/Source/Chronozoom.UI/scripts/test.js",
+		"/Users/lolson/Google Drive/Development/ChronoZoom/Source/Chronozoom.UI/scripts/urlnav.ts",
+		"/Users/lolson/Google Drive/Development/ChronoZoom/Source/Chronozoom.UI/scripts/service.ts",
+		"/Users/lolson/Google Drive/Development/ChronoZoom/Source/Chronozoom.UI/scripts/common.ts",
+		"/Users/lolson/Library/Application Support/Sublime Text 2/Packages/TypeScript Compiler/TypeScript Compiler.sublime-settings",
+		"/Users/lolson/Google Drive/Development/ChronoZoom/Source/Chronozoom.UI/scripts/cz.ts",
+		"/Users/lolson/Library/Application Support/Sublime Text 2/Packages/SublimeLinter/README.md",
+		"/Users/lolson/Library/Application Support/Sublime Text 2/Packages/Default/Default (OSX).sublime-keymap"
+	],
+	"find":
+	{
+		"height": 69.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+			"",
+			"/Users/lolson/Google Drive/Development/ChronoZoom/Source/Chronozoom.UI",
+			"<open folders>"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"rotate",
+			"transiti",
+			"play",
+			"sound",
+			"play",
+			"gif",
+			"title:",
+			"y:",
+			"x:",
+			"'",
+			"fixed:",
+			"zindex:",
+			"selected:",
+			"hover:",
+			"piece:",
+			"hint:",
+			"name :",
+			"name:",
+			"src:",
+			"src :",
+			"id :",
+			"id:",
+			"-LR",
+			"this._piece",
+			"fixed",
+			"new Puzzle(",
+			"hint-toggle",
+			"pieceLabe",
+			"this._model.options",
+			"pieceContainerDragged",
+			"dragpiece",
+			"-NR-",
+			"start:",
+			"cost:",
+			"day:",
+			"new Date(\"",
+			"asrtist",
+			", data: \"\" ",
+			"artist:",
+			"background:",
+			"venue:",
+			"bands:",
+			"name:",
+			"id:",
+			"selected: '",
+			"hover: '",
+			"src: '",
+			"                    { id: 'cervical', name: 'Cervical', src: 'Cervical-LR.png', hover: 'Cervical-LR-H.png', selected: 'Cervical-LR-S.png', zindex: 4 },\n                    { id: 'dorsal', name: 'Dorsal', src: 'Dorsal-LR.png', hover: 'Dorsal-LR-H.png', selected: 'Dorsal-LR-S.png', zindex: 5 },\n                    { id: 'gastracia', name: 'Gastracia', src: 'Gastracia-LR.png', hover: 'Gastracia-LR-H.png', selected: 'Gastracia-LR-S.png', zindex: 2 },\n                    { id: 'hip', name: 'Hip', src: 'Hip-LR.png', hover: 'Hip-LR-H.png', selected: 'Hip-LR-S.png', zindex: 7, fixed: true, x: 373 , y: 71  },\n                    { id: 'left-arm', name: 'LeftArm', src: 'LeftArm-LR.png', hover: 'LeftArm-LR-H.png', selected: 'LeftArm-LR-S.png', zindex: 10 },\n                    { id: 'left-leg', name: 'LeftLeg', src: 'LeftLeg-LR.png', hover: 'LeftLeg-LR-H.png', selected: 'LeftLeg-LR-S.png', zindex: 8 },\n                    { id: 'ribs', name: 'Ribs', src: 'Ribs-LR.png', hover: 'Ribs-LR-H.png', selected: 'Ribs-LR-S.png', zindex: 9 },\n                    { id: 'right-arm', name: 'RightArm', src: 'RightArm-LR.png', hover: 'RightArm-LR-H.png', selected: 'RightArm-LR-S.png', zindex: 1 },\n                    { id: 'right-leg', name: 'RightLeg', src: 'RightLeg-LR.png', hover: 'RightLeg-LR-H.png', selected: 'RightLeg-LR-S.png', zindex: 3 },\n                    { id: 'skull', name: 'Skull', src: 'Skull-LR.png', hover: 'Skull-LR-H.png', selected: 'Skull-LR-S.png', zindex: 11 },\n                    { id: 'tail', name: 'Tail', src: 'Tail-LR.png', hover: 'Tail-LR-H.png', selected: 'Tail-LR-S.png', zindex: 6 }",
+			"transition",
+			"console.lo",
+			"thumbs/",
+			"fallback.html",
+			"fallback",
+			"thumbna",
+			"thumbnailUri",
+			"thumb",
+			"\"/scripts/",
+			"isvisible",
+			"isvisible = ",
+			"sib",
+			"canvasevent",
+			"gettimelinecolor",
+			"cosmos",
+			"color",
+			"contentitem",
+			"info-head",
+			"contentitem(",
+			"cz.DAtes",
+			"addevent(",
+			"addevent",
+			"new canvasevent",
+			"addcanvaseven",
+			"contentItem",
+			"console.log",
+			"settimeout",
+			"time",
+			"buildv",
+			"buildvc",
+			"animat",
+			"contentitem",
+			"addImage",
+			"canvasevent",
+			"canvasinfodot",
+			"jpg",
+			"footer",
+			"axis",
+			"  margin-top: -36px;\n  padding-top: 36px;",
+			"Headeon",
+			"Headoen",
+			"Headeon",
+			"id:",
+			"}",
+			"\",",
+			" ",
+			"contentitem",
+			"zoomtoelem",
+			"onmouseclick",
+			"click",
+			"element",
+			"elementclick",
+			"zoomToElementHandler",
+			"mouseclick",
+			"onclick",
+			"infodothover",
+			"rgba(255,255",
+			"rgba(255,0",
+			"this.settings.fillstyle",
+			"rgba(255,0",
+			"red",
+			"canvascircle",
+			"addcircle",
+			"addrecta",
+			"contentitem",
+			"ctx.fill",
+			"canvasborderimage",
+			"self",
+			"addimage",
+			"function canvasimage",
+			"addimage",
+			"buildvc",
+			"addimage",
+			"new CanvasImage",
+			"border",
+			"canvasrect",
+			"addRect",
+			"canvasimage",
+			"canvasborderimag",
+			"canvasborderimage"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"\"title\" :",
+			"\"y\" :",
+			"\"x\" :",
+			"\"",
+			"\"fixed\" :",
+			"\"zindex\" :",
+			"\"selected\" :",
+			"\"hover\" :",
+			"\"piece\" :",
+			"\"hint\" :",
+			"\"name\" :",
+			"\"src\" :",
+			"\"id\" :",
+			"-HR",
+			"this._model._options",
+			"-HR-",
+			"\"start\":",
+			"\"cost\":",
+			"\"day\":",
+			"",
+			"artist",
+			"",
+			"\"asrtist\":",
+			"\"background\":",
+			"\"venue\":",
+			"\"bands\":",
+			"\"name\":",
+			"\"id\":",
+			"selected: 'assets/parasaurolophus/",
+			"hover: 'assets/parasaurolophus/",
+			"src: 'assets/parasaurolophus/",
+			"                    { id: 'cervical', name: 'Cervical', src: 'Cervical-LR.png', hover: 'Cervical-LR-H.png', selected: 'Cervical-LR-S.png', zindex: 4 },\n                    { id: 'dorsal', name: 'Dorsal', src: 'Dorsal-LR.png', hover: 'Dorsal-LR-H.png', selected: 'Dorsal-LR-S.png', zindex: 5 },\n                    { id: 'gastracia', name: 'Gastracia', src: 'Gastracia-LR.png', hover: 'Gastracia-LR-H.png', selected: 'Gastracia-LR-S.png', zindex: 2 },\n                    { id: 'hip', name: 'Hip', src: 'Hip-LR.png', hover: 'Hip-LR-H.png', selected: 'Hip-LR-S.png', zindex: 7, fixed: true, x: 373 , y: 71  },\n                    { id: 'left-arm', name: 'LeftArm', src: 'LeftArm-LR.png', hover: 'LeftArm-LR-H.png', selected: 'LeftArm-LR-S.png', zindex: 10 },\n                    { id: 'left-leg', name: 'LeftLeg', src: 'LeftLeg-LR.png', hover: 'LeftLeg-LR-H.png', selected: 'LeftLeg-LR-S.png', zindex: 8 },\n                    { id: 'ribs', name: 'Ribs', src: 'Ribs-LR.png', hover: 'Ribs-LR-H.png', selected: 'Ribs-LR-S.png', zindex: 9 },\n                    { id: 'right-arm', name: 'RightArm', src: 'RightArm-LR.png', hover: 'RightArm-LR-H.png', selected: 'RightArm-LR-S.png', zindex: 1 },\n                    { id: 'right-leg', name: 'RightLeg', src: 'RightLeg-LR.png', hover: 'RightLeg-LR-H.png', selected: 'RightLeg-LR-S.png', zindex: 3 },\n                    { id: 'skull', name: 'Skull', src: 'Skull-LR.png', hover: 'Skull-LR-H.png', selected: 'Skull-LR-S.png', zindex: 11 },\n                    { id: 'tail', name: 'Tail', src: 'Tail-LR.png', hover: 'Tail-LR-H.png', selected: 'Tail-LR-S.png', zindex: 6 }",
+			"\"./scripts/",
+			"{ id:",
+			"},",
+			"\", name: \"\" }",
+			"-"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		},
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 36.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			],
+			[
+				1,
+				0,
+				2,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			0.48716408684,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 120.0
+	},
+	"replace":
+	{
+		"height": 66.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"selected_items":
+		[
+			[
+				"",
+				"/Users/lolson/Google Drive/Development/ChronoZoom/Source/Chronozoom.UI/chronozoom.sublime-project"
+			]
+		],
+		"width": 380.0
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 270.0,
+	"status_bar_visible": true
+}
