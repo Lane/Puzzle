@@ -78,8 +78,6 @@ pv.initialize = function() {
 	
 	var _this = this;
 	
-	createjs.Touch.enable(this._stage);
-	
 	// get rid of text cursor on drag
 	document.onselectstart = function(){ return false; }
 	
@@ -106,7 +104,7 @@ pv.initialize = function() {
 			if(_this._hoveredPiece !== null) {
 				var tmppc = _this._hoveredPiece;
 				if(_this._model.getSelectedPiece() !== null && _this._model._options.allowRotate) {
-					document.body.style.cursor='url(http://www.ualberta.ca/~lolson/puzzle/assets/rotate3.cur),default';
+					document.body.style.cursor='url(http://2dpuzzle.com/assets/rotate-icon.cur),default';
 				} else {
 					document.body.style.cursor='default';
 				}
@@ -120,6 +118,7 @@ pv.initialize = function() {
 	});
 	
 	// attach listeners to stage events
+	if(!Modernizr.touch || todo) {
 	
 		// Double click fires "clickedOnNothing", which deselects the currently selected piece
 		this._stage.addEventListener("dblclick", function(event) {
@@ -203,9 +202,10 @@ pv.initialize = function() {
 				
 			}
 		});
-
-		
-	
+	} else {
+		// HANDLE TOUCH
+		createjs.Touch.enable(this._stage);
+	}
 	
 	createjs.Ticker.setFPS(24);
 	createjs.Ticker.addEventListener("tick", this.update.bind(this));

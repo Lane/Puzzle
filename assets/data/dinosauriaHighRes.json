@@ -2,7 +2,11 @@
       "src" : "assets/dinosauria/background1.gif"
     },
   "id" : "dinosauria",
-  "instructionGif" : "assets/tyrannosaurus/instructions.gif",
+  "instructionGif" : [
+    "assets/dinosauria/instructions/ins1.jpg",
+    "assets/dinosauria/instructions/ins2.jpg",
+    "assets/dinosauria/instructions/ins3.jpg"
+  ],
   "instructionMouse" : "assets/dinosauria/mouse-gestures.png",
   "instructionText" : "Move each piece into its corresponding place on the Dinosauria Tree.",
   "instructionTouch" : "assets/dinosauria/touch-gestures.png",
@@ -48,7 +52,13 @@
       "showLabels" : false,
       "showTitle" : false,
       "snapAll" : true,
-      "snapRadius" : 50
+      "snapRadius" : 50,
+      "placementBox" : {
+        "x" : 374,
+        "y" : 402,
+        "width" : 720,
+        "height" : 420
+      }
     },
   "pieces" : [ { "hover" : "assets/dinosauria/hover-HR-Theropods.png",
         "id" : "theropods",

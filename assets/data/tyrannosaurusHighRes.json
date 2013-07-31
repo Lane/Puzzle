@@ -4,9 +4,13 @@
   "hint" : { "id" : "hint",
       "src" : "assets/trex/HighRes/hint.jpg"
     },
-  "instructionGif" : "assets/tyrannosaurus/instructions.gif",
+  "instructionGif" : [
+    "assets/trex/instructions/ins1.jpg",
+    "assets/trex/instructions/ins2.jpg",
+    "assets/trex/instructions/ins3.jpg"
+  ],
   "instructionMouse" : "assets/trex/mouse-gestures.png",
-  "instructionText" : "The hips of the tyrannosaurus are in place, move and rotate the other pieces in to place to rebuild the Tyrannosaurus.",
+  "instructionText" : "The Tyrannosaurus hips are in place. Move and rotate the other pieces in to place to rebuild it.",
   "instructionTouch" : "assets/dinosauria/touch-gestures.png",
   "matches" : [ [ { "piece" : "skull",
           "x" : 88,
@@ -119,21 +123,21 @@
     ],
   "pieces" : [ { "hover" : "assets/trex/HighRes/H-Cervical.png",
         "id" : "cervical",
-        "name" : "Cervical",
+        "name" : "Cervical Vertebrae",
         "selected" : "assets/trex/HighRes/S-Cervical.png",
         "src" : "assets/trex/HighRes/N-Cervical.png",
         "zindex" : 11
       },
       { "hover" : "assets/trex/HighRes/H-Dorsal.png",
         "id" : "dorsal",
-        "name" : "Dorsal",
+        "name" : "Dorsal Vertebrae",
         "selected" : "assets/trex/HighRes/S-Dorsal.png",
         "src" : "assets/trex/HighRes/N-Dorsal.png",
         "zindex" : 5
       },
       { "hover" : "assets/trex/HighRes/H-Gastracia.png",
         "id" : "gastracia",
-        "name" : "Gastracia",
+        "name" : "Gastralia",
         "selected" : "assets/trex/HighRes/S-Gastracia.png",
         "src" : "assets/trex/HighRes/N-Gastracia.png",
         "zindex" : 4
@@ -199,7 +203,7 @@
       },
       { "hover" : "assets/trex/HighRes/H-Tail.png",
         "id" : "tail",
-        "name" : "Tail",
+        "name" : "Caudal Vertebrae",
         "selected" : "assets/trex/HighRes/S-Tail.png",
         "src" : "assets/trex/HighRes/N-Tail.png",
         "zindex" : 3
@@ -214,5 +218,5 @@
         "ogg" : "assets/trex/sounds/Dinosaur_Growl.ogg"
       }
     ],
-  "title" : "Tyrannosaurus Puzzle"
+  "title" : "Tyrannosaurus"
 }

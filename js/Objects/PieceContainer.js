@@ -84,6 +84,10 @@ pc.setBoundary = function() {
 	for(var i = 0; i < this._pieces.length; i++) {
 		box.extendBoundary(this._pieces[i].getPieceBoundary());
 	}
+
+	// check and make sure this is a valid boundary
+	if(box.width < 1 || box.height < 1)
+		box = new Boundary(0, 0, 1, 1);
 	
 	var offSet = box.center;
 	
@@ -323,8 +327,12 @@ pc.matchPieces = function() {
 };
 
 pc.snapPiece = function() {
-	if(this.isMatched) 
+	if(this.isMatched) {
 		this.resetPiece(true);
+		if(this._snapped)
+			createjs.Sound.play("snap").setVolume(0.5); 
+	}
+		
 	return this;
 };
 
