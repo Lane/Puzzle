@@ -10,7 +10,7 @@ Currently being developed for use in Udacity's Dino 101 MOOC.
    
 ## Creating a Puzzle
 
-To create a puzzle, create a new PuzzleBuilder and call the loadPuzzle function with a JSON Puzzle object.
+To create a puzzle, instantiate a new puzzle and pass the JSON Puzzle object representing the puzzle.
 
     var puzzle = new Puzzle(PuzzleObject);
 
