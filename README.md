@@ -5,7 +5,7 @@ Currently being developed for use in Udacity's Dino 101 MOOC.
    - [Documentation Index](http://lane.github.io/Puzzle/docs)
    - [Github](http://www.github.com/lane/Puzzle)
    - [Class Diagram](https://github.com/Lane/Puzzle/blob/master/docs/img/ClassDiagram.png)
-   - [Development Preview](http://lane.github.io/Puzzle)
+   - [Development Preview](http://www.ualberta.ca/~lolson/puzzle/#tyrannosaurus)
    - [Unit Tests](http://lane.github.io/Puzzle/test.html)
    
 ## Creating a Puzzle
