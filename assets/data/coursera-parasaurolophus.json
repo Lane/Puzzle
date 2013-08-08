@@ -1,0 +1,206 @@
+{ "background" : { "id" : "background",
+      "src" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Ftyrannosaurus%2Fbackground.jpg"
+    },
+  "hint" : { "id" : "hint",
+      "src" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2Fhint-HR.jpg"
+    },
+  "id" : "parasaurolophus",
+  "instructionGif" : [
+    "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2Finstructions%2Fins1.jpg",
+    "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2Finstructions%2Fins2.jpg",
+    "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2Finstructions%2Fins3.jpg"
+  ],
+  "instructionMouse" : false,
+  "instructionText" : "Now that you've learned about hadrosaurs, it's time to put one together. Just like when you assembled the <i>Tyrannosaurus</i> earlier, please put this Parasaurolophus up on display. Good luck!",
+  "instructionTouch" : false,
+  "matches" : [ [ { "piece" : "cervical",
+          "x" : -88,
+          "y" : -68
+        },
+        { "piece" : "skull",
+          "x" : -6,
+          "y" : 36
+        }
+      ],
+      [ { "piece" : "cervical",
+          "x" : 94,
+          "y" : 10
+        },
+        { "piece" : "dorsal",
+          "x" : -132,
+          "y" : 94
+        }
+      ],
+      [ { "piece" : "dorsal",
+          "x" : -24,
+          "y" : -14
+        },
+        { "piece" : "ribs",
+          "x" : -26,
+          "y" : -104
+        }
+      ],
+      [ { "piece" : "gastracia",
+          "x" : 52,
+          "y" : -6
+        },
+        { "piece" : "ribs",
+          "x" : -16,
+          "y" : 146
+        }
+      ],
+      [ { "piece" : "right-arm",
+          "x" : 128,
+          "y" : -176
+        },
+        { "piece" : "ribs",
+          "x" : -20,
+          "y" : 0
+        }
+      ],
+      [ { "piece" : "left-arm",
+          "x" : 80,
+          "y" : -176
+        },
+        { "piece" : "ribs",
+          "x" : -22,
+          "y" : 0
+        }
+      ],
+      [ { "piece" : "dorsal",
+          "x" : 176,
+          "y" : -28
+        },
+        { "piece" : "hip",
+          "x" : -124,
+          "y" : -6
+        }
+      ],
+      [ { "piece" : "left-leg",
+          "x" : 176,
+          "y" : -202
+        },
+        { "piece" : "hip",
+          "x" : -44,
+          "y" : 0
+        }
+      ],
+      [ { "piece" : "right-leg",
+          "x" : -66,
+          "y" : -244
+        },
+        { "piece" : "hip",
+          "x" : -46,
+          "y" : 0
+        }
+      ],
+      [ { "piece" : "tail",
+          "x" : -364,
+          "y" : 12
+        },
+        { "piece" : "hip",
+          "x" : 46,
+          "y" : -42
+        }
+      ]
+    ],
+  "options" : { 
+    "placementBox" : {
+      "x" : 60,
+      "y" : 60,
+      "width" : 1440,
+      "height" : 860
+    }
+  },
+  "pieces" : [ { "hover" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FCervical-HR-H.png",
+        "id" : "cervical",
+        "name" : "Cervical Vertebrae",
+        "selected" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FCervical-HR-S.png",
+        "src" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FCervical-HR.png",
+        "zindex" : 4
+      },
+      { "hover" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FDorsal-HR-H.png",
+        "id" : "dorsal",
+        "name" : "Dorsal Vertebrae",
+        "selected" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FDorsal-HR-S.png",
+        "src" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FDorsal-HR.png",
+        "zindex" : 5
+      },
+      { "hover" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FGastracia-HR-H.png",
+        "id" : "gastracia",
+        "name" : "Gastracia",
+        "selected" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FGastracia-HR-S.png",
+        "src" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FGastracia-HR.png",
+        "zindex" : 2
+      },
+      { "fixed" : true,
+        "hover" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FHip-HR-H.png",
+        "id" : "hip",
+        "name" : "Hip",
+        "selected" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FHip-HR-S.png",
+        "src" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FHip-HR.png",
+        "x" : 918,
+        "y" : 282,
+        "zindex" : 7
+      },
+      { "hover" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FLeftArm-HR-H.png",
+        "id" : "left-arm",
+        "name" : "Left Arm",
+        "selected" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FLeftArm-HR-S.png",
+        "src" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FLeftArm-HR.png",
+        "zindex" : 9
+      },
+      { "hover" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FLeftLeg-HR-H.png",
+        "id" : "left-leg",
+        "name" : "Left Leg",
+        "selected" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FLeftLeg-HR-S.png",
+        "src" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FLeftLeg-HR.png",
+        "zindex" : 10 
+      },
+      { "hover" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FRibs-HR-H.png",
+        "id" : "ribs",
+        "name" : "Ribs",
+        "selected" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FRibs-HR-S.png",
+        "src" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FRibs-HR.png",
+        "zindex" : 8
+      },
+      { "hover" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FRightArm-HR-H.png",
+        "id" : "right-arm",
+        "name" : "Right Arm",
+        "selected" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FRightArm-HR-S.png",
+        "src" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FRightArm-HR.png",
+        "zindex" : 1
+      },
+      { "hover" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FRightLeg-HR-H.png",
+        "id" : "right-leg",
+        "name" : "Right Leg",
+        "selected" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FRightLeg-HR-S.png",
+        "src" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FRightLeg-HR.png",
+        "zindex" : 3
+      },
+      { "hover" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FSkull-HR-H.png",
+        "id" : "skull",
+        "name" : "Skull",
+        "selected" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FSkull-HR-S.png",
+        "src" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FSkull-HR.png",
+        "zindex" : 11
+      },
+      { "hover" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FTail-HR-H.png",
+        "id" : "tail",
+        "name" : "Caudal Vertebrae",
+        "selected" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FTail-HR-S.png",
+        "src" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2FTail-HR.png",
+        "zindex" : 6
+      }
+    ],
+  "sounds" : [ { "id" : "snap",
+        "mp3" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fcommon%2Fsounds%2Fsnap3.mp3",
+        "ogg" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fcommon%2Fsounds%2Fsnap3.ogg"
+      },
+      { "id" : "success",
+        "mp3" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fcommon%2Fsounds%2FDinosaur_Growl.mp3",
+        "ogg" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fcommon%2Fsounds%2FDinosaur_Growl.ogg"
+      }
+    ],
+  "title" : "Parasaurolophus"
+}

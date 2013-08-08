@@ -1,0 +1,14 @@
+@font-face{ 
+	font-family: 'DIN';
+	src: url('https://d396qusza40orc.cloudfront.net/dino101%2Fcommon%2Ffonts%2FDINWeb.eot');
+	src: url('https://d396qusza40orc.cloudfront.net/dino101%2Fcommon%2Ffonts%2FDINWeb.eot?iefix') format('eot'),
+	     url('https://d396qusza40orc.cloudfront.net/dino101%2Fcommon%2Ffonts%2FDINWeb.woff') format('woff'),
+	     url('https://d396qusza40orc.cloudfront.net/dino101%2Fcommon%2Ffonts%2FDINComp.ttf') format('truetype'),
+	     url('https://d396qusza40orc.cloudfront.net/dino101%2Fcommon%2Ffonts%2FDINComp.svg#webfont') format('svg');
+}
+
+.species-heading {
+	font-family: 'DIN', sans-serif;
+	font-style: italic;
+	font-size: 2em;
+}

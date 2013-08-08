@@ -4,13 +4,14 @@
   "hint" : { "id" : "hint",
       "src" : "assets/parasaurolophus/hint-HR.jpg"
     },
+  "id" : "parasaurolophus",
   "instructionGif" : [
     "assets/parasaurolophus/instructions/ins1.jpg",
     "assets/parasaurolophus/instructions/ins2.jpg",
     "assets/parasaurolophus/instructions/ins3.jpg"
   ],
-  "instructionMouse" : "assets/parasaurolophus/mouse-gestures.png",
-  "instructionText" : "Start from the hips and assemble the parasaurolophus.",
+  "instructionMouse" : false,
+  "instructionText" : "Now that you've learned about Hadrosaurs, it's time to put one together. Just like when you assembled the Tyrannosaurus earlier, please put this Parasaurolophus up on display. Good luck!",
   "instructionTouch" : "assets/dinosauria/touch-gestures.png",
   "matches" : [ [ { "piece" : "cervical",
           "x" : -88,

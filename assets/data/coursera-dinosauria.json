@@ -1,0 +1,229 @@
+{ "background" : { "id" : "background",
+      "src" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2Fbackground1.gif"
+    },
+  "id" : "dinosauria",
+  "instructionGif" : [
+    "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2Finstructions%2Fins1.jpg",
+    "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2Finstructions%2Fins2.jpg",
+    "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2Finstructions%2Fins3.jpg"
+  ],
+  "instructionMouse" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fcommon%2Fgestures%2Fmove-gesture.png",
+  "instructionText" : "Move each piece into its corresponding place on the Dinosauria Tree.",
+  "instructionTouch" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fcommon%2Fgestures%2Fmove-gesture.png",
+  "matches" : [ { "piece" : "tree",
+        "x" : -490,
+        "y" : -302
+      },
+      { "piece" : "tree",
+        "x" : 504,
+        "y" : -302
+      },
+      { "piece" : "tree",
+        "x" : -720,
+        "y" : -302
+      },
+      { "piece" : "tree",
+        "x" : -606,
+        "y" : 100
+      },
+      { "piece" : "tree",
+        "x" : 250,
+        "y" : 100
+      },
+      { "piece" : "tree",
+        "x" : -204,
+        "y" : -302
+      },
+      { "piece" : "tree",
+        "x" : 30,
+        "y" : -302
+      },
+      { "piece" : "tree",
+        "x" : 750,
+        "y" : -302
+      },
+      { "piece" : "tree",
+        "x" : 278,
+        "y" : -302
+      }
+    ],
+  "options" : { "allowHint" : false,
+      "allowRotate" : false,
+      "showLabels" : false,
+      "showTitle" : false,
+      "snapAll" : true,
+      "snapRadius" : 50,
+      "placementBox" : {
+        "x" : 374,
+        "y" : 402,
+        "width" : 720,
+        "height" : 420
+      }
+    },
+  "pieces" : [ { "hover" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2Fhover-HR-Theropods.png",
+        "id" : "theropods",
+        "name" : "Theropods",
+        "selected" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2Fselected-HR-Theropods.png",
+        "src" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2FNormal-HR-Theropods.png",
+        "zindex" : 10
+      },
+      { "hover" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2Fhover-HR-Stegasaurs.png",
+        "id" : "stegasaurs",
+        "name" : "Stegasaurs",
+        "selected" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2Fselected-HR-Stegasaurs.png",
+        "src" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2FNormal-HR-Stegasaurs.png",
+        "zindex" : 9
+      },
+      { "hover" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2Fhover-HR-Sauropods.png",
+        "id" : "sauropods",
+        "name" : "Sauropods",
+        "selected" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2Fselected-HR-Sauropods.png",
+        "src" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2FNormal-HR-Sauropods.png",
+        "zindex" : 8
+      },
+      { "hover" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2Fhover-HR-SaurischianHips.png",
+        "id" : "saurischian-hips",
+        "name" : "SaurischianHips",
+        "selected" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2Fselected-HR-SaurischianHips.png",
+        "src" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2FNormal-HR-SaurischianHips.png",
+        "zindex" : 7
+      },
+      { "hover" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2Fhover-HR-Pachycephalosaurs.png",
+        "id" : "pachycephalosaurs",
+        "name" : "Pachycephalosaurs",
+        "selected" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2Fselected-HR-Pachycephalosaurs.png",
+        "src" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2FNormal-HR-Pachycephalosaurs.png",
+        "zindex" : 6
+      },
+      { "hover" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2Fhover-HR-OrnithiscianHips.png",
+        "id" : "ornithiscian-hips",
+        "name" : "OrnithiscianHips",
+        "selected" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2Fselected-HR-OrnithiscianHips.png",
+        "src" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2FNormal-HR-OrnithiscianHips.png",
+        "zindex" : 5
+      },
+      { "hover" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2Fhover-HR-Hadrosaurs.png",
+        "id" : "hadrosaurs",
+        "name" : "Hadrosaurs",
+        "selected" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2Fselected-HR-Hadrosaurs.png",
+        "src" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2FNormal-HR-Hadrosaurs.png",
+        "zindex" : 4
+      },
+      { "hover" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2Fhover-HR-Ceratopsians.png",
+        "id" : "ceratopsians",
+        "name" : "Ceratopsians",
+        "selected" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2Fselected-HR-Ceratopsians.png",
+        "src" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2FNormal-HR-Ceratopsians.png",
+        "zindex" : 3
+      },
+      { "hover" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2Fhover-HR-Ankylosaurs.png",
+        "id" : "ankylosaurs",
+        "name" : "Ankylosaurs",
+        "selected" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2Fselected-HR-Ankylosaurs.png",
+        "src" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2FNormal-HR-Ankylosaurs.png",
+        "zindex" : 2
+      },
+      { "fixed" : true,
+        "hover" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2FNormal-HR-Tree.png",
+        "id" : "tree",
+        "name" : "Dinosaura Tree",
+        "selected" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2FNormal-HR-Tree.png",
+        "src" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2FNormal-HR-Tree.png",
+        "x" : 0,
+        "y" : 0,
+        "zindex" : 1
+      }
+    ],
+  "sounds" : [ { "id" : "snap",
+        "mp3" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fcommon%2Fsounds%2Fsnap3.mp3",
+        "ogg" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fcommon%2Fsounds%2Fsnap3.ogg"
+      },
+      { "id" : "success",
+        "mp3" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fcommon%2Fsounds%2FDinosaur_Growl.mp3",
+        "ogg" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fcommon%2Fsounds%2FDinosaur_Growl.ogg"
+      }
+    ],
+  "success" : [ [ { "piece" : "theropods",
+          "x" : 0,
+          "y" : 0
+        },
+        { "piece" : "tree",
+          "x" : -490,
+          "y" : -302
+        }
+      ],
+      [ { "piece" : "stegasaurs",
+          "x" : 0,
+          "y" : 0
+        },
+        { "piece" : "tree",
+          "x" : 504,
+          "y" : -302
+        }
+      ],
+      [ { "piece" : "sauropods",
+          "x" : 0,
+          "y" : 0
+        },
+        { "piece" : "tree",
+          "x" : -720,
+          "y" : -302
+        }
+      ],
+      [ { "piece" : "saurischian-hips",
+          "x" : 0,
+          "y" : 0
+        },
+        { "piece" : "tree",
+          "x" : -606,
+          "y" : 100
+        }
+      ],
+      [ { "piece" : "ornithiscian-hips",
+          "x" : 0,
+          "y" : 0
+        },
+        { "piece" : "tree",
+          "x" : 250,
+          "y" : 100
+        }
+      ],
+      [ { "piece" : "hadrosaurs",
+          "x" : 0,
+          "y" : 0
+        },
+        { "piece" : "tree",
+          "x" : -204,
+          "y" : -302
+        }
+      ],
+      [ { "piece" : "ceratopsians",
+          "x" : 0,
+          "y" : 0
+        },
+        { "piece" : "tree",
+          "x" : 30,
+          "y" : -302
+        }
+      ],
+      [ { "piece" : "ankylosaurs",
+          "x" : 0,
+          "y" : 0
+        },
+        { "piece" : "tree",
+          "x" : 750,
+          "y" : -302
+        }
+      ],
+      [ { "piece" : "pachycephalosaurs",
+          "x" : 0,
+          "y" : 0
+        },
+        { "piece" : "tree",
+          "x" : 278,
+          "y" : -302
+        }
+      ]
+    ],
+  "title" : "Dinosauria Tree"
+}

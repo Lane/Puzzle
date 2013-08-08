@@ -1,0 +1,6 @@
+/**
+ * @overview 2D Puzzle Box created for the University of Alberta Dino 101 MOOC.
+ * @author Lane Olson <lolson@ualberta.ca>
+ * @version 1.0
+ */
+ 
