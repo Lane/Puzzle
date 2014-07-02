@@ -26,6 +26,8 @@ PuzzleBox.Piece = function(options) {
 	this.displayName = options.displayName || "Unnamed Piece";
 	
 	this.zindex = options.zindex || 1;
+
+
 	
 	if(typeof(options.fixed) !== "undefined")
 		this.fixed = true;
@@ -33,7 +35,7 @@ PuzzleBox.Piece = function(options) {
 	this.parentX = options.parentX || 0;
 	this.parentY = options.parentY || 0;
 
-	this.snapRadius = options.snapRadius || 25;
+	this.snapRadius = options.snapRadius || 50;
 	
 	this.type = "piece";
 	
@@ -53,6 +55,8 @@ p.Bitmap_initialize = p.initialize;
 p.initialize = function(options) {
 	var tmpImg;
 	var _this = this;
+
+	_this.mouseEnabled = true;
 
 	if((typeof(options.img) == "undefined") 
 		&& (typeof(options.imgSrc) !== "undefined")) {
@@ -75,6 +79,11 @@ p.initialize = function(options) {
 	if(typeof(tmpImg) == "undefined") {
 		debug.warn("Made a piece without an image.");
 	}
+
+	// MAGIC: NEEDS REAL FIX
+	// this mysteriously fixes the mousedown issue
+	this.on("mousedown", function() { });
+
 	debug.log('Created Piece:', this);
 };
 

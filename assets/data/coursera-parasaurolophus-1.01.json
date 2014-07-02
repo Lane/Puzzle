@@ -1,6 +1,6 @@
-{ "background" : { "id" : "background",
+{ "background" : [{ "id" : "background",
       "src" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Ftyrannosaurus%2Fbackground.jpg"
-    },
+    }],
   "hint" : { "id" : "hint",
       "src" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fparasaurolophus%2Fhint-HR.jpg"
     },

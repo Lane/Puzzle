@@ -1,6 +1,6 @@
-{ "background" : { "id" : "background",
+{ "background" : [{ "id" : "background",
       "src" : "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2Fbackground1.gif"
-    },
+    }],
   "id" : "dinosauria",
   "instructionGif" : [
     "https://d396qusza40orc.cloudfront.net/dino101%2Fpuzzle%2Fassets%2Fdinosauria%2Finstructions%2Fins1.jpg",

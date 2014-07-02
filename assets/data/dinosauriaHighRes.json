@@ -1,6 +1,6 @@
-{ "background" : { "id" : "background",
-      "src" : "assets/dinosauria/background1.gif"
-    },
+{ "background" : [{ "id" : "background",
+      "src" : "assets/dinosauria/background.jpg"
+    }],
   "id" : "dinosauria",
   "instructionGif" : [
     "assets/dinosauria/instructions/ins1.jpg",

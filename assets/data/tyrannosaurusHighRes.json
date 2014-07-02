@@ -1,6 +1,6 @@
-{ "background" : { "id" : "background",
+{ "background" : [{ "id" : "background",
       "src" : "assets/trex/HighRes/background.jpg"
-    },
+    }],
   "hint" : { "id" : "hint",
       "src" : "assets/trex/HighRes/hint.jpg"
     },

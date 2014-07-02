@@ -331,8 +331,8 @@ pc.matchPieces = function() {
 pc.snapPiece = function() {
 	if(this.isMatched) {
 		this.resetPiece(true);
-		if(this._snapped)
-			createjs.Sound.play("snap").setVolume(0.5); 
+		if(this._snapped && this._puzzle._options.soundEnabled)
+			createjs.Sound.play("snap").setVolume(0.25); 
 	}
 		
 	return this;

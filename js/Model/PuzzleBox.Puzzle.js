@@ -36,7 +36,8 @@ PuzzleBox.Puzzle = function(data) {
 		showLabels: true,
 		snapAll: false,
 		snapRadius: 50,
-		showTitle: true
+		showTitle: true,
+		soundEnabled: true
 	};
 
 	if (typeof data.options == 'object') {
@@ -64,12 +65,16 @@ var pz = PuzzleBox.Puzzle.prototype;
 
 pz.initialize = function() { 
 
+	var majorVersion, verOffset,ix;
+
 	$('body').addClass(this._data.id);
 	
 	// Install the sound plugin
-	this._queue.installPlugin(createjs.Sound);
-	createjs.Sound.registerPlugins([createjs.WebAudioPlugin, createjs.HTMLAudioPlugin, createjs.FlashPlugin]);
-	
+	if(this._options.soundEnabled) {
+		this._queue.installPlugin(createjs.Sound);
+		createjs.Sound.registerPlugins([createjs.WebAudioPlugin, createjs.HTMLAudioPlugin, createjs.FlashPlugin]);
+	}
+
 	var _pzl = this;
 
 	// Setup the loading listeners
@@ -92,7 +97,10 @@ pz.initialize = function() {
 		});
 	});
 
+
+
 	this._View = new PuzzleBox.PuzzleView(this);
+
 	this._View.showLoadingWindow(
 		this._data.title, 
 		this._data.instructionText,
@@ -100,7 +108,6 @@ pz.initialize = function() {
 		this._data.instructionMouse
 	);
 	this._Controller = new PuzzleBox.PuzzleController(this, this._View);
-
 	this.loadPuzzle();
 };
 
@@ -131,14 +138,20 @@ pz.loadPuzzle = function() {
 	this._queue.loadManifest(pieceManifest);
 
 	// Load the sounds
-	for(var i=0; i < pzl.sounds.length; i++) {
-		var s = pzl.sounds[i];
-		this._queue.loadFile({id: s.id, src: s.mp3+"|"+s.ogg });
+	if(this._options.soundEnabled) {
+		for(var i=0; i < pzl.sounds.length; i++) {
+			var s = pzl.sounds[i];		
+			// createjs 0.7 sound loading
+			createjs.Sound.alternateExtensions = ["ogg"];
+			createjs.Sound.registerSound(s.mp3, s.id);
+			// createjs 0.4 sound loading
+			// this._queue.loadFile({id: s.id, src: s.mp3+"|"+s.ogg });
+		}		
 	}
-
 };
 
 pz.setupPuzzle = function() {
+
 	// Set the puzzle width and height
 	var bg = this._queue.getResult('background');
 	
@@ -177,7 +190,9 @@ pz.setupPuzzle = function() {
 			options.y = p.regY+Math.round(Math.random()*(this._View.getCanvas().height-p.image.height));	
 		}
 
-		this.addPieceContainer(new PuzzleBox.PieceContainer(options));
+
+		var pc1 = new PuzzleBox.PieceContainer(options);
+		this.addPieceContainer(pc1);
 	}
 	
 	var pzl = this._data;

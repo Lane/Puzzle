@@ -19,6 +19,7 @@ PuzzleBox.PuzzleController = function(model, view) {
 var ctrl = PuzzleBox.PuzzleController.prototype;
 
 ctrl.initialize = function() {
+
 	// Events fired by user interaction
 	this._view.clickedOnPiece.attach(this.pressedOnPieceContainer.bind(this));
 	this._view.clickedOnNothing.attach(this.pressedOnNothing.bind(this));
@@ -49,6 +50,7 @@ ctrl.handleFileLoad = function (sender, args) {
 	var type = item.type;
 	if(item.id === 'background')
 	{
+		
 		this._view.setAspectRatio(args.event.result.width/args.event.result.height);
 		this._view.resizeHolder($(window).width());
 		this._view.showBackground(item.src);
@@ -133,9 +135,13 @@ ctrl.pieceContainerRemoved = function(sender, args) {
 
 ctrl.pieceAdded = function(sender, args) {
 	args.piece.parent.updatePoints();
-	createjs.Sound.play("snap").setVolume(0.5); 
+	if(this._model._options.soundEnabled) {
+		createjs.Sound.play("snap").setVolume(0.25); 
+	}
+		
+
 	this._view.buildPuzzle();
-  debug.log(args, "Added piece to container");
+  	debug.log(args, "Added piece to container");
 };
 
 ctrl.pieceRemoved = function(sender, args) {
@@ -203,7 +209,9 @@ ctrl.hoveredOver = function(sender, args) {
 };
 
 ctrl.puzzleCompleted = function(sender,args) {	
-	createjs.Sound.play("success"); 
+	if(this._model._options.soundEnabled)
+		createjs.Sound.play("success").setVolume(0.5); 
+
 	this._view.hideHintToggle();
 };
 

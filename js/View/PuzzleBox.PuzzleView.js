@@ -83,8 +83,8 @@ var pv = PuzzleBox.PuzzleView.prototype;
 pv.initialize = function() {
 	this._stage._needsUpdate = false;
 	
-	this._stage.mouseEventsEnabled = true;
-	this._stage.enableMouseOver(1000);
+	this._stage.mouseEnabled = true;
+	this._stage.enableMouseOver(30);
 	this._stage.mouseMoveOutside = true;
 	
 	this._hoveredPiece = null;
@@ -146,76 +146,77 @@ pv.initialize = function() {
 	
 	// Mouse down fires "clickedOnPiece" if a piece was selected
 	this._stage.addEventListener("mousedown", function(event) {
+		var pc, offset;
 		var startTime = new Date().getTime();
 		var stage = _this._stage;
-		var ob = stage.getObjectUnderPoint(stage.mouseX/stage.scaleX, stage.mouseY/stage.scaleX);
-
-		var pc = ob.parent;
-		var offset = {
-				x:(pc.x-(event.stageX/stage.scaleX)), 
-				y:(pc.y-(event.stageY/stage.scaleY))
-			};
-		
-		// if no pieces were clicked
-		if(ob.type == null || ob.type == "background" || ob.type == "hint") {
-
-			// if it's a quick click on nothing, deselect
-			event.addEventListener("mouseup", function(evt) {
-				var endTime = new Date().getTime();
-				if((endTime - startTime) < 250) {
-					_this.clickedOnNothing.notify({ event: evt });
-					document.body.style.cursor='default';
-				}
-			});
+		var ob = stage.getObjectUnderPoint(stage.mouseX/stage.scaleX, stage.mouseY/stage.scaleY);
 			
-			var spc = _this._model.getSelectedPiece();
-			if(spc !== null && _this._model._options.allowRotate) {
-				var start = spc.rotation;
-				offset = {x:event.stageX/stage.scaleX, y:event.stageY/stage.scaleY};
-				
-				// Mouse move when the user has moused down on an empty area causes rotation
-				event.addEventListener("mousemove", function(evt) {
-					evt.offset = offset;
-					evt.start = start;
-					evt.stageX = evt.stageX/stage.scaleX;
-					evt.stageY = evt.stageY/stage.scaleY;
-					_this.dragRotateHandle.notify({ 
-						event: evt, 
-						pieceContainer: spc
-					});
+			// if no pieces were clicked
+			if(ob == null) {
+
+				// if it's a quick click on nothing, deselect
+				event.addEventListener("mouseup", function(evt) {
+					var endTime = new Date().getTime();
+					if((endTime - startTime) < 250) {
+						_this.clickedOnNothing.notify({ event: evt });
+						document.body.style.cursor='default';
+					}
 				});
-			}
-			
-		} else {
-			_this.clickedOnPiece.notify({event : event, piece : ob });
-			
-			// if the user pressed down on a piece
-			if(ob.type !== null) {
-				if(ob.type == "piece" && !ob.parent.isFixed()) {
-					// Mouse move when the user moused down on a piece causes movement
+				
+				var spc = _this._model.getSelectedPiece();
+				if(spc !== null && _this._model._options.allowRotate) {
+					var start = spc.rotation;
+					offset = {x:event.stageX/stage.scaleX, y:event.stageY/stage.scaleY};
+					
+					// Mouse move when the user has moused down on an empty area causes rotation
 					event.addEventListener("mousemove", function(evt) {
 						evt.offset = offset;
-						document.body.style.cursor='move';
+						evt.start = start;
 						evt.stageX = evt.stageX/stage.scaleX;
 						evt.stageY = evt.stageY/stage.scaleY;
-						_this.dragPiece.notify({ 
+						_this.dragRotateHandle.notify({ 
 							event: evt, 
-							pieceContainer: pc
+							pieceContainer: spc
 						});
 					});
 				}
-			}
-			
-			// check if any pieces match once the user lets go
-			event.addEventListener("mouseup", function(evt) {
-				document.body.style.cursor='pointer';
-				_this.releasePiece.notify({ 
-					event: evt, 
-					pieceContainer: pc
+				
+			} else {
+
+				pc = ob.parent;
+			 	offset = {
+					x:(pc.x-(event.stageX/stage.scaleX)), 
+					y:(pc.y-(event.stageY/stage.scaleY))
+				};
+				_this.clickedOnPiece.notify({event : event, piece : ob });
+				
+				// if the user pressed down on a piece
+				if(ob.type !== null) {
+					if(ob.type == "piece" && !ob.parent.isFixed()) {
+						// Mouse move when the user moused down on a piece causes movement
+						event.addEventListener("mousemove", function(evt) {
+							evt.offset = offset;
+							document.body.style.cursor='move';
+							evt.stageX = evt.stageX/stage.scaleX;
+							evt.stageY = evt.stageY/stage.scaleY;
+							_this.dragPiece.notify({ 
+								event: evt, 
+								pieceContainer: pc
+							});
+						});
+					}
+				}
+				
+				// check if any pieces match once the user lets go
+				event.addEventListener("mouseup", function(evt) {
+					document.body.style.cursor='pointer';
+					_this.releasePiece.notify({ 
+						event: evt, 
+						pieceContainer: pc
+					});
 				});
-			});
-			
-		}
+				
+			}
 	});
 	
 	createjs.Ticker.setFPS(24);

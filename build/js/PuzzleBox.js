@@ -547,8 +547,8 @@ pc.matchPieces = function() {
 pc.snapPiece = function() {
 	if(this.isMatched) {
 		this.resetPiece(true);
-		if(this._snapped)
-			createjs.Sound.play("snap").setVolume(0.5); 
+		if(this._snapped && this._puzzle._options.soundEnabled)
+			createjs.Sound.play("snap").setVolume(0.25); 
 	}
 		
 	return this;
@@ -734,6 +734,8 @@ PuzzleBox.Piece = function(options) {
 	this.displayName = options.displayName || "Unnamed Piece";
 	
 	this.zindex = options.zindex || 1;
+
+
 	
 	if(typeof(options.fixed) !== "undefined")
 		this.fixed = true;
@@ -741,7 +743,7 @@ PuzzleBox.Piece = function(options) {
 	this.parentX = options.parentX || 0;
 	this.parentY = options.parentY || 0;
 
-	this.snapRadius = options.snapRadius || 25;
+	this.snapRadius = options.snapRadius || 50;
 	
 	this.type = "piece";
 	
@@ -761,6 +763,8 @@ p.Bitmap_initialize = p.initialize;
 p.initialize = function(options) {
 	var tmpImg;
 	var _this = this;
+
+	_this.mouseEnabled = true;
 
 	if((typeof(options.img) == "undefined") 
 		&& (typeof(options.imgSrc) !== "undefined")) {
@@ -783,6 +787,11 @@ p.initialize = function(options) {
 	if(typeof(tmpImg) == "undefined") {
 		debug.warn("Made a piece without an image.");
 	}
+
+	// MAGIC: NEEDS REAL FIX
+	// this mysteriously fixes the mousedown issue
+	this.on("mousedown", function() { });
+
 	debug.log('Created Piece:', this);
 };
 
@@ -1445,7 +1454,8 @@ PuzzleBox.Puzzle = function(data) {
 		showLabels: true,
 		snapAll: false,
 		snapRadius: 50,
-		showTitle: true
+		showTitle: true,
+		soundEnabled: true
 	};
 
 	if (typeof data.options == 'object') {
@@ -1473,12 +1483,16 @@ var pz = PuzzleBox.Puzzle.prototype;
 
 pz.initialize = function() { 
 
+	var majorVersion, verOffset,ix;
+
 	$('body').addClass(this._data.id);
 	
 	// Install the sound plugin
-	this._queue.installPlugin(createjs.Sound);
-	createjs.Sound.registerPlugins([createjs.WebAudioPlugin, createjs.HTMLAudioPlugin, createjs.FlashPlugin]);
-	
+	if(this._options.soundEnabled) {
+		this._queue.installPlugin(createjs.Sound);
+		createjs.Sound.registerPlugins([createjs.WebAudioPlugin, createjs.HTMLAudioPlugin, createjs.FlashPlugin]);
+	}
+
 	var _pzl = this;
 
 	// Setup the loading listeners
@@ -1501,7 +1515,10 @@ pz.initialize = function() {
 		});
 	});
 
+
+
 	this._View = new PuzzleBox.PuzzleView(this);
+
 	this._View.showLoadingWindow(
 		this._data.title, 
 		this._data.instructionText,
@@ -1509,7 +1526,6 @@ pz.initialize = function() {
 		this._data.instructionMouse
 	);
 	this._Controller = new PuzzleBox.PuzzleController(this, this._View);
-
 	this.loadPuzzle();
 };
 
@@ -1540,14 +1556,20 @@ pz.loadPuzzle = function() {
 	this._queue.loadManifest(pieceManifest);
 
 	// Load the sounds
-	for(var i=0; i < pzl.sounds.length; i++) {
-		var s = pzl.sounds[i];
-		this._queue.loadFile({id: s.id, src: s.mp3+"|"+s.ogg });
+	if(this._options.soundEnabled) {
+		for(var i=0; i < pzl.sounds.length; i++) {
+			var s = pzl.sounds[i];		
+			// createjs 0.7 sound loading
+			createjs.Sound.alternateExtensions = ["ogg"];
+			createjs.Sound.registerSound(s.mp3, s.id);
+			// createjs 0.4 sound loading
+			// this._queue.loadFile({id: s.id, src: s.mp3+"|"+s.ogg });
+		}		
 	}
-
 };
 
 pz.setupPuzzle = function() {
+
 	// Set the puzzle width and height
 	var bg = this._queue.getResult('background');
 	
@@ -1586,7 +1608,9 @@ pz.setupPuzzle = function() {
 			options.y = p.regY+Math.round(Math.random()*(this._View.getCanvas().height-p.image.height));	
 		}
 
-		this.addPieceContainer(new PuzzleBox.PieceContainer(options));
+
+		var pc1 = new PuzzleBox.PieceContainer(options);
+		this.addPieceContainer(pc1);
 	}
 	
 	var pzl = this._data;
@@ -2055,8 +2079,8 @@ var pv = PuzzleBox.PuzzleView.prototype;
 pv.initialize = function() {
 	this._stage._needsUpdate = false;
 	
-	this._stage.mouseEventsEnabled = true;
-	this._stage.enableMouseOver(1000);
+	this._stage.mouseEnabled = true;
+	this._stage.enableMouseOver(30);
 	this._stage.mouseMoveOutside = true;
 	
 	this._hoveredPiece = null;
@@ -2118,76 +2142,77 @@ pv.initialize = function() {
 	
 	// Mouse down fires "clickedOnPiece" if a piece was selected
 	this._stage.addEventListener("mousedown", function(event) {
+		var pc, offset;
 		var startTime = new Date().getTime();
 		var stage = _this._stage;
-		var ob = stage.getObjectUnderPoint(stage.mouseX/stage.scaleX, stage.mouseY/stage.scaleX);
-
-		var pc = ob.parent;
-		var offset = {
-				x:(pc.x-(event.stageX/stage.scaleX)), 
-				y:(pc.y-(event.stageY/stage.scaleY))
-			};
-		
-		// if no pieces were clicked
-		if(ob.type == null || ob.type == "background" || ob.type == "hint") {
-
-			// if it's a quick click on nothing, deselect
-			event.addEventListener("mouseup", function(evt) {
-				var endTime = new Date().getTime();
-				if((endTime - startTime) < 250) {
-					_this.clickedOnNothing.notify({ event: evt });
-					document.body.style.cursor='default';
-				}
-			});
+		var ob = stage.getObjectUnderPoint(stage.mouseX/stage.scaleX, stage.mouseY/stage.scaleY);
 			
-			var spc = _this._model.getSelectedPiece();
-			if(spc !== null && _this._model._options.allowRotate) {
-				var start = spc.rotation;
-				offset = {x:event.stageX/stage.scaleX, y:event.stageY/stage.scaleY};
-				
-				// Mouse move when the user has moused down on an empty area causes rotation
-				event.addEventListener("mousemove", function(evt) {
-					evt.offset = offset;
-					evt.start = start;
-					evt.stageX = evt.stageX/stage.scaleX;
-					evt.stageY = evt.stageY/stage.scaleY;
-					_this.dragRotateHandle.notify({ 
-						event: evt, 
-						pieceContainer: spc
-					});
+			// if no pieces were clicked
+			if(ob == null) {
+
+				// if it's a quick click on nothing, deselect
+				event.addEventListener("mouseup", function(evt) {
+					var endTime = new Date().getTime();
+					if((endTime - startTime) < 250) {
+						_this.clickedOnNothing.notify({ event: evt });
+						document.body.style.cursor='default';
+					}
 				});
-			}
-			
-		} else {
-			_this.clickedOnPiece.notify({event : event, piece : ob });
-			
-			// if the user pressed down on a piece
-			if(ob.type !== null) {
-				if(ob.type == "piece" && !ob.parent.isFixed()) {
-					// Mouse move when the user moused down on a piece causes movement
+				
+				var spc = _this._model.getSelectedPiece();
+				if(spc !== null && _this._model._options.allowRotate) {
+					var start = spc.rotation;
+					offset = {x:event.stageX/stage.scaleX, y:event.stageY/stage.scaleY};
+					
+					// Mouse move when the user has moused down on an empty area causes rotation
 					event.addEventListener("mousemove", function(evt) {
 						evt.offset = offset;
-						document.body.style.cursor='move';
+						evt.start = start;
 						evt.stageX = evt.stageX/stage.scaleX;
 						evt.stageY = evt.stageY/stage.scaleY;
-						_this.dragPiece.notify({ 
+						_this.dragRotateHandle.notify({ 
 							event: evt, 
-							pieceContainer: pc
+							pieceContainer: spc
 						});
 					});
 				}
-			}
-			
-			// check if any pieces match once the user lets go
-			event.addEventListener("mouseup", function(evt) {
-				document.body.style.cursor='pointer';
-				_this.releasePiece.notify({ 
-					event: evt, 
-					pieceContainer: pc
+				
+			} else {
+
+				pc = ob.parent;
+			 	offset = {
+					x:(pc.x-(event.stageX/stage.scaleX)), 
+					y:(pc.y-(event.stageY/stage.scaleY))
+				};
+				_this.clickedOnPiece.notify({event : event, piece : ob });
+				
+				// if the user pressed down on a piece
+				if(ob.type !== null) {
+					if(ob.type == "piece" && !ob.parent.isFixed()) {
+						// Mouse move when the user moused down on a piece causes movement
+						event.addEventListener("mousemove", function(evt) {
+							evt.offset = offset;
+							document.body.style.cursor='move';
+							evt.stageX = evt.stageX/stage.scaleX;
+							evt.stageY = evt.stageY/stage.scaleY;
+							_this.dragPiece.notify({ 
+								event: evt, 
+								pieceContainer: pc
+							});
+						});
+					}
+				}
+				
+				// check if any pieces match once the user lets go
+				event.addEventListener("mouseup", function(evt) {
+					document.body.style.cursor='pointer';
+					_this.releasePiece.notify({ 
+						event: evt, 
+						pieceContainer: pc
+					});
 				});
-			});
-			
-		}
+				
+			}
 	});
 	
 	createjs.Ticker.setFPS(24);
@@ -2481,6 +2506,7 @@ PuzzleBox.PuzzleController = function(model, view) {
 var ctrl = PuzzleBox.PuzzleController.prototype;
 
 ctrl.initialize = function() {
+
 	// Events fired by user interaction
 	this._view.clickedOnPiece.attach(this.pressedOnPieceContainer.bind(this));
 	this._view.clickedOnNothing.attach(this.pressedOnNothing.bind(this));
@@ -2511,6 +2537,7 @@ ctrl.handleFileLoad = function (sender, args) {
 	var type = item.type;
 	if(item.id === 'background')
 	{
+		
 		this._view.setAspectRatio(args.event.result.width/args.event.result.height);
 		this._view.resizeHolder($(window).width());
 		this._view.showBackground(item.src);
@@ -2595,9 +2622,13 @@ ctrl.pieceContainerRemoved = function(sender, args) {
 
 ctrl.pieceAdded = function(sender, args) {
 	args.piece.parent.updatePoints();
-	createjs.Sound.play("snap").setVolume(0.5); 
+	if(this._model._options.soundEnabled) {
+		createjs.Sound.play("snap").setVolume(0.25); 
+	}
+		
+
 	this._view.buildPuzzle();
-  debug.log(args, "Added piece to container");
+  	debug.log(args, "Added piece to container");
 };
 
 ctrl.pieceRemoved = function(sender, args) {
@@ -2665,7 +2696,9 @@ ctrl.hoveredOver = function(sender, args) {
 };
 
 ctrl.puzzleCompleted = function(sender,args) {	
-	createjs.Sound.play("success"); 
+	if(this._model._options.soundEnabled)
+		createjs.Sound.play("success").setVolume(0.5); 
+
 	this._view.hideHintToggle();
 };
 
